@@ -1,0 +1,28 @@
+v-card
+  .container
+    .row.justify-center.primary.white--text.pa-2
+      v-icon.white--text.mx-2 {{itemIcon}}
+      h1.headline {{itemPluralName}}
+  block before_list
+    hr
+  .container(v-if="loading")
+    LoadingComponent
+  .container(v-else)
+    v-list(two-line, subheader)
+      v-list-item(v-if="items.length===0")
+        block no_items
+          v-list-item-content
+            v-list-item-title There is none {{itemPluralName}}
+            v-list-item-subtitle
+              a(@click="callRegistration") Register
+      v-list-item(
+        v-for="(item,idx) in items",
+        :key="idx",
+        @click="")
+        block item_content
+          v-list-item-content.secondary--text
+            v-list-item-title(v-if="title" v-text="item[title]")
+            v-list-item-subtitle(v-if="subtitle" v-text="item[subtitle]")
+          v-list-item-action
+            v-btn(icon)
+              v-icon(@click="callDetail" color="grey lighten-1") fa-external-link-alt

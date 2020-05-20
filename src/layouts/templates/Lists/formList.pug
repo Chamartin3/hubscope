@@ -1,0 +1,20 @@
+v-list(two-line, subheader)
+  v-subheader
+    strong {{ name }}
+    v-spacer
+    v-btn(text color="green" @click="openForm") Agregar
+    block form
+  .v-messages.theme--light.error--text(role="alert" v-if="errorMessage")
+    .v-messages__wrapper
+      .v-messages__message {{errorMessage}}
+  v-divider
+  v-list-item(v-if="items.length>0" v-for="(item, idx) in items", :key="idx")
+    block item_content
+      v-list-item-content
+        v-list-item-title {{ item | title }}
+        v-list-item-subtitle(v-if="subtitle") {{ item  | subtitle}}
+        v-spacer
+      v-list-item-action
+        v-btn(icon  @click="removeItem(idx)")
+          v-icon(color="grey lighten-1") fa-trash
+  block list_footer

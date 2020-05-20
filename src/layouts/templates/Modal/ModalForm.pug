@@ -1,0 +1,18 @@
+v-dialog(v-model="dialog", :max-width="!maxWidth ? '500px':maxWidth")
+  template(v-slot:activator="{ on }", v-if="activator")
+    v-btn.mb-2(color="primary", dark="dark", @click="open") {{buttomText}}
+    
+    
+  v-card(:color="!modalColor ? null :modalColor", :dark="modalDark ? true : false")
+    v-card-title
+      span.headline(v-if="customFormTitle") {{ customFormTitle }}
+      span.headline(v-else="v-else") {{ formTitle }} {{ model_name }}
+      
+    v-container.pa-5
+      v-form(ref="_formWrapper", v-model="valid", :lazy-validation="true")
+        block content
+       
+    v-card-actions.justify-center
+      v-btn(color="red darken-1", text="text", @click="close") Cancelar
+          
+      v-btn(color="green darken-1", text="text", :disabled="!valid", @click="sendForm") Guardar

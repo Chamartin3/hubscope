@@ -1,0 +1,20 @@
+v-dialog(v-model="dialog", fullscreen, transition="dialog-bottom-transition", :overlay="false")
+    
+  template(v-slot:activator="{ on }" v-if="activator")
+    v-btn.mb-2(color="primary", dark, @click="open") {{buttomText ? buttomText : model_name}}
+  
+  v-card()
+    v-toolbar(:color="!modalColor ? null :modalColor", :dark="modalDark ? true : false")
+      block title
+        v-toolbar-title 
+          .headline(v-if="modalTitle") {{ modalTitle }}
+          .headline(v-else) {{ model_name }}
+      
+      v-spacer
+      
+      v-btn(icon @click.native="close()", dark)
+        v-icon fa-times
+    v-card-text(v-if="loading")
+      loadingComponent(v-if="!instance")
+    v-container.pa-5
+      block content

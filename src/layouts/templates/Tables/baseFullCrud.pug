@@ -1,0 +1,34 @@
+v-data-table.elevation-1(
+  :server-items-length="totalItems"
+  :loading="loading"
+  :headers="headers"
+  :items="items"
+  :multi-sort="true"
+  :items-per-page="params.per_page"
+  @update:options="changeParams($event)"
+  :no-data-text="`No se ha encontrado ${modelNamePlural}`"
+  )
+  template(v-slot:header)
+    .h1.display-1
+
+  template(v-slot:top)
+    block header
+      v-toolbar(flat color="white")
+
+        v-text-field( 
+          v-if="searchField"
+          v-model="params.search",
+          append-icon="fa-search",
+          :label="'Buscar '+modelName",
+          :placeholder="filterFields"
+          single-line,
+          hide-details)
+        |
+        v-divider.mx-4(inset, vertical)
+        |
+        v-spacer
+        |
+        block top
+      
+  block options
+  
