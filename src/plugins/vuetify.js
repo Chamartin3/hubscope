@@ -11,8 +11,10 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        primary: '#0C3173',
+        primary: '#25AAE1',
         secondary: '#F27023',
+        terciary: '#0C3173',
+        fouth: '#B95106',
         error: '#F71212',
         info: '#2196F3',
         success: '#4CAF50',
@@ -20,6 +22,5 @@ export default new Vuetify({
       }
     }
   },
-  icons: {iconfont: 'fa'
-  }
+  icons: {iconfont: 'fa'}
 })

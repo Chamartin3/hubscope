@@ -7,7 +7,7 @@ v-card
     :action="action",
     :service="action",
   )
-  //- PasswordForm(ref="PasswordForm")
+  PasswordForm(ref="PasswordForm")
   v-container(v-if="user")
     v-row.justify-center.primary.white--text
       v-col.text-center(md="3" v-editable @edit="EditField('username')")
@@ -33,7 +33,7 @@ v-card
 </template>
 <script>
 import ModalEdit from '@/components/base/ModalEdit'
-// import PasswordForm from './PasswordForm'
+import PasswordForm from './PasswordForm'
 export default {
   name:"UserCard",
   props:{
@@ -43,7 +43,7 @@ export default {
   },
   components:{
     ModalEdit,
-    // PasswordForm
+    PasswordForm
   },
   methods:{
     EditField(fieldname, name=null, type="text"){

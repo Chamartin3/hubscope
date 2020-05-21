@@ -7,7 +7,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from  hubscope.mixins import DatatablesMixin
 from  hubscope.accounts.models import User
-from  hubscope.accounts.serializers import UserSerializer, UserRegistrationSerializer, PasswordSerializer, UserStatusSerializer
+from  hubscope.accounts.serializers import (
+                                            UserSerializer,
+                                            UserRegistrationSerializer,
+                                            PasswordSerializer,
+                                            UserStatusSerializer,
+                                            GroupsSerializer)
 from rest_framework.permissions import IsAdminUser, BasePermission, DjangoModelPermissions
 
 ADMIN_GROUPS=['admin']
@@ -23,6 +28,8 @@ ADMIN_GROUPS=['admin']
 
 def create_related_models(self, arg):
     pass
+
+
 
 class ProfileOwnerPermission(BasePermission):
     """
@@ -83,11 +90,18 @@ class ChangePassword(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = PasswordSerializer
     permission_classes = [ProfileOwnerPermission]
-    def perform_update(self, serializer):
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        instance = self.get_object()
         user=self.get_object()
-        user.set_password(serializer.password)
+        serializer=PasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user.set_password(serializer.validated_data['password'])
         user.save()
-        return Response(data="{'message':'Password changed successfully'}", status=200)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+        return Response(data={'message':'La contraseña fue cambiada con éxito'}, status=200)
 
 class UserStatusPermisions(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]

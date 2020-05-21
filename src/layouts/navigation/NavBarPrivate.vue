@@ -6,8 +6,8 @@ app
 absolute
 flat height='92')
   v-btn(v-if="responsive" icon @click.stop='onClick')
-    v-icon menu
-    //- v-icon fa-bars
+    //- v-icon menu
+    v-icon fa-bars
   v-toolbar-title.tertiary--text.font-weight-light.align-self-center
     | {{ title }}
   v-spacer

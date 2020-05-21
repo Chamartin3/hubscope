@@ -1,8 +1,7 @@
 from rest_framework import serializers
+from django.contrib.auth.models import Permission, Group
 from rest_framework.serializers import ModelSerializer, Serializer
 from   hubscope.accounts.models import User
-
-
 
 
 def password_validation(data):
@@ -13,6 +12,12 @@ def password_validation(data):
         raise serializers.ValidationError("The two passwords do not match.")
     data.pop('passwordconf')
     return data
+
+
+class GroupsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
 
 
 class PasswordSerializer(Serializer):

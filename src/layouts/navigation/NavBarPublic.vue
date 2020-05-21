@@ -12,32 +12,7 @@ export default {
   components: { UserDropdown },
   data () {
     return {
-      links: [
-        {
-          show_name:'Home',
-          name:'home'
-        },
-        {
-          show_name:'Libros',
-          name:'accountbooks'
-        },
-        {
-          show_name:'Map',
-          name:'modelsmap'
-        },
-        // {
-        //   section:'AboutSection',
-        //   name:'Información Institucional'
-        // },
-        // {
-        //   section:'CreditsSection',
-        //   name:'Beneficios'
-        // },
-        // {
-        //   section:'ContactSection',
-        //   name:'Contacto'
-        // },
-      ]
+      links: []
     }
   },
   methods: {

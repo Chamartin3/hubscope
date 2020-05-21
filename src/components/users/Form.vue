@@ -4,29 +4,35 @@ append content
   v-container.pa-5
     v-row
       v-col
-        v-text-field(label="First name", v-model="form.first_name", :error-messages="errors.first_name", :rules="[valrules.required]")
+        v-text-field(label="Nombres", v-model="form.first_name", :error-messages="errors.first_name", :rules="[valrules.required]")
       v-col
-        v-text-field(label="Last name", v-model="form.last_name", :error-messages="errors.last_name", :rules="[valrules.required]")
+        v-text-field(label="Apellidos", v-model="form.last_name", :error-messages="errors.last_name", :rules="[valrules.required]")
     v-row
       v-col
-        v-text-field(label="Username", v-model="form.username", :rules="[valrules.required]", :error-messages="errors.username")
+        v-text-field(label="Nombre de Usuario", v-model="form.username", :rules="[valrules.required]", :error-messages="errors.username")
 
     v-row
       v-col
         v-text-field(label="Email", :rules="[valrules.required]", prepend-icon='fa-at', v-model="form.email", :error-messages="errors.email")
     v-row
       v-col
-        v-text-field(label="New password",
+        v-text-field(label="Nueva contraseña",
         type="password"
         v-model="form.password", :error-messages="errors.password", :rules="[valrules.required]")
       v-col
-        v-text-field(label="Confirm password",
+        v-text-field(label="Confirmar contraseña",
         type="password", v-model="form.passwordconf", :error-messages="errors.passwordconf", :rules="[valrules.required]")
 
     v-row(v-if="fullmode")
       v-col
         v-text-field(label="Telefono", prepend-icon='phone', :rules="[valrules.required]", v-model="form.phone", :error-messages="errors.phone")
-      v-col
+block title
+  v-card-title(color="primary")
+    .col.primary
+      .text-center.display-1.white--text
+        strong Nuevo Usuario
+
+
 </template>
 <script>
 import { formModal } from '@/mixins/Modal'
@@ -50,7 +56,11 @@ export default {
     return {
       activator: true,
       maxWidth:null,
-      model_name: 'user account',
+      modalTitle:'Nuevo Usuario',
+      // modalColor:'primary',
+      // modalDark:true,
+
+      model_name: 'Usuario',
       buttomText: 'Nuevo Usuario',
       createAction: 'registration',
       model: this.$django.models.accounts,

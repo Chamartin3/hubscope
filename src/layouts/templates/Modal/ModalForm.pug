@@ -4,9 +4,10 @@ v-dialog(v-model="dialog", :max-width="!maxWidth ? '500px':maxWidth")
     
     
   v-card(:color="!modalColor ? null :modalColor", :dark="modalDark ? true : false")
-    v-card-title
-      span.headline(v-if="customFormTitle") {{ customFormTitle }}
-      span.headline(v-else="v-else") {{ formTitle }} {{ model_name }}
+    block title
+      v-card-title
+        span.headline(v-if="customFormTitle") {{ customFormTitle }}
+        span.headline(v-else="v-else") {{ formTitle }} {{ model_name }}
       
     v-container.pa-5
       v-form(ref="_formWrapper", v-model="valid", :lazy-validation="true")

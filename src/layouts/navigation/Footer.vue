@@ -3,9 +3,8 @@
     v-layout(row wrap align-center)
       v-flex(xs12='')
         .white--text.ml-4
-          | 2019
-          //- v-icon.white--text.mx-2 fa-copyright
-          v-icon.white--text copyright
+          | 2020
+          v-icon.white--text.mx-2 fa-copyright
           | {{description}}
 </template>
 <script>

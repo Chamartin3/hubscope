@@ -18,6 +18,10 @@ export default{
 
       fail = fail.data ? fail.data : fail
 
+      if (fail.non_field_errors)  {
+        fail.message = fail.non_field_errors.toString()
+      }
+
       let msg = this.failAlertMessage || fail
 
       if(fail && fail.type && fail.type===401 && fail.message){

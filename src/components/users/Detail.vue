@@ -3,22 +3,22 @@ extends ../../layouts/templates/Modal/FullsreenModal.pug
 
 append content
   div(v-if="instance")
-    userCard(
+    Info(
       @cambio="$emit('successChange', $event)",
       :userInstance="instance"
       )
-    userLogInfo(:user="instance")
+    LogInfo(:user="instance")
 </template>
 <script>
-import userCard from './userCard'
-import userLogInfo from './userLogInfo'
+import Info from './Info'
+import LogInfo from './LogInfo'
 import { instanceModal } from '@/mixins/Modal'
 export default {
   name: "UserDetail",
   mixins:[instanceModal],
   components:{
-    userCard,
-    userLogInfo
+    Info,
+    LogInfo
   },
   data(){
     return{

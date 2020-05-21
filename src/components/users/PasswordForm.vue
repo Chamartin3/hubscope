@@ -1,25 +1,25 @@
 <template lang="pug">
-extends ../../mixins/Modal/ModalForm
+extends ../../layouts/templates/Modal/ModalForm
 append content
   v-container
     v-row
       v-col
-        v-text-field(label="New password",
+        v-text-field(label="Nueva contraseña",
         type="password"
         v-model="form.password", :error-messages="errors.password", :rules="[valrules.required]")
     v-row
       v-col
-        v-text-field(label="Confirm password",
+        v-text-field(label="Confirmar contraseña",
         type="password", v-model="form.passwordconf", :error-messages="errors.passwordconf", :rules="[valrules.required]")
 </template>
 <script>
-import modalFormMixin from '@/mixins/Modal/modalFormMixin'
+import { formModal } from '@/mixins/Modal'
 export default {
-  mixins: [ modalFormMixin ],
+  mixins: [ formModal ],
   data () {
     return {
       activator: false,
-      model_name: 'Password',
+      model_name: 'Contraseña',
       editAction: 'patch_change_password',
       model: this.$django.models.accounts,
       form: {

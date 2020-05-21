@@ -8,6 +8,7 @@ export default {
 
       modalColor:null,
       modalDark:false,
+      maxWidth:null,
       modalTitle:null,
       buttomText:null,
     }

@@ -9,17 +9,20 @@ v-navigation-drawer#app-drawer(
   mobile-break-point="991",
   v-model="inputValue",
   width="260")
-  template(v-slot:img="attrs")
-    v-img(v-bind="attrs", :gradient="'to top, rgba(0, 0, 0, .8),'+ $vuetify.theme.themes.light.primary")
+  //- template(v-slot:img="attrs")
+  //-   v-img(v-bind="attrs", :gradient="'to top, rgba(0, 0, 0, .8),'+ $vuetify.theme.themes.light.primary")
 
-  v-list-item(two-line="")
-    router-link(:to="{ name: 'login', params: {} }")
-      v-avatar.ma-5(size='180' color="primary darken-1")
-        v-img(:src='logo', height="100", contain="")
+  v-list-item
+  .row.mb-3
+    .col.display-2.text-center.secondary--text
+      strong HubScope
+    //- router-link(:to="{ name: 'login', params: {} }")
+      //- v-avatar.ma-5(size='180' color="primary darken-1")
+      //-   v-img(:src='logo', height="100", contain="")
   v-divider.mx-3.mb-3
   v-list(nav)
     div
-      v-list-item(v-for="(link, i) in links", :key="i", :to="{name:link.to}", active-class="primary white--text")
+      v-list-item(v-for="(link, i) in links", :key="i", :to="{name:link.to}", active-class="primary secondary--text")
         v-list-item-action
           v-icon {{ link.icon }}
           |
