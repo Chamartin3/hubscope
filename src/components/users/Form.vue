@@ -1,37 +1,44 @@
 <template lang="pug">
 extends ../../layouts/templates/Modal/ModalForm
 append content
-  v-container.pa-5
-    v-row
-      v-col
-        v-text-field(label="Nombres", v-model="form.first_name", :error-messages="errors.first_name", :rules="[valrules.required]")
-      v-col
-        v-text-field(label="Apellidos", v-model="form.last_name", :error-messages="errors.last_name", :rules="[valrules.required]")
-    v-row
-      v-col
-        v-text-field(label="Nombre de Usuario", v-model="form.username", :rules="[valrules.required]", :error-messages="errors.username")
+  .container.pa-5
+    .row
+      .col
+        v-text-field(label="Nombres",
+          v-model="form.first_name",
+          :error-messages="errors.first_name", :rules="[valrules.required]")
+      .col
+        v-text-field(label="Apellidos",
+          v-model="form.last_name",
+          :error-messages="errors.last_name", :rules="[valrules.required]")
+    .row
+      .col
+        v-text-field(label="Nombre de Usuario",
+          v-model="form.username",
+          :rules="[valrules.required]", :error-messages="errors.username")
 
-    v-row
-      v-col
-        v-text-field(label="Email", :rules="[valrules.required]", prepend-icon='fa-at', v-model="form.email", :error-messages="errors.email")
-    v-row
-      v-col
+    .row
+      .col
+        v-text-field(label="Email",
+          :rules="[valrules.required]",
+          prepend-icon='fa-at', v-model="form.email", :error-messages="errors.email")
+    .row
+      .col
         v-text-field(label="Nueva contraseña",
-        type="password"
-        v-model="form.password", :error-messages="errors.password", :rules="[valrules.required]")
-      v-col
+          type="password"
+          v-model="form.password", :error-messages="errors.password"
+          :rules="[valrules.required]")
+      .col
         v-text-field(label="Confirmar contraseña",
-        type="password", v-model="form.passwordconf", :error-messages="errors.passwordconf", :rules="[valrules.required]")
+          type="password", v-model="form.passwordconf"
+          :error-messages="errors.passwordconf", :rules="[valrules.required]")
 
-    v-row(v-if="fullmode")
-      v-col
-        v-text-field(label="Telefono", prepend-icon='phone', :rules="[valrules.required]", v-model="form.phone", :error-messages="errors.phone")
+
 block title
   v-card-title(color="primary")
     .col.primary
       .text-center.display-1.white--text
         strong Nuevo Usuario
-
 
 </template>
 <script>
@@ -50,16 +57,17 @@ export default {
     // },
   },
   computed: {
-    formTitle () { return 'Add new' }
+    formTitle () {
+      return 'Add new'
+    }
   },
   data () {
     return {
       activator: true,
-      maxWidth:null,
-      modalTitle:'Nuevo Usuario',
+      maxWidth: null,
+      modalTitle: 'Nuevo Usuario',
       // modalColor:'primary',
       // modalDark:true,
-
       model_name: 'Usuario',
       buttomText: 'Nuevo Usuario',
       createAction: 'registration',

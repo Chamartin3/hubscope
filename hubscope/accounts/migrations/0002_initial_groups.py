@@ -3,13 +3,11 @@ from django.db import migrations
 from django.contrib.auth.models import Group
 
 GROUP_NAMES=[
-    Group(name='admin'),
-    Group(name='socio'),
-    Group(name='junta'),
-    Group(name='empleado'),
-    # Indispensables
+    Group(name='Admin'),
+    Group(name='Gerente'),
+    Group(name='Registrador'),
+    Group(name='Ejecutivo'),
 ]
-
 
 def apply_migration(apps, schema_editor):
     Group = apps.get_model('auth', 'Group')

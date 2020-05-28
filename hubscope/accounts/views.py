@@ -26,8 +26,8 @@ ADMIN_GROUPS=['admin']
 #     ]
 # }
 
-def create_related_models(self, arg):
-    pass
+# def create_related_models(self, arg):
+    # pass
 
 
 
@@ -66,11 +66,16 @@ class MyInfo(APIView):
         return Response(data)
 
 
+
 class UserList(DatatablesMixin, generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     search_fields = ['first_name', 'last_name', 'username']
     # permission_classes = [IsAdminUser, DjangoModelPermissions]
+
+class GroupList(generics.ListAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupsSerializer
 
 
 class UserInformation(generics.RetrieveUpdateAPIView):
@@ -102,6 +107,7 @@ class ChangePassword(generics.UpdateAPIView):
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
         return Response(data={'message':'La contraseña fue cambiada con éxito'}, status=200)
+
 
 class UserStatusPermisions(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
@@ -138,7 +144,7 @@ class UserStatusPermisions(generics.UpdateAPIView):
 class Auth(APIView):
 
     def get(self, request,*args, **kwargs):
-        """ Logout a traves de una peticiónm Ajax"""
+        """ Logout a traves de una petición Ajax"""
         logout(request)
         return Response({"message": "Sesion Cerrada"}, status=202)
 

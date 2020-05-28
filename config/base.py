@@ -48,12 +48,14 @@ DJANGO_APPS = [
 ]
 MODULE_APPS = [
     'rest_framework',
+    'drf_generators',
     'webpack_loader',
     'hubscope.vue_django',
 ]
 
 MY_APPS = [
     'hubscope.accounts',
+    'hubscope.reports',
 ]
 
 

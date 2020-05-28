@@ -13,5 +13,8 @@ include(('hubscope.urls','myapp'))
 urlpatterns = [
     url('accounts/',
         include(('hubscope.accounts.urls','accounts'))
+    ),    
+    url('reports/',
+        include(('hubscope.reports.urls','reports'))
     ),
 ]

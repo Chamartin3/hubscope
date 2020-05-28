@@ -3,6 +3,7 @@ from  hubscope.accounts import views
 
 urlpatterns = [
       path("list/", views.UserList.as_view(), name="accounts-list"),
+      path("grouplist/", views.GroupList.as_view(), name="accounts-groups"),
       path("registration/", views.UserRegistration.as_view(), name="accounts-registration"),
       path("info/<int:pk>/", views.UserInformation.as_view(), name="accounts-information"),
       path("delete/<int:pk>/", views.UserDelete.as_view(), name="accounts-delete"),
