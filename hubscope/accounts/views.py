@@ -90,15 +90,29 @@ class UserDelete(generics.DestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
 
+class ChangeGroup(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = PasswordSerializer
+    permission_classes = []
+
+    def partial_update(self, request, *args, **kwargs):  
+        kwargs['partial'] = True
+        user=self.get_object()
+        gname=request.data.get('groupname')
+        # import pdb; pdb.set_trace()
+        group=Group.objects.get(name=gname)
+        user.groups.set([group])
+        return Response(data={'message':'Permisos Cambiados con éxito'}, status=200)
+
+
 class ChangePassword(generics.UpdateAPIView):
     """Allows to change passwords."""
     queryset = User.objects.all()
     serializer_class = PasswordSerializer
-    permission_classes = [ProfileOwnerPermission]
+    permission_classes = []
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
-        instance = self.get_object()
         user=self.get_object()
         serializer=PasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

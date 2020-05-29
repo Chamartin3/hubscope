@@ -16,6 +16,8 @@ append content
         v-text-field(label="Nombre de Usuario",
           v-model="form.username",
           :rules="[valrules.required]", :error-messages="errors.username")
+      .col
+        GroupSelect(v-model="form.group")
 
     .row
       .col
@@ -43,10 +45,12 @@ block title
 </template>
 <script>
 import { formModal } from '@/mixins/Modal'
+import  GroupSelect from './GroupSelect'
 export default {
   props: {
     fullmode: { default: false }
   },
+  components: { GroupSelect },
   mixins: [ formModal ],
   methods: {
     // sendForm() {
@@ -78,7 +82,8 @@ export default {
         username: '',
         email: '',
         password: '',
-        passwordconf: ''
+        passwordconf: '',
+        group: ''
       }
     }
   }

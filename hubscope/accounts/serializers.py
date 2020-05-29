@@ -17,7 +17,7 @@ def password_validation(data):
 class GroupsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = '__all__'
+        fields = ('name',)
 
 
 class PasswordSerializer(Serializer):
@@ -32,6 +32,7 @@ class UserStatusSerializer(ModelSerializer):
     fields = 'is_active'
 
 class UserSerializer(ModelSerializer):
+    groups=GroupsSerializer(many=True, read_only=True)
     class Meta:
         model = User
         fields = '__all__'
@@ -44,11 +45,16 @@ class UserRegistrationSerializer(Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True)
     passwordconf = serializers.CharField(write_only=True)
+    group = serializers.CharField()
 
     def validate(self, data):
         # data['username'] = uuid.uuid4().hex[:30]
         return password_validation(data)
 
     def  create(self, validated_data):
+        group=validated_data.pop('group',None)
         user= User.objects.create_user(**validated_data)
+        if group is not None:
+            g=Group.objects.get(name=group)
+            user.groups.set([g])
         return user

@@ -7,7 +7,10 @@ append content
       @cambio="$emit('successChange', $event)",
       :userInstance="instance"
       )
-    LogInfo(:user="instance")
+    LogInfo(
+      :user="instance"
+      @cambio="$emit('successChange', $event)",
+      )
 </template>
 <script>
 import Info from './Info'

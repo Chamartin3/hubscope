@@ -1,8 +1,9 @@
 <template lang="pug">
 v-card
-  v-container
+  .container
+    GroupForm(ref="GroupForm" @edited="$emit('successChange',user)")
     .row.text-center
-      .col
+      .col(v-editable @edit="$refs.GroupForm.edit(user.id, {id:user.id})")
         .overline.mb-4 Permisos
         v-chip(v-for="group in user.groups") {{ group.name }}
       .col
@@ -13,9 +14,11 @@ v-card
 </template>
 <script>
 import moment from 'moment'
+import GroupForm from './GroupForm'
 export default {
   name: "",
   props:['user'],
+  components: { GroupForm },
   filters:{
     fulltime(val){
       let time =  moment(val).format('hh:mm a')

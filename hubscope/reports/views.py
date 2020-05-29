@@ -1,9 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
+from hubscope.mixins import DatatablesMixin
 from hubscope.reports.serializers import CompanySerializer, AsignmentSerializer, IndicatorSerializer, ReportSerializer, CompanyRoleSerializer
 from hubscope.reports.models import Company, Asignment, Indicator, Report, CompanyRole
 
 
-class CompanyViewSet(ModelViewSet):
+class CompanyViewSet(DatatablesMixin, ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 

@@ -27,9 +27,9 @@ export default [
     parent: 'dashboard',
     path: 'companies',
     name: 'companies',
-    show_name: 'Compañias',
+    show_name: 'Empresas',
     show_icon: 'fa-building',
     access:null,
-    component: () => import('@/views/Dashboard.vue')
+    component: () => import('@/views/Companies.vue')
   }
 ]
