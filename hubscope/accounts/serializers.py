@@ -53,6 +53,7 @@ class UserRegistrationSerializer(Serializer):
 
     def  create(self, validated_data):
         group=validated_data.pop('group',None)
+        validated_data.update({'username':validated_data['username'].lower()})
         user= User.objects.create_user(**validated_data)
         if group is not None:
             g=Group.objects.get(name=group)

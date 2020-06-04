@@ -177,7 +177,7 @@ class Auth(APIView):
         """ Login a traves de una petición Ajax"""
   
         user = authenticate(
-            username=request.data.get('username'),
+            username=request.data.get('username').lower(),
             password=request.data.get('password')
             )
         if user is not None:
