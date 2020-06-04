@@ -45,7 +45,7 @@ class UserRegistrationSerializer(Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True)
     passwordconf = serializers.CharField(write_only=True)
-    group = serializers.CharField()
+    group = serializers.CharField(write_only=True)
 
     def validate(self, data):
         # data['username'] = uuid.uuid4().hex[:30]
@@ -58,3 +58,12 @@ class UserRegistrationSerializer(Serializer):
             g=Group.objects.get(name=group)
             user.groups.set([g])
         return user
+
+    def to_representation(self, instance):
+        """
+        Object instance -> Dict of primitive datatypes.
+        """
+        group = instance.groups.all()
+        result = super(UserRegistrationSerializer, self).to_representation(instance)
+        result.update({'groups':group})
+        return result

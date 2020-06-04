@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.db.utils import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Permission, Group
 from rest_framework import generics
@@ -15,6 +16,7 @@ from  hubscope.accounts.serializers import (
                                             GroupsSerializer)
 from rest_framework.permissions import IsAdminUser, BasePermission, DjangoModelPermissions
 
+from termcolor import cprint
 ADMIN_GROUPS=['admin']
 
 # USER_RELATED_MODELS:{
@@ -40,21 +42,29 @@ class ProfileOwnerPermission(BasePermission):
             return True
         return request.user == obj;
 
+from django.utils.translation import gettext as _
+
 class UserRegistration(generics.CreateAPIView):
     """docstring for UserRegistration."""
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [IsAdminUser]
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     user=serializer.instance
-    #     headers = self.get_success_headers(serializer.data)
-    #
-    #
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            self.perform_create(serializer)
+        except IntegrityError as e:
+            cause=e.args[1]
+            # "Duplicate entry 'PGeren' for key 'username'"
+            cause=cause.replace('Duplicate entry','Dato duplicado:') \
+                .replace('for key','en el campo') \
+                .replace('username','Nombre de Usuario')
+            return Response({'message':cause}, status=401)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
 
 class MyInfo(APIView):
     def get(self, request, *args, **kwargs):
@@ -113,8 +123,9 @@ class ChangePassword(generics.UpdateAPIView):
 
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
-        user=self.get_object()
-        serializer=PasswordSerializer(data=request.data)
+        instance = self.get_object()
+        user = self.get_object()
+        serializer = PasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user.set_password(serializer.validated_data['password'])
         user.save()
@@ -164,6 +175,7 @@ class Auth(APIView):
 
     def post(self, request, *args, **kwargs):
         """ Login a traves de una petición Ajax"""
+  
         user = authenticate(
             username=request.data.get('username'),
             password=request.data.get('password')
