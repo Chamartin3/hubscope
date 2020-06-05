@@ -64,7 +64,7 @@ class UserRegistrationSerializer(Serializer):
         """
         Object instance -> Dict of primitive datatypes.
         """
-        group = instance.groups.all()
+        group = GroupsSerializer(instance.groups, many=True).data
         result = super(UserRegistrationSerializer, self).to_representation(instance)
         result.update({'groups':group})
         return result
