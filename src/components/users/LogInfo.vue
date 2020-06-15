@@ -1,6 +1,6 @@
 <template lang="pug">
-v-card
-  .container
+v-card.white.black--text
+  .container.white.black--text
     GroupForm(ref="GroupForm" @edited="$emit('successChange',user)")
     .row.text-center
       .col(v-editable @edit="$refs.GroupForm.edit(user.id, {id:user.id})")

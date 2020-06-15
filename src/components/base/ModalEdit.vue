@@ -1,6 +1,6 @@
 <template lang="pug">
 v-dialog(v-model='dialog' persistent='' max-width='290')
-  v-card
+  v-card(color="primary" dark)
     v-card-title.headline.text-center Editar {{fieldName}}
     v-card-text
       DynamicField(

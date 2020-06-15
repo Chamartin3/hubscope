@@ -1,6 +1,6 @@
 v-card
-  .container
-    .row.justify-center.primary.white--text.pa-2
+  v-toolbar.text-center(flat dark color="primary lighten-1")
+    .row.justify-center
       v-icon.white--text.mx-2 {{itemIcon}}
       h1.headline {{itemPluralName}}
   block before_list
@@ -20,9 +20,14 @@ v-card
         :key="idx",
         @click="")
         block item_content
-          v-list-item-content.secondary--text
-            v-list-item-title(v-if="title" v-text="item[title]")
-            v-list-item-subtitle(v-if="subtitle" v-text="item[subtitle]")
-          v-list-item-action
-            v-btn(icon)
-              v-icon(@click="callDetail" color="grey lighten-1") fa-external-link-alt
+            v-list-item-content
+              v-list-item-title(v-if="title") 
+                | {{ getItemTitle(item) }}
+              v-list-item-subtitle(v-if="subtitle") 
+                .overline {{ getItemSubTitle(item) }}
+            v-list-item-action
+                v-btn(icon)
+                  v-icon(
+                    @click="callDetail" 
+                    color="grey lighten-1") 
+                    | {{ itemActionIcon}}

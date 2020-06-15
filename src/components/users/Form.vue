@@ -1,7 +1,7 @@
 <template lang="pug">
 extends ../../layouts/templates/Modal/ModalForm
 append content
-  .container.pa-5
+  .container.pa-5.theme--dark
     .row
       .col
         v-text-field(label="Nombres",
@@ -70,8 +70,8 @@ export default {
       activator: true,
       maxWidth: null,
       modalTitle: 'Nuevo Usuario',
-      // modalColor:'primary',
-      // modalDark:true,
+      modalColor:'primary',
+      modalDark:true,
       model_name: 'Usuario',
       buttomText: 'Nuevo Usuario',
       createAction: 'registration',

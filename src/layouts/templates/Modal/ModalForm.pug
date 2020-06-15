@@ -1,6 +1,6 @@
 v-dialog(v-model="dialog", :max-width="!maxWidth ? '500px':maxWidth")
   template(v-slot:activator="{ on }", v-if="activator")
-    v-btn.mb-2(color="primary", dark="dark", @click="open") {{buttomText}}
+    v-btn.mb-2(color="secondary", dark="dark", @click="open") {{buttomText}}
     
     
   v-card(:color="!modalColor ? null :modalColor", :dark="modalDark ? true : false")

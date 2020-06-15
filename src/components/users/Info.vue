@@ -8,12 +8,12 @@ v-card
     :service="action",
   )
   PasswordForm(ref="PasswordForm")
-  v-container(v-if="user")
-    v-row.justify-center.primary.white--text
+  v-container.white(v-if="user")
+    v-row.mt-n5.mb-5.justify-center.primary.white--text
       v-col.text-center(md="3" v-editable @edit="EditField('username')")
           p.headline.font-weight-bold
             | {{ user.username }}
-    v-row.justify-center
+    v-row.justify-center.white.black--text
       v-col.text-center(v-editable @edit="EditField('first_name', 'nombre')")
         h4.overline Nombres
           p.headline
@@ -23,13 +23,15 @@ v-card
           p.headline
             | {{user.last_name | nonempty }}
             //- EditableElement(")
-    v-row
+    v-row.white.black--text
       v-col.text-center( v-editable @edit="EditField('email','email','email')")
           h4
             v-icon.mx-2 fa-at
             | {{user.email | nonempty }}
       v-col.text-center
-        v-btn.primary(@click="$refs.PasswordForm.edit(user.id, {id:user.id})") Cambiar Contraseña
+        v-btn.primary(
+          color="secondary"
+          @click="$refs.PasswordForm.edit(user.id, {id:user.id})") Cambiar Contraseña
 </template>
 <script>
 import ModalEdit from '@/components/base/ModalEdit'

@@ -1,7 +1,7 @@
 <template lang="pug">
 extends ../../layouts/templates/Tables/baseFullCrud.pug
 block header
-  v-toolbar(flat color="white")
+  v-toolbar.secondary--text(flat color="primary lighten-1 secondary--text")
     DeleteConfirmation(
       model="accounts"
       ref="DeleteConfirmation"
@@ -16,6 +16,7 @@ block header
       label="Buscar Socios",
       placeholder="Buscar Usuario"
       single-line,
+      dark
       hide-details)
     |
     v-divider.mx-4(inset, vertical)

@@ -31,5 +31,50 @@ export default [
     show_icon: 'fa-building',
     access:null,
     component: () => import('@/views/Companies.vue')
-  }
+  },    
+  {
+    parent: 'dashboard',
+    path: 'reports',
+    name: 'reports',
+    show_name: 'Reportes',
+    show_icon: 'fas fa-tasks',
+    access:null,
+    component: () => import('@/views/Reports.vue')
+  },  
+  {
+    parent: 'dashboard',
+    path: 'empresa/:id',
+    name: 'empresa',
+    show_name: 'Empresa',
+    access:null,
+    hide:true,
+    component: () => import('@/views/Empresa.vue')
+  },  
+  // {
+  //   parent: 'dashboard',
+  //   path: 'empresa/:id/reports',
+  //   name: 'empresa',
+  //   show_name: 'Empresa',
+  //   access:null,
+  //   hide:true,
+  //   component: () => import('@/views/Company/Reports.vue') 
+  // },  
+  // {
+  //   parent: 'dashboard',
+  //   path: 'empresa/:id/asigments',
+  //   name: 'empresa',
+  //   show_name: 'Empresa',
+  //   access:null,
+  //   hide:true,
+  //   component: () => import('@/views/Company/Asignments.vue')
+  // },  
+  // {
+  //   parent: 'dashboard',
+  //   path: 'empresa/:id/reports',
+  //   name: 'empresa',
+  //   show_name: 'Empresa',
+  //   access:null,
+  //   hide:true,
+  //   component: () => import('@/views/Company/Asignments.vue')
+  // }
 ]

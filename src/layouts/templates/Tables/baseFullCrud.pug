@@ -7,13 +7,15 @@ v-data-table.elevation-1(
   :items-per-page="params.per_page"
   @update:options="changeParams($event)"
   :no-data-text="`No se ha encontrado ${modelNamePlural}`"
+  dark
+  color="primary lighten-2"
   )
   template(v-slot:header)
     .h1.display-1
 
   template(v-slot:top)
     block header
-      v-toolbar(flat color="white")
+      v-toolbar(flat dark)
 
         v-text-field( 
           v-if="searchField"

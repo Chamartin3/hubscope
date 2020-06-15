@@ -2,7 +2,7 @@
 extends ../../layouts/templates/Modal/FullsreenModal.pug
 
 append content
-  div(v-if="instance")
+  div.white.black--text(v-if="instance")
     Info(
       @cambio="$emit('successChange', $event)",
       :userInstance="instance"
@@ -27,6 +27,7 @@ export default {
     return{
       customFormTitle:'',
       modalColor:'primary',
+      contentColor:'secondary',
       modalDark:true,
       model_name: 'Usuario',
     }

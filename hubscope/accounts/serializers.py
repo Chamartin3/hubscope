@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import Permission, Group
 from rest_framework.serializers import ModelSerializer, Serializer
 from   hubscope.accounts.models import User
-
+from hubscope.reports.models import Position
 
 def password_validation(data):
     if not data.get('password') or not data.get('passwordconf'):
@@ -19,6 +19,11 @@ class GroupsSerializer(serializers.ModelSerializer):
         model = Group
         fields = ('name',)
 
+class PositionSerializer(serializers.ModelSerializer):
+    company = serializers.StringRelatedField()
+    class Meta:
+        model = Position
+        fields = ['company','name']
 
 class PasswordSerializer(Serializer):
     password = serializers.CharField()
@@ -33,6 +38,7 @@ class UserStatusSerializer(ModelSerializer):
 
 class UserSerializer(ModelSerializer):
     groups=GroupsSerializer(many=True, read_only=True)
+    roles = PositionSerializer(many=True, read_only=True)
     class Meta:
         model = User
         fields = '__all__'

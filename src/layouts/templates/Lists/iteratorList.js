@@ -1,15 +1,20 @@
-import baseList from '#/Lists/baseList'
-import serverSide from '#/Lists/severSide'
+// import baseList from '#/Lists/baseList'
+// import serverSide from '#/Lists/severSide'
+
+import {SSList} from '#/Lists'
 
 export default {
-  mixins:[ baseList, serverSide],
+  mixins:[ SSList ],
   data(){
     return {
       title:'',
       subtitle:'',
       itemName:"",
       itemIcon:"",
-      itemPluralName:"Telefonos",
+      itemPluralName:"",
+      nodata:"nodata",
+      pageLengthOptions:[5,10,15,20],
+      itemKey:'id',
     }
   },
   methods: {
@@ -18,6 +23,25 @@ export default {
     addElem(elem){
       let newElem=preprocessList(elem)
       this.list.push(newElem)
+    }
+  },
+  computed:{
+    totalPages(){
+      let totalitems= this.pagination.total
+      let perpage= this.params.page_size
+      return Math.ceil(totalitems/perpage)
+    },
+    pagesText(){
+      return  `Mostrando ${this.pagination.from} hasta ${this.pagination.to}`
+    },    
+    totalsText(){
+      return  `Total ${this.pagination.total} ${ this.itemPluralName }`.toLowerCase()
+    },
+    currentText(){
+      return  `Pagina ${ this.pagination.current_page } de ${ this.totalPages ? this.totalPages : 1  }`
+    },
+    perPageText(){
+      return  `por pagina`
     }
   },
   filters: {

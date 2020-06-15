@@ -1,15 +1,25 @@
 export default {
   data(){
     return {
-      title:'',
-      subtitle:'',
+      title:null,
+      subtitle:null,
       itemName:"",
-      itemIcon:"",
+      itemActionIcon:"fas fa-external-link-alt",
       itemPluralName:"Telefonos",
     }
   },
   methods:{
     callRegistration(){console.log('registration')},
     callDetail(){console.log('detail')},
+    getItemTitle(item){
+      if (!item) return ''
+      if (this.title) return item[this.title]
+      return item
+    },
+    getItemSubTitle(item){
+      if (!item || !this) return ''
+      if (this.subtitle) return item[this.subtitle]
+      return item
+    }
   }
 }

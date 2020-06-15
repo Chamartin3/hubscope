@@ -110,8 +110,8 @@ class AuthService {
         },
         fail=>{
           console.log(fail)
+          var mensaje=fail.data.message? fail.data.message: 'Fallo'
           console.log(mensaje)
-          var mensaje=fail.message? fail.message: 'Fallo'
           return  {type:"error", msj:mensaje}
 
         })

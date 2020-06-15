@@ -5,9 +5,38 @@ from rest_framework import serializers
 from rest_framework import pagination
 from rest_framework.response import Response
 import math
-
+import ast
 from rest_framework import  serializers
 
+
+
+class datatableFilters(filters.SearchFilter, filters.OrderingFilter):
+    """
+    Filter using all the variables sent through a datatable_filters options
+    """
+    def filter_queryset(self, request, queryset, view):
+        ''' Filters the by an specific field using as reference an specific field name'''
+        queryset = super(datatableFilters, self).filter_queryset(request, queryset, view)
+
+        datatable_filters = request.query_params.get('datatable_filters', None)
+        if datatable_filters is None:
+            return queryset
+
+        filters = ast.literal_eval(datatable_filters)
+        filters={k:v for k,v in filters.items() if v is not None or v != ''}
+
+        OR_OPTION=filters.pop('OR_OPTION', None)
+        if OR_OPTION is None:
+            return queryset.filter(**filters).distinct()
+
+        # import pdb; pdb.set_trace()
+        queryelem = ''
+        for (k,v) in filters.items():
+            queryelem = queryelem + f' Q({k}={v})  |'
+        queryelem = queryelem[:-1]
+        newqueryset = f'queryset = queryset.filter({queryelem}).distinct()'
+        exec(newqueryset)
+        return queryset
 
 class CustomPagination(pagination.PageNumberPagination):
     page_size = 5
@@ -24,7 +53,7 @@ class CustomPagination(pagination.PageNumberPagination):
 
     def get_ordering(self, request, queryset, view):
         response=super(CustomPagination, self).get_ordering(request, queryset, view)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         return response
 
     def get_paginated_response(self, data):
@@ -54,7 +83,7 @@ class CustomPagination(pagination.PageNumberPagination):
 
 
 class DatatablesMixin(object):
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    filter_backends = [datatableFilters]
     ordering_fields = '__all__'
     pagination_class = CustomPagination
 

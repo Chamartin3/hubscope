@@ -15,10 +15,12 @@ v-navigation-drawer#app-drawer(
   v-list-item
   .row.mb-3
     .col.display-2.text-center.secondary--text
-      strong HubScope
+      //- strong HubScope
+      v-img(
+        src='@/assets/logo.png', 
+        height="180", 
+        contain)
     //- router-link(:to="{ name: 'login', params: {} }")
-      //- v-avatar.ma-5(size='180' color="primary darken-1")
-      //-   v-img(:src='logo', height="100", contain="")
   v-divider.mx-3.mb-3
   v-list(nav)
     div
@@ -61,7 +63,11 @@ export default {
         this.setDrawer(val)
       }
     },
-    links () { return paths.filter(x => x.parent === 'dashboard').map(path => route(path)) }
+    links () { 
+      return paths.filter(x => x.parent === 'dashboard')
+        .filter(x => !x.hide)
+        .map(path => route(path)) 
+    }
   },
   methods: { ...mapMutations('app', ['setDrawer', 'toggleDrawer']) }
 }

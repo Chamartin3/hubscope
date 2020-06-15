@@ -1,5 +1,5 @@
 <template lang="pug">
-.container.mb-5.fluid.fill-height
+v-container.mb-5.fluid.fill-height(dark color="primary")
   .row.justify-center
     .col
       Table

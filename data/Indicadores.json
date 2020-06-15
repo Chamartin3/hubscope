@@ -1,0 +1,118 @@
+[
+    {
+        "company_id":1,
+        "name":"Cajas Producidas",
+        "unidad":"Caja",
+        "desc":"Numero total de cajas de huevos producidas en un periodo",
+        "tipo":"S",
+        "periods":[
+            {
+                "begin":"2020-02-01",
+                "end":"2020-02-29",
+                "goal":"12108",
+                "fail":"9686,8475"
+                
+            } 
+        ],
+        "metrics":[
+            {
+                "name":"Cajas/Mes",
+                "desc":"Numero de cajas producidas",
+                "tipo":"C",
+                "unidad":"Unidad"
+            }
+        ]
+    },
+    {
+        "company_id":1,
+        "name":"Mortalidad",
+        "desc":"Porcentaje de aves muertas en en un periodo",
+        "unidad":"Porcentaje",
+        "tipo":"S",
+        "periods":[
+            {
+                "begin":"2020-02-01",
+                "end":"2020-02-29",
+                "goal":"100",
+                "fail":"80"
+            }
+        ],
+        "metrics":[
+            {
+                "name":"Mortalidad",
+                "desc":"Porcentaje de aves muertas en en un periodo",
+                "tipo":"C",
+                "unidad":"Porcentaje"
+            }
+        ]
+    },
+    {
+        "company_id":1,
+        "name":"Consumo ABA",
+        "desc":"Gramos de ABA consumidos por Ave",
+        "unidad":"Gramos",
+        "tipo":"S",
+        "periods":[
+            {                
+                "begin":"2020-02-01",
+                "end":"2020-02-29",
+                "goal":"110",
+                "fail":"105,100"
+            } 
+        ],
+        "metrics":[
+            {
+                "name":"Consumo ABA",
+                "desc":"Consumo de ABA",
+                "tipo":"C",
+                "unidad":"Gramos"
+            }
+        ]
+    },
+    {
+        "company_id":2,
+        "name":"Kilogramos de Pollo",
+        "desc":"Kilogramos de pollo que salieron de la fabrica",
+        "unidad":"Kilogramos",
+        "tipo":"S",
+        "periods":[
+            {
+                "begin":"2020-02-01",
+                "end":"2020-02-29",
+                "goal":"151837",
+                "fail":"136653,106285"
+            } 
+        ],
+        "metrics":[
+            {
+                "name":"Kilogramos de Pollo",
+                "desc":"Kilogramos de pollo que salieron de la fabrica",
+                "tipo":"C",
+                "unidad":"Kilogramos"
+            }
+        ]
+    },   
+    {
+        "company_id":2,
+        "name":"Pollitos Sobrevivientes",
+        "desc":"Pollitos que soverivieron el engorde en la planta",
+        "unidad":"Animal",
+        "tipo":"S",
+        "periods":[
+            {
+                "begin":"2020-02-01",
+                "end":"2020-02-29",
+                "goal":"140000",
+                "fail":"98000,126000"
+            } 
+        ],
+        "metrics":[
+            {
+                "name":"Pollitos",
+                "desc":"Pollitos Ingresados",
+                "tipo":"C",
+                "unidad":"Animal"
+            }
+        ]
+    }
+]

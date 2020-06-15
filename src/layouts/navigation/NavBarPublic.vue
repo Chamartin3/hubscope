@@ -1,8 +1,10 @@
 <template lang="pug">
-v-app-bar(
+v-app-bar#core-app-bar(
   color='primary'
-  fixed app
-  max-height="60")
+  app absolute
+  dark
+  flat
+  height="60")
   v-toolbar-items.white--text
     v-btn(dark v-for="link in links" text :to="{ name: link.name, params: {} }")  {{link.show_name}}
 </template>

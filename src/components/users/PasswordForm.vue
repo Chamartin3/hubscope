@@ -19,6 +19,9 @@ export default {
   data () {
     return {
       activator: false,
+      text:false,
+      modalColor:'primary',
+      modalDark:true,
       model_name: 'Contraseña',
       editAction: 'patch_change_password',
       model: this.$django.models.accounts,
