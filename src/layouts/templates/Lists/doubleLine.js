@@ -11,6 +11,7 @@ export default {
   methods:{
     callRegistration(){console.log('registration')},
     callDetail(){console.log('detail')},
+    itemAction(){console.log(item)},
     getItemTitle(item){
       if (!item) return ''
       if (this.title) return item[this.title]

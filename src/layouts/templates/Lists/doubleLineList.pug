@@ -17,8 +17,7 @@ v-card
               a(@click="callRegistration") Register
       v-list-item(
         v-for="(item,idx) in items",
-        :key="idx",
-        @click="")
+        :key="idx")
         block item_content
             v-list-item-content
               v-list-item-title(v-if="title") 
@@ -26,8 +25,7 @@ v-card
               v-list-item-subtitle(v-if="subtitle") 
                 .overline {{ getItemSubTitle(item) }}
             v-list-item-action
-                v-btn(icon)
+                v-btn(icon @click="callDetail($event, item)")
                   v-icon(
-                    @click="callDetail" 
                     color="grey lighten-1") 
                     | {{ itemActionIcon}}

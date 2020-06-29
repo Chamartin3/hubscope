@@ -1,5 +1,7 @@
 <template lang='pug'>
 extends ../../layouts/templates/Lists/iteratorList.pug
+append header
+  v-btn( @click="$emit('new')") Nueva Asignación
 append content
   .row
      .col

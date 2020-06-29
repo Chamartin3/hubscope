@@ -14,6 +14,12 @@ v-dialog(v-model="dialog", :max-width="!maxWidth ? '500px':maxWidth")
         block content
        
     v-card-actions.justify-center
-      v-btn(color="red darken-1", text="text", @click="close") Cancelar
+
+      block actions
+        v-btn(
+          color="red darken-1",
+          @click="close") Cancelar
           
-      v-btn(color="green darken-1", text="text", :disabled="!valid", @click="sendForm") Guardar
+        v-btn(
+          color="green darken-1", 
+          :disabled="!valid", @click="sendForm") Guardar

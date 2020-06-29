@@ -13,6 +13,7 @@ class UserManager(BaseUserManager):
         #     raise ValueError('The given email must be set')
         # email = self.normalize_email(email)
         user = self.model(**extra_fields)
+        # import pdb; pdb.set_trace()
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -22,6 +23,8 @@ class UserManager(BaseUserManager):
 
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
+        if password is None:
+            password='123456789'
         user = self._create_user(password, **extra_fields)
         return user
 

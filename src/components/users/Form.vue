@@ -16,14 +16,19 @@ append content
         v-text-field(label="Nombre de Usuario",
           v-model="form.username",
           :rules="[valrules.required]", :error-messages="errors.username")
-      .col
-        GroupSelect(v-model="form.group")
-
     .row
       .col
         v-text-field(label="Email",
           :rules="[valrules.required]",
           prepend-icon='fa-at', v-model="form.email", :error-messages="errors.email")
+
+    .row
+      .col
+        GroupSelect(v-model="form.group", :filtered="company")
+      .col(v-if="companySelector && !company")
+        CompanySelect(v-model="form.company")
+      .col.text-center(v-if="company")
+        v-chip(v-for="c in form.company") {{ c }} 
     .row
       .col
         v-text-field(label="Nueva contraseña",
@@ -39,39 +44,49 @@ append content
 block title
   v-card-title(color="primary")
     .col.primary
-      .text-center.display-1.white--text
-        strong Nuevo Usuario
+      .text-center.headline-1.white--text
+        h2
+          strong Nuevo Usuario
 
 </template>
 <script>
 import { formModal } from '@/mixins/Modal'
-import  GroupSelect from './GroupSelect'
+import GroupSelect from './GroupSelect'
+import CompanySelect from '@/components/empresas/Select'
 export default {
   props: {
-    fullmode: { default: false }
+    fullmode: { default: false },
+    company: { default: null },
+    button: { default: false }
   },
-  components: { GroupSelect },
+  components: { GroupSelect, CompanySelect },
   mixins: [ formModal ],
-  methods: {
-    // sendForm() {
-    // if (this._validateForm()) {
-    //     this.$emit('added',this.form)
-    //     this.exito()
-    //   }
-    // },
-  },
   computed: {
     formTitle () {
       return 'Add new'
     }
   },
+  watch: {
+    'form.group': function (newVal) {
+      if ( newVal === 'Gerente' || newVal === 'Registrador' ) {
+        this.companySelector = true
+      } else {
+        this.companySelector = false
+      }
+    },
+  },
+  // mounted() {
+  //   if (this.company) this.form.company.append(this.company)
+  // },
   data () {
     return {
-      activator: true,
+      activator:this.button,
+      text:false,
+      companySelector: false,
       maxWidth: null,
       modalTitle: 'Nuevo Usuario',
-      modalColor:'primary',
-      modalDark:true,
+      modalColor: 'primary',
+      modalDark: true,
       model_name: 'Usuario',
       buttomText: 'Nuevo Usuario',
       createAction: 'registration',
@@ -83,7 +98,8 @@ export default {
         email: '',
         password: '',
         passwordconf: '',
-        group: ''
+        group: '',
+        company:[this.company]
       }
     }
   }

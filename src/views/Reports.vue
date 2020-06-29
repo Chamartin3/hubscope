@@ -8,7 +8,7 @@
 <script>
 import ReportsTable from '@/components/reports/Table'
 export default {
-  name: 'Reportes Programados',
+  name: 'ReportesProgramados',
   components:{ ReportsTable },
 }
 </script>

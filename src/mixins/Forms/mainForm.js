@@ -92,8 +92,6 @@ export default {
     },
     failedSend(fail) {},
     _failedSend(fail) {
-      console.log('fail')
-      console.log(fail)
       this.failedSend(fail)
       for (var i = 0; i < this.actionsOnFail.length; i++) {
         this.actionsOnFail[i](fail)
@@ -122,6 +120,10 @@ export default {
     _sendEdit(form){
       let id=this.instance.id
       this.model[this.editAction](id,form).then(this._successSend, this._failedSend )
+    },
+    processSubForm(value, name=null){
+      if (name) this.form[name] = value
+      else Object.assign(this.form, value)
     },
   },
   mounted() {

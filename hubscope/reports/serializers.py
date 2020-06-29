@@ -29,38 +29,33 @@ class GoalSerializer(ModelSerializer):
 class UserInfoSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['username','fullname','last_login']    
+        fields = ['id','username','fullname','last_login']    
 
 class MetricSerializer(ModelSerializer):
     class Meta:
         model = Metric
-        fields = ['name', 'tipo', 'unidad', 'desc']
+        fields = ['id','name', 'tipo', 'unidad', 'desc']
 
 
 class PositionSerializer(ModelSerializer):
     user = serializers.SerializerMethodField()
     company = serializers.StringRelatedField()
     class Meta:
-        model = Asignment
+        model = Position
         fields =  ['user','name','company']
 
     def get_user(self, position):
         user= position.person
+        # import pdb; pdb.set_trace()
         return {
+            "id":user.id,
             "username":user.username,
             "fullname":user.fullname,
             "ultimo_login":user.last_login
         }
 
-class AsignmentSerializer(ModelSerializer):
-    class Meta:
-        model = Asignment
-        fields =  [
-            'metric',
-            'company',
-            'last',
-            'frecuency',
-        ]
+
+
 
 class IndicatorSerializer(ModelSerializer):
     recent_periods = GoalSerializer(many=True)
@@ -86,8 +81,10 @@ class IndicatorSerializer(ModelSerializer):
 class ReportSerializer(ModelSerializer):
     name = serializers.SerializerMethodField()
     unidad = serializers.SerializerMethodField()
-    registered_by = UserInfoSerializer()
+    registered_by = UserInfoSerializer(read_only=True)
+    modified_by = UserInfoSerializer(read_only=True)
     metric = MetricSerializer()
+    editable = serializers.BooleanField(required=False)
     class Meta:
         model = Report
         fields = [
@@ -98,6 +95,11 @@ class ReportSerializer(ModelSerializer):
             'begin',
             'end',
             'days',
+            'status',
+            'delay',
+            'delayed',
+            'deadline',
+            'editable',
             'unidad',
             'created_at',
             'registered_by',
@@ -129,3 +131,22 @@ class CompanySerializer(ModelSerializer):
             # 'indicators', 
             # 'expected_reports'
             ]
+class AsignmentSerializer(ModelSerializer):
+    next_ocurrence = serializers.DateField(required=False)
+    deadline_date = serializers.DateField(read_only=True)
+    active_report = ReportSerializer(read_only=True)
+
+    class Meta:
+        model = Asignment
+        fields =  [
+            'metric',
+            'company',
+            'last',
+            'metafreq',
+            'delivery_time',
+            'frecuency',
+            'days',
+            'active_report',
+            'next_ocurrence',
+            'deadline_date'
+        ]

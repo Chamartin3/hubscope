@@ -2,21 +2,21 @@
 extends ../../layouts/templates/Lists/doubleLineList.pug
 append before_list
   .row.text-center.justify-space-around.mt-1
-     v-btn(small
+     v-btn(small v-if="!company"
     @click='addMetric'
     color='secondary') Crear
 block no_items
-  .row
+  .row.text-center
     .col
       .overline
-        h2 No hay Metricas registradas
+        h2 {{noneData}}
 
 </template>
 <script>
 // ~/Code/Django/hubscope/src/components/metrics/List.vue
 import { SSDobleLine } from '@/layouts/templates/Lists'
 export default {
-// 	props:['id']  // Filtered
+	props:['company'],  // Filtered
   name: 'metricList',
   mixins: [ SSDobleLine ],
   data () {
@@ -28,9 +28,17 @@ export default {
       itemName: 'metric',
       itemPluralName: 'Metricas',
       modelName: 'metric',
-//			listMethod: 'list',
-// 			params:{id:this.id},  Filtered
+//		listMethod: 'list',
+			params:{
+        company:this.company
+        }, 
     }
+  },
+  computed:{
+    noneData(){
+      if (this.company) return 'No hay metricas asignadas a esta empresa'
+    }
+    
   },
   methods:{
     addMetric(){console.log('registration')},
@@ -39,7 +47,6 @@ export default {
     getItemTitle(item){
       return `${item.name} (${item.unidad})`
     }
-
   }
 }
 </script>

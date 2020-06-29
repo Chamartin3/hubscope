@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Permission, Group
 from rest_framework import generics
 from rest_framework import status
+from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from  hubscope.mixins import DatatablesMixin
@@ -15,6 +16,7 @@ from  hubscope.accounts.serializers import (
                                             UserStatusSerializer,
                                             GroupsSerializer)
 from rest_framework.permissions import IsAdminUser, BasePermission, DjangoModelPermissions
+from hubscope.reports.models import Position
 
 from termcolor import cprint
 ADMIN_GROUPS=['admin']
@@ -83,11 +85,17 @@ class UserList(DatatablesMixin, generics.ListAPIView):
     search_fields = ['first_name', 'last_name', 'username']
     # permission_classes = [IsAdminUser, DjangoModelPermissions]
 
+class UserSearch(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'username']
+    # permission_classes = [IsAdminUser, DjangoModelPermissions]
+
 class GroupList(generics.ListAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupsSerializer
-
-
+    
 class UserInformation(generics.RetrieveUpdateAPIView):
     """docstring for UserRegistration."""
     queryset = User.objects.all()
@@ -111,6 +119,8 @@ class ChangeGroup(generics.UpdateAPIView):
         gname=request.data.get('groupname')
         # import pdb; pdb.set_trace()
         group=Group.objects.get(name=gname)
+        if gname in ['Admin', 'Ejecutivo']:
+            Position.objects.filter(person=user).delete()
         user.groups.set([group])
         return Response(data={'message':'Permisos Cambiados con éxito'}, status=200)
 

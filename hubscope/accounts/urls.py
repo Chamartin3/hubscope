@@ -11,6 +11,7 @@ urlpatterns = [
       path("password/<int:pk>/", views.ChangePassword.as_view(), name="accounts-change_password"),
       path("groups/<int:pk>/", views.ChangeGroup.as_view(), name="accounts-change_group"),
       path("perms/<int:pk>/", views.UserStatusPermisions.as_view(), name="accounts-permisions"),
+      path("search/", views.UserSearch.as_view(), name="accounts-search"),
 
       path("auth", views.Auth.as_view(), name="auth"),
       # path("auth", views.Login.as_view(), name="login"),

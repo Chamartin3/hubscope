@@ -1,6 +1,6 @@
 import calendar 
 from django.db import models
-from datetime import  datetime
+from datetime import  datetime, timedelta
 from django.utils.timezone import localdate
 from hubscope.accounts.models import User
 from .managers import ReportsManager
@@ -63,7 +63,7 @@ class Metric(models.Model):
     def reports(self, **kwargs):
         ''' Optiene los reportes de una metrica especifica'''
         query={}
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         for k,v in kwargs.items():
             if k == 'begin':
                 query['begin__gte'] = v
@@ -88,7 +88,7 @@ class Report(models.Model):
     end = models.DateField()
 
     # Traking Data 
-    deadline=models.DateField(blank=True, null=True)
+    deadline = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     registered_by = models.ForeignKey(User,
         blank=True, null=True,
@@ -134,7 +134,50 @@ class Report(models.Model):
 
     @property
     def days(self):
-        return (self.end-self.begin).days
+        return (self.end-self.begin).days +1
+
+    @property
+    def delay(self):
+        if self.deadline is None:
+            return 0
+        delivered = self.created_at
+        if delivered is not None:
+            return (delivered - self.deadline).days -1
+        return (localdate() - self.deadline).days -1
+    
+    @property
+    def delayed(self):
+        return self.delay > 0
+
+    @property
+    def status(self):
+        if not self.editable:
+            return 'cerrada'
+
+        if self.value is not None:
+            return 'entregada'
+
+        waiting = (self.end -localdate()).days
+        if(waiting > -1):
+            return 'esperando'
+
+        is_open = (self.deadline - localdate()).days
+        if(is_open>-1):
+            return 'abierta'
+
+        return 'atrasada'
+    @property
+    def creator(self):
+        if self.registered_by is None:
+            return 'sistema'
+        return self.registered_by.fullname    
+    
+    @property
+    def editor(self):
+        if self.modified_by is None:
+            return 'sistema'
+        return self.modified_by.fullname
+        
 
     def __str__(self):
         """Unicode representation of Response."""
@@ -252,8 +295,8 @@ class Goal(models.Model):
             optiene los reportes de un periodo especifico
         
         '''
-        metrics=self.indicator.metrics.all()
-        company=self.indicator.company
+        metrics = self.indicator.metrics.all()
+        company = self.indicator.company
         filters = {
             'metric__in':metrics,
             'begin__gte':self.begin, 
@@ -311,7 +354,6 @@ class Asignment(models.Model):
     '''
         cada cuanto se reporta una metrica
         fecuencia en dias/mensualmente
-        TODO: Definir tipos de periodicidad (Quincenal, Mensual, etc)
     '''
     metric = models.ForeignKey(Metric, 
         on_delete=models.CASCADE)
@@ -320,20 +362,29 @@ class Asignment(models.Model):
         related_name='expected_reports')
     
     periodic = models.NullBooleanField(default=True)
-    # Crea tareas periodicamente si es verdadrro, 
+    # Crea tareas periodicamente si es verdadero, 
     # si es null elimina la tarea despues cumplida  por que es one time
     
+
     last = models.DateField(blank=True)
     # Ulima entrega/ periodo de inicio
 
-    deliver_time = models.IntegerField()
+    delivery_time = models.IntegerField()
     # dias para entregar
+    
+    # Reporte autogenerado 
+    active_report = models.ForeignKey(Report, 
+    on_delete=models.SET_NULL,
+    related_name='asignment',
+    null=True, blank=True)
+    next_ocurrence = models.DateField()
     
     FREC_TYPE=(
         ('MONT','Mensual'),
         # ('QUIN','Quincenal'),
         ('WEEK','Semanal'),
         ('DAY','Diario'),
+        ('OT','OneTime'),
     )
 
     frecuency = models.CharField(choices=FREC_TYPE, max_length=50)
@@ -344,7 +395,7 @@ class Asignment(models.Model):
         verbose_name_plural = "Asignments"
 
     @property
-    def days_to_next(self):
+    def days(self):
 
         begining = localdate() if self.last is None else self.last 
         meta =  None if self.metafreq is None else self.metafreq.split(',')
@@ -356,36 +407,24 @@ class Asignment(models.Model):
 
         if self.frecuency == 'WEEK':
             actual_weekday = begining.weekday()
-            weekdays = [int(c) for c in meta].sort()
+            weekdays = [int(c) for c in meta]
+            weekdays.sort()
             next_weekday = next((wd for wd in weekdays if wd >= actual_weekday), min(weekdays)) 
 
             next_weekday = next_weekday + 1
-            actual_weekday = actual_weekday + 1
+            actual_wd = actual_weekday + 1
             if next_weekday > actual_wd:
                 return next_weekday - actual_wd
             else:
                 return (7 - actual_wd) + next_weekday
-            
-        # if self.frecuency == 'QUIN':
-        #     if begining.day <= 15:
-        #         day=calendar.monthrange(begining.year, begining.month)
-        #         nextdate = datetime.date(day=day, year=begining.year,month=begining.month)
-        #     else:
-        #         newmonth=begining.month + 1
-        #         year = begining.year
-        #         if newmonth>12:
-        #             year=year+1
-        #             newmonth=1
-        #         nextdate = datetime.date(day=15, month=newmonth, year=year)
-            
-        #     return (nextdate-begining).days
 
         if self.frecuency == 'MONT':
             if meta is None:
                 mes = begining.month + 1
                 dia = begining.day
             else:
-                monthdays = [int(c) for c in meta].sort()
+                monthdays = [int(c) for c in meta]
+                monthdays.sort()
                 dia = next((wd for wd in monthdays if wd >= begining), min(monthdays))
                 mes = begining.month 
                 if dia < begining.day:
@@ -403,14 +442,37 @@ class Asignment(models.Model):
             return (nextdate-begining).days
 
 
-    @property
-    def next_ocurrence(self):
+    def generate_next_ocurrence(self):
+        # import pdb; pdb.set_trace()
         if self.last is None:
-            return localtime.date+datetime.timedelta(self.days_to_next)
+            return localtime.date + timedelta(self.days)
         else:
-            return self.last+datetime.timedelta(self.days_to_next)
+            return self.last + timedelta(self.days)
+
+    def generate_next_report(self, begin_date=None):
+        begin = begin_date if begin_date is not None else self.last 
+        report={
+            'metric':self.metric,
+            'company':self.company,
+            'begin':begin,
+            'end':self.next_ocurrence,
+            'deadline':self.deadline_date,
+        }
+        rep = Report(**report)
+        rep.save()
+        return rep        
+    
+    @property
+    def deadline_date(self):
+        return self.next_ocurrence + timedelta( self.delivery_time )
 
 
     def __str__(self):
         return f'{self.metric} every {self.frecuency} days'
 
+    def save(self, *args, **kwargs):
+        # import pdb; pdb.set_trace()
+        if self.frecuency != "OT":
+            self.next_ocurrence = self.generate_next_ocurrence()
+        self.active_report = self.generate_next_report()
+        return super().save(*args, **kwargs)

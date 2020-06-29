@@ -2,7 +2,7 @@ export default{
   data(){
     return{
     successAlertMessage:'',
-    failAlertMessage:'',
+    failAlertMessage:'Error en Formulario',
   }
   },
   methods:{
@@ -13,28 +13,40 @@ export default{
     },
     _alertFail(fail){
       fail = fail.response ? fail.response : fail
-
       let type = fail.status ? fail.status : ''
-
       fail = fail.data ? fail.data : fail
+      let message
+
 
       if (fail.non_field_errors)  {
-        fail.message = fail.non_field_errors.toString()
+        message = fail.non_field_errors.toString()
+      }
+      
+      if (typeof fail === 'object' && type == 400 && !message) {
+        message = 'Error en Formulario'
       }
 
-      let msg = this.failAlertMessage || fail
+      if( fail.message && !message) {
+        message = fail.message
+        delete fail.message
+      }
 
-      if(fail && fail.type && fail.type===401 && fail.message){
+      if (!message) message = this.failAlertMessage || fail
+      
 
-        this.$alert('danger','Error',fail.message)
+      if(fail && (type===401||type==400 )&& message){
+        this.$alert('danger','Error', message)
 
-      }else if(fail && fail.detail){
 
+      } else if(fail && fail.detail) {
         this.$alert('danger',`Error ${type}`,fail.detail)
-      }else {
-        if(fail && fail.message)
-        this.$alert('danger','Error', fail.message)
-        else this.$alert('danger','Error',msg.message)
+
+      } else {
+        if (fail && message){
+          this.$alert('danger','Error', message)
+        } else {
+          this.$alert('danger','Error', message.message)
+        }
       }
     }
   },

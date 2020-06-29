@@ -16,6 +16,7 @@ export default {
       let proxy = { ...this.form }
       return proxy
     },
+    onInput(){},
     preProcessForm(form) { return form },
     _setInstance() {
       if (this.$attrs.value) {
@@ -31,7 +32,10 @@ export default {
       deep: true,
       handler: function(val, oldVal) {
         let form = this.preProcessForm(this._preProcessForm())
-        if (form) this.$emit('input', form)
+        if (form){
+          this.$emit('input', form)
+          this.onInput()
+        } 
       }
     },
   }

@@ -23,13 +23,17 @@ block header
     |
     v-spacer
     |
-    Form(@created="addItem")
+    Form(
+      :button="true"
+      @created="addItem")
 
 block options
   template(v-slot:item.detail="{ item }")
     v-icon.mr-2(small, @click="$refs.userDetail.view(item.id, item)")
       | fa-external-link-alt
 
+  template(v-slot:item.groups="{ item }")
+    v-chip(v-for="group in item.groups" pill label) {{group.name}}
   template(v-slot:item.delete="{ item }")
     v-icon.mr-2(small, @click="$refs.DeleteConfirmation.open(item.id, 'Usuario')")
       | fa-trash-alt
@@ -72,6 +76,7 @@ export default {
         {text: 'Nombre de Usuario',value: 'username'},
         {text: 'Nombre',  value: 'first_name'},
         {text: 'Apellidos',value: 'last_name' },
+        {text: 'Rol',value: 'groups' },
         {text: 'Detalle', sortable: false, value:'detail'},
         {text: 'Eliminar', sortable: false, value:'delete'}
       ]

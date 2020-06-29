@@ -15,7 +15,7 @@ export default {
       valid:true,
       service:null,
       loading:false,
-      instance:null,
+      instance:null
     }
   },
   computed:{

@@ -3,7 +3,7 @@
   v-spacer.text-center
   .row.align-center.justify-center
     v-col(sm="auto" min-width="50%")
-      v-img.mx-auto.my-n12(
+      v-img.mx-auto.my-n12.img-bright(
           style="z-index:2"
           src='@/assets/logo.png', 
           width="180", 
@@ -35,3 +35,9 @@ export default {
   },
 }
 </script>
+<style>
+.img-bright { 
+    -webkit-filter: drop-shadow(0 0 0.25rem  rgb(255, 255, 255));
+    filter:         drop-shadow(0 0 0.25rem  rgb(255, 253, 253)); 
+}
+</style>

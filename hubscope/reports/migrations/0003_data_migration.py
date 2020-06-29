@@ -17,8 +17,9 @@ def migrate(apps, schema_editor):
             metric = Metric.objects.get(name=name)
         except Exception as e:
             print(name)
+            print(e)
             import pdb; pdb.set_trace()
-        rep['metric']=metric
+        rep['metric'] = metric
         Report.objects.create(**rep)
 
 def revert(apps, schema_editor):

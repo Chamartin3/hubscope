@@ -18,8 +18,14 @@ v-data-table.elevation-1(
   )
 
   template(v-slot:item.metric__name="{ item }") {{ item.metric.name }}
-  template(v-slot:item.metric__unidad="{ item }") {{ item.metric.unidad }}
-  template(v-slot:item.num_value="{ item }") {{ item.value }}
+  template(v-slot:item.end="{ item }") 
+    | {{ item.end | date }}  
+  template(v-slot:item.begin="{ item }") 
+    | {{ item.begin | date }}  
+  
+  template(v-slot:item.status="{ item }") 
+    reportStatus(:status="item.status")
+
 
   template(v-slot:item.delete="{ item }")
     v-icon.mr-2(small, @click="$refs.DeleteConfirmation.open(item.id, 'Usuario')")
@@ -27,23 +33,25 @@ v-data-table.elevation-1(
   
   template(v-slot:expanded-item='{ headers, item }')
     td(:colspan='headers.length')
-      .container
-        .row
-          .col Periodo  {{ item | period }}        
-        .row
-          .col Registrado el {{item.created_at | datetime}}
-        .row
-          .col Registrado Por {{item.registered_by}}
+      reportCard(
+        @user=""
+        @editReport=""
+        @deleteReport=""
+        :report="item")
+    
 
 </template>
 <script>
 import addHeaders from '@/layouts/templates/Tables/tableHeaders'
 import TableTemplate from '@/layouts/templates/Tables/djangoTable'
 import operationsMixin from '#/Lists/operations/clientSideCrud'
+import reportCard from './Card'
+import reportStatus from './Status'
 import moment from 'moment'
 export default {
   name: "",
   props:['company'],
+  components: { reportCard, reportStatus },
   mixins:[
     operationsMixin,
     TableTemplate
@@ -53,6 +61,12 @@ export default {
       return addHeaders(this.table_headers, false)
     },
   },
+  methods: { 
+    setDatableFilters(newfilters){
+      this.$set(this.params, 'datatable_filters', newfilters)
+      if (Object.keys(newfilters).length===0) this.listObjects(this.params)
+    }
+  },
   filters:{
     period(item){
       let begin=moment(item.begin).format('DD MMM-YYYY')
@@ -61,8 +75,11 @@ export default {
     },
     datetime(time){
       return moment(time).format('dddd, DD MMMM YYYY hh:mm ')
-
-    }
+    },
+    date(time){
+      return moment(time).format('dddd, DD MMMM YY')
+    },
+ 
   },
   data () {
     return {
@@ -77,9 +94,10 @@ export default {
       searchField:true,
       table_headers:[
         { text: 'Detalle', sortable: false, value: 'data-table-expand' },
-        {text: 'Metrica',value: 'metric__name'},
-        {text: 'Valor',  value: 'num_value'},
-        {text: 'Unidad',  value: 'metric__unidad'},
+        {text: 'Metrica', value: 'metric__name'},
+        {text: 'Status', sortable: false, value: 'status'},
+        {text: 'Inicio',  value: 'begin'},
+        {text: 'final',  value: 'end'},
       ],
       params:{
         search:this.company

@@ -13,15 +13,21 @@ const errorsMixin = {
     return {
       inErrors: {},
       actionsOnFail: [],
-      actionsOnSuccess: []
+      actionsOnSuccess: [],
+      OERR:{}
     }
   },
   methods: {
-    setInErrors (errors = null) {
-      let e = errors ? errors.data : {}
+    setInErrors (errors = {}) {
+      if (typeof errors != 'object') errors = {}
+      if (errors.data) errors = errors.data
+      let e
+      if( Object.keys(errors).length>0 ) e = errors
+      else e = {}
+
       this.$set(this, 'inErrors', e)
     },
-    cleanInErrors (){this.setInErrors({})},
+    cleanInErrors (){ this.setInErrors() },
     filterDatabaseError (error) {
       let transformed = error
       if (typeof error === 'object' && error[0]) { error = error[0] }
@@ -37,21 +43,49 @@ const errorsMixin = {
       type: [Object, String]
     }
   },
+  watch: {
+    _compForm:{
+      deep:true,
+      handler: function (val, oldVal){
+        let changedFields = []
+        const self = this
+        
+        Object.entries(oldVal).forEach(function([key, oldvalue]) {
+          if (val[key]!=oldvalue) changedFields.push(key)
+        })
+
+        let proxyerrors = { ...self.inErrors }
+        for (let k = 0; k < changedFields.length; k++) {
+          delete proxyerrors[changedFields[k]]
+        }       
+        self.setInErrors(proxyerrors)
+      },
+    },
+    outErrors:{
+      deep: true,
+      handler: function (val){
+        let out = {}        
+        if (typeof val  === 'string') {
+          for (var inst in this.form) { out[inst] = val }
+          this.OERR = out
+        } else {
+          this.OERR = Object.assign(out, val)
+        }
+      }     
+    }
+  },
   computed: {
+    _compForm () {
+      return Object.assign({}, this.form)
+    },
     errors () {
-      let errors = {}
-      let out = this.outErrors
-      if (typeof this.outErrors === 'string') {
-        out = {}
-        for (var inst in this.form) { out[inst] = this.outErrors }
-      }
-      errors = _.merge(this.inErrors, out)
-      let final = {}
-      Object.entries(errors).forEach(([key, value]) => {
+      let merged = Object.assign(this.inErrors, this.OERR )  
+      let mergedFiltered = {}
+      Object.entries(merged).forEach(([key, value]) => {
         let newVal = this.filterDatabaseError(value)
-        final[key] = Array.isArray(newVal) ? newVal.join(',') : newVal
+        mergedFiltered[key] = Array.isArray(newVal) ? newVal.join(',') : newVal
       })
-      return final
+      return mergedFiltered
     }
   },
   created () {
