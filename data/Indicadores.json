@@ -16,7 +16,7 @@
         ],
         "metrics":[
             {
-                "name":"Cajas",
+                "name":"Cajas Producidas",
                 "desc":"Numero de cajas producidas",
                 "tipo":"C",
                 "unidad":"Caja"

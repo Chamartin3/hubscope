@@ -1,7 +1,7 @@
 [
     {
         "company_id":1,
-        "metric__name":"Cajas/Mes",
+        "metric__name":"Cajas Producidas",
         "begin":"2020-02-01",
         "end":"2020-02-29",
         "num_value":"12011"

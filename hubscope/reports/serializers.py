@@ -58,7 +58,7 @@ class PositionSerializer(ModelSerializer):
 
 
 class IndicatorSerializer(ModelSerializer):
-    recent_periods = GoalSerializer(many=True)
+    recent_goals = GoalSerializer(many=True)
     # periods = GoalSerializer(many=True)
     # active_periods = GoalSerializer(many=True)
     class Meta:
@@ -73,7 +73,7 @@ class IndicatorSerializer(ModelSerializer):
             'company',
             # 'active_periods',
             # 'completed_periods',
-            'recent_periods',       
+            'recent_goals',       
             # 'periods',       
         ]
 
@@ -134,19 +134,21 @@ class CompanySerializer(ModelSerializer):
 class AsignmentSerializer(ModelSerializer):
     next_ocurrence = serializers.DateField(required=False)
     deadline_date = serializers.DateField(read_only=True)
-    active_report = ReportSerializer(read_only=True)
+    active_goal = ReportSerializer(read_only=True)
+    metric_info = MetricSerializer(read_only=True)
 
     class Meta:
         model = Asignment
         fields =  [
             'metric',
+            'metric_info',
             'company',
             'last',
             'metafreq',
             'delivery_time',
             'frecuency',
             'days',
-            'active_report',
+            'active_goal',
             'next_ocurrence',
             'deadline_date'
         ]

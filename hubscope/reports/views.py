@@ -109,15 +109,16 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
             serializer.data, 
             status=201, 
             headers=headers)       
-    
+
+
 
 class AsignmentViewSet(DatatablesMixin, ModelViewSet):
     queryset = Asignment.objects.all()
     serializer_class = AsignmentSerializer
 
     def create(self, request, *args, **kwargs):
-        periodicity = request.data.get('periodicity')
-        if not periodicity:
+        frecuency = request.data.get('frecuency')
+        if not frecuency:
             request.data['frecuency'] = 'OT'
         return super(AsignmentViewSet, self) \
             .create(request, *args, **kwargs)

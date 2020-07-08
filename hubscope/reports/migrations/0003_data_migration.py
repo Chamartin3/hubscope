@@ -12,7 +12,7 @@ def migrate(apps, schema_editor):
     Metric = apps.get_model('reports','Metric')
 
     for rep in getReports():
-        name=rep.pop('metric__name')
+        name = rep.pop('metric__name')
         try:
             metric = Metric.objects.get(name=name)
         except Exception as e:
