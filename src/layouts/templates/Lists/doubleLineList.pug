@@ -24,7 +24,8 @@ v-card
                 | {{ getItemTitle(item) }}
               v-list-item-subtitle(v-if="subtitle") 
                 .overline {{ getItemSubTitle(item) }}
-            v-list-item-action
+            block item_action
+              v-list-item-action
                 v-btn(icon @click="callDetail($event, item)")
                   v-icon(
                     color="grey lighten-1") 

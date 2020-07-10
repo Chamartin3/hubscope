@@ -2,11 +2,12 @@
 .container.mt-n5.fluid.primary.darken-2
   .row.justify-space-around 
     v-col(cols=10)
-      .headline {{ title }} 
+      v-card.py-5.px-3(dark color="secondary")
+        .headline {{ title }} 
     .col
 
   .row.justify-space-between(v-if="filters.length > 0")
-    .ml-3.overline
+    .ml-2.overline
       .row
        h2.ml-3 Filtrado
        v-tooltip(bottom)

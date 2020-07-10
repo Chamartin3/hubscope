@@ -5,7 +5,7 @@ block content
      .col
       .row
       v-expansion-panels(v-model="active" accordion multiple flat hover)
-        Card(v-for='(item, idx) in items' :key='idx' :indicator='item')
+        Card(v-if="active" v-for='(item, idx) in items' :key='idx' :indicator='item')
       
 //- block instance
 //- block nodata

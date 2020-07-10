@@ -1,7 +1,7 @@
 <template lang="pug">
 v-card.pointer(dark color="primary lighten-1")
   .container
-    .row.text-center(@click="$router.push({name:'empresa',params:{id:empresa.id}})")
+    .row.text-center(@click="$router.push({name:'resumen_empresa',params:{id:empresa.id}})")
       .col
         .display-1 {{ empresa.name }}
     hr

@@ -5,9 +5,11 @@ from .ProcesingCallbacks import procesing as PCallbacks
 
 import calendar 
 from django.db import models
+from django.db.models import Q
 from datetime import  datetime, timedelta
 from django.utils.timezone import localdate
 from hubscope.accounts.models import User
+from decimal import ROUND_UP, Decimal
 
 from django.core.exceptions import ValidationError
 from django.core.validators import int_list_validator
@@ -48,6 +50,10 @@ class Informe:
             list: listado de reportes que estan dentro del rango de fechas del informe
         """        
         return self.indicator.get_reports_between(self.begin,self.end)
+    @property
+    def total_reports(self):
+        return len(self.reports)
+
 
     @property
     def mising(self):
@@ -57,6 +63,19 @@ class Informe:
             list: lista de fechas donde no hay reportes de esta metricas
         """ 
         return self.indicator.mising_dates(self.reports, self.begin, self.end)
+    @property
+    def total_mising(self):
+        return len(self.mising)        
+    
+    @property
+    def days_to_report(self):
+        return (self.end - self.begin).days + 1
+    @property
+    def reported_days(self):
+        return self.days_to_report-self.total_mising
+    @property
+    def delivery_rate(self):
+        return (self.reported_days / self.days_to_report) *100
 
     @property
     def overlaped(self):
@@ -67,6 +86,10 @@ class Informe:
         """        
     
         return list(self.indicator.overlaped_dates(self.reports))
+    
+    @property
+    def total_overlaped(self):
+        return len(self.overlaped)    
 
     @property
     def dayrange(self):
@@ -95,11 +118,13 @@ class Informe:
         if value is None:
             self._period_size =(self.end - self.begin).days +1
         else:
-            self._period_size = value
+            self._period_size = int(value)
 
     @property
     def period_txt(self):
-        return f"{self.begin.strftime('%d/%m/%y')}-{self.end.strftime('%d/%m/%y')}"
+        if self.begin==self.end:
+            return f"{self.begin.strftime('%Y-%m-%dT%H:%M:%SZ')}"
+        return f"{self.begin.strftime('%Y-%m-%dT%H:%M:%SZ')}-{self.end.strftime('%Y-%m-%dT%H:%M:%SZ')}"
     
     @property
     def periods(self):
@@ -108,9 +133,9 @@ class Informe:
         enddate =self.end
         periods = []
         while True:
+
             if begindate > enddate:
                 break
-            
             refend = begindate + timedelta(days=period_size-1)
             if refend >= enddate:
                 periods.append((begindate,enddate))
@@ -121,28 +146,61 @@ class Informe:
         return periods
 
     def filter_metrics_between(self, reportlist, begin, end):
-        # import pdb; pdb.set_trace()
         return [ r for r in reportlist if begin <= r['date'] <= end ]
 
-    def agregate_in_periods(self, dailymetrics):
+    def agregate_in_periods(self, dailymetrics, method="T"):
+        """Agrega los resultados del insdicador en periodos del tamaño establecido
+
+        Args:
+            dailymetrics (dict): Diccionario con metricas que contienen listaas de
+            maethod (str, optional): Tidpo de aculumulacxcón Defaults to "T".
+            T = Total (suma)
+            A = Acumulado
+            V = Varianza
+
+        Returns:
+            list: lista de resultados agregados por periodo
+        """        
         periodresults = []
+        acumulator=0
+        prev = None
         for period in self.periods:
             b = period[0]
             e = period[1]
             name = f"{b.strftime('%d/%m/%y')}-{e.strftime('%d/%m/%y')}"
+            # TODO: Crear algo que permita crear una funcion que defina las formas en las que se presnertan las diferencias de cada peridodo, por enmpo Acumulado / Variabilidad
             mperiodreports = { n:self.filter_metrics_between(m,b,e) for n,m in dailymetrics.items() }
-            periodresults.append({ name: self.indicator.get_callback(mperiodreports)})
+            value = self.indicator.get_callback(mperiodreports)
+            
+            if method == "T":
+                periodresults.append({ name: value })
+            elif method == "A":
+                acumulator=acumulator + value
+                periodresults.append({ name: acumulator })
+            elif method == "V":
+                if prev is None:
+                    var = 1
+                else:
+                    var = prev / value
+                periodresults.append({ name: var })
+            prev = value
+
         return periodresults
         # Hay que agregar una especie de objero que llame a un callback con las metricas
 
+    @property
     def val_agregated(self):
-        return self.indicator.get_callback(self.daily_rbm)
+        return Decimal(self.indicator.get_callback(self.daily_rbm)).quantize(Decimal('.01'),rounding=ROUND_UP)
 
 
+    @property
     def val_in_periods(self):
         # periods = self.generate_periods(self.period_size,self.dayrange)
         # dailymetrics = self.days_by_metric(qs, self.dayrange)
-        return self.agregate_in_periods(self.daily_rbm)
+        return self.agregate_in_periods(self.daily_rbm) 
+
+    def call_val_in_periods(self, method):
+        return self.agregate_in_periods(self.daily_rbm, method) 
     
     def cli_briefing(self):
         cprint(f'Period: {self.begin.strftime("%d%b-%Y")} - {self.end.strftime("%d%b-%Y")}','cyan')
@@ -209,7 +267,8 @@ class Indicator(models.Model):
             filters['company'] = company
         
         reports = Report.objects \
-            .filter(**filters)
+            .filter(**filters) \
+            .filter(~ Q(num_value = None))
         return reports
     
     def total_reports(self):
@@ -272,7 +331,7 @@ class Indicator(models.Model):
         ''' Optiene los reportes asociados a el indicador especifico'''
         return self.goals \
             .filter(completed=False) \
-            .order_by('-end')[:5]
+            .order_by('-end')[:3]
 
 
     # #----------------------------------
@@ -338,8 +397,11 @@ class Indicator(models.Model):
         diasnull = self.mising_dates(qs,dayrange[0],dayrange[1])
         diascovered = []
         for rep in qs:
-            desagregated_value = rep.value / rep.days
-            # import pdb; pdb.set_trace()
+            try:
+                desagregated_value = rep.value / rep.days
+            except Exception as e:
+                print(e)
+                import pdb; pdb.set_trace()
             diascovered = diascovered +[{ 'date':d,'value':desagregated_value } for d in self.days_covered([rep])]
         diascovered = diascovered + [{ 'date':d,'value':0 } for d in diasnull]
         return diascovered
@@ -413,7 +475,7 @@ class Goal(models.Model):
 
     @property
     def duration(self):
-        return (self.end - self.begin).days
+        return (self.end - self.begin).days -1 
 
 
     @property
@@ -422,57 +484,68 @@ class Goal(models.Model):
         end = self.end.strftime('%d %B %Y')
         return f'Desde {beg} hasta {end}'
 
+    
     @property
-    def calculated_results(self):    
-        ''' optiene los resutados de los reportes 
-            solo si los la instancia no tiene reultados
-        '''
-        if self.completed:
-            return self.results
-        return self.compute_results      
+    def inform(self):
+        return self.indicator.get_informe(self.begin, self.end, 1)
+
+    @property
+    def reports(self):
+        return self.inform.reports
+
+    @property
+    def report_rate(self):
+        return self.inform.delivery_rate
+
+    @property
+    def computed_result(self):
+        return self.inform.val_agregated
+
+
+    @property
+    def daily_avg(self):
+        daily = self.inform.val_in_periods
+        values = [d for d in daily]
+        # total_reported = reduce(lambda x,y:x+y,values)
+        return  Decimal(self.computed_result / len(daily)).quantize(Decimal('.01'),rounding=ROUND_UP)
+
+    @property
+    def expected(self):
+        return self.daily_avg * self.inform.days_to_report
+
+    @property
+    def status(self):
+        try:
+            medium = int(self.fail.split(',')[0])
+        except Exception as e:
+            print(e)
+            medium = self.goal
+        
+        result = 'good'
+        if self.expected >= self.goal:
+            return  result
+
+        if self.expected < self.goal:
+            result = 'medium'
+
+        if self.expected < medium:
+            result = 'bad'
+
+        return  result
+
+    @property
+    def chart(self):
+        size = round(self.duration / 10)
+        inform = self.indicator.get_informe(self.begin, self.end, size)
+        return inform.call_val_in_periods(method="A")
 
     @property
     def acomplishment(self):
-        return self.compute_results/self.goal   
+        return Decimal(self.computed_result/self.goal).quantize(Decimal('.01'),rounding=ROUND_UP)
+
     
-    @property
-    def reports(self):
-        return self.get_reports()
 
-
-    def get_reports(self):
-        '''
-            optiene los reportes de un periodo especifico
-        
-        '''
-        metrics = self.indicator.metrics.all()
-        company = self.indicator.company
-        filters = {
-            'metric__in':metrics,
-            'begin__gte':self.begin, 
-            'end__lte':self.end
-        }
-        if company is not None:
-            filters['company'] = company
-        reports = Report.objects \
-            .filter(**filters)
-        
-        # TODO: Hay que trabajar que hacer en el caso de que
-        # el indicaodr contenga mas de una metrica por que
-        #  hay la psibilidad de que debas nser procesadas 
-        # por periodo (Por ahora suponemos una sola metrica 
-        # por indicador
-        return reports
-
-    def compute_results(self):
-        '''
-            Optiene los reusutados con base en los reportes
-        '''
-        reports_values=[r.value for r in self.reports]
-        # Aqui el resultado siempre es na suma y no se 
-        # considera mas de una metrica
-        return reduce((lambda x, y: x + y), reports_values)
-
+    
 
     def complete(self):
         '''
@@ -481,20 +554,24 @@ class Goal(models.Model):
         '''
         # TODO: Aqui hay que verificar si los 
         # resultados computados cubren todo un 
-        # periodo 
-        self.results=self.compute_results
+        # periodo
+        self.reports.update(editable=False)
+        self.results = self.computed_result
         self.completed=True
-        return self.save()  
+        self.save()
+        return self
 
     def reopen(self):
         '''
             Reabre la posibilidad 
             de cambiar resutados
         '''
+        self.reports.update(editable=False)
         self.results = None
         self.completed = False
-        return self.save()
+        self.save()
+        return self
 
 
     def __str__(self):
-        return f'{self.period}:{self.acomplishment}'    
+        return f'{self.period}:{self.acomplishment*100}%'    

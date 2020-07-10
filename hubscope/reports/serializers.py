@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework import serializers
 from hubscope.reports.models import (
     Position, 
@@ -10,19 +10,79 @@ from hubscope.reports.models import (
     Report)
 from hubscope.accounts.models import User
 
-class GoalSerializer(ModelSerializer):
+
+class sumarySerializer(Serializer):
+    total = serializers.IntegerField()
+    def __init__(self, *args, **kwargs):
+        namefield=kwargs.pop('namefield', None)
+        if namefield is not None:
+            self.fields['name'] =  serializers.CharField(source=namefield)
+        return super(sumarySerializer,self).__init__(*args, **kwargs)
+
+
+class GoalStatusSerializer(ModelSerializer):
+    indicatorname = serializers.SerializerMethodField()
+    def get_indicatorname(self, goal):
+        # import pdb; pdb.set_trace()
+        return goal.indicator.name
     class Meta:
         model = Goal
         fields = [
+            'id',
+            'period',
+            'indicatorname',
+            'status',
+        ]
+
+
+
+class GoalSerializer(ModelSerializer):
+    indicatorname = serializers.SerializerMethodField()
+    result = serializers.SerializerMethodField()
+
+    def get_indicatorname(self, goal):
+        return goal.indicator.name
+
+    def get_result(self, goal):
+        if goal.completed:
+            return goal.result
+        else:
+            return goal.computed_result
+
+    class Meta:
+        model = Goal
+        fields = [
+            'id',
             'group',
             'begin',
             'end',
             'fail',
             'goal',
-            'duration',
-            'calculated_results',
+            'indicator',
+
+            'indicatorname',
+            'report_rate',
             'completed',
+            'duration',
             'period',
+            'chart',
+            'acomplishment',
+            'status',
+            'expected',
+            'result',
+            ]
+        read_only_fields = [
+            'id',
+            'indicatorname',
+            'report_rate',
+            'completed',
+            'duration',
+            'period',
+            'chart',
+            'acomplishment',
+            'status',
+            'expected',
+            'result'
             ]
 
 
@@ -64,6 +124,7 @@ class IndicatorSerializer(ModelSerializer):
     class Meta:
         model = Indicator
         fields = [
+            'id',
             'name',
             'unidad',
             'desc',
@@ -71,10 +132,7 @@ class IndicatorSerializer(ModelSerializer):
             'active',
             'metrics',
             'company',
-            # 'active_periods',
-            # 'completed_periods',
-            'recent_goals',       
-            # 'periods',       
+            'recent_goals'       
         ]
 
         
@@ -121,6 +179,7 @@ class ReportSerializer(ModelSerializer):
 class CompanySerializer(ModelSerializer):
     # expected_reports = AsignmentSerializer(many=True)
     reports = ReportSerializer(many=True)
+    open_goals = GoalStatusSerializer(many=True)
     # indicators = IndicatorSerializer(many=True) 
     class Meta:
         model = Company
@@ -128,6 +187,7 @@ class CompanySerializer(ModelSerializer):
             'id',
             'name', 
             'reports', 
+            'open_goals'
             # 'indicators', 
             # 'expected_reports'
             ]
@@ -135,7 +195,7 @@ class AsignmentSerializer(ModelSerializer):
     next_ocurrence = serializers.DateField(required=False)
     deadline_date = serializers.DateField(read_only=True)
     active_goal = ReportSerializer(read_only=True)
-    metric_info = MetricSerializer(read_only=True)
+    metric_info = MetricSerializer(read_only=True, source="metric")
 
     class Meta:
         model = Asignment
@@ -152,3 +212,40 @@ class AsignmentSerializer(ModelSerializer):
             'next_ocurrence',
             'deadline_date'
         ]
+
+class DayResultField(serializers.DictField):
+    date = serializers.CharField()
+    value = serializers.DecimalField(max_digits=6, decimal_places=2)
+
+# class IndicatorResultsField(serializers.ListField):
+    
+
+class InformeSerializer(Serializer):
+    begin = serializers.DateField(read_only=True)
+    end = serializers.DateField(read_only=True)
+    total_mising = serializers.IntegerField()
+    delivery_rate = serializers.DecimalField(max_digits=6, decimal_places=2)
+    mising = serializers.ListField(
+        child=serializers.DateField()
+    )    
+    total_overlaped = serializers.IntegerField()
+    overlaped = serializers.ListField(
+        child=serializers.DateField()
+    )
+    total_reports = serializers.IntegerField()
+    period_size = serializers.IntegerField()
+
+
+    val_agregated = serializers.IntegerField()
+    val_in_periods = serializers.ListField(
+        child = DayResultField()
+    )
+
+
+    reported_days = serializers.IntegerField()
+    days_to_report = serializers.IntegerField()
+    def create(self, validated_data):
+        return "Not mplemented"
+        
+    def update(self, instance, validated_data):
+        return "Not mplemented"

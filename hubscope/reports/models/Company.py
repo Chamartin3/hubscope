@@ -1,12 +1,10 @@
-import calendar 
+
 from django.db import models
-from datetime import  datetime, timedelta
-from django.utils.timezone import localdate
+
 from hubscope.accounts.models import User
 
-from django.core.exceptions import ValidationError
-from django.core.validators import int_list_validator
 from functools import reduce
+from itertools import chain
 
 
 class Company(models.Model):
@@ -19,6 +17,16 @@ class Company(models.Model):
         verbose_name_plural = "Companys"
     def __str__(self):
         return f'{self.name}'
+
+
+    @property
+    def open_goals(self):
+        goalsqs= [i.active_goals for i in self.indicators.all()]
+        goals = []
+        if len(goalsqs)>0:
+            goals = list(chain(*goalsqs))
+        return goals
+
 
 class Position(models.Model):
     """Es la forma en la que se relaciona los accesos y los usuarios a los reportes"""

@@ -10,6 +10,7 @@ block no_items
     .col
       .overline
         h2 {{noneData}}
+block item_action
 
 </template>
 <script>

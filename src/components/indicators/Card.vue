@@ -1,42 +1,45 @@
-<template lang='pug'>
+<template lang='pug'>.
 v-expansion-panel.primary(active)
-    v-expansion-panel-header.v-expansion-panel--active.primary.darken-1.white--text(v-slot="{ open }")
-      v-row(no-gutters)
-        v-col
+    v-expansion-panel-header.v-expansion-panel--active.primary.white--text( hide-actions )
+
+      template(v-slot="{ open }")
+        .row.justify-space-between(@click="setPanel(open)")
           .headline {{ indicator.name}}
-    v-expansion-panel-content.dark.white--text.my-5
-      .row.justify-space-around
-        .overline.darken-4
-          h4 {{ indicator.desc }}
-        .overline
-          h4
-            strong Unidad:
-            | 
-            | {{ indicator.unidad }}
-      .row
-        .col
-          v-list.primary
-            .container(v-for="goal in indicator.recent_periods")
-              .row 
-                .overline.white--text 
-                  | {{ goal.period }}
-              .row
-                .col  
-                  v-progress-linear(
-                    :value='(goal.calculated_results/goal.goal)*100' 
-                    color='secondary' 
-                    height='20')
-                    template(v-slot='{ value }')
-                      strong {{ Math.ceil(value) }}%
-                  
-                v-chip.mt-2(small v-if="goal.completed" color="gray")
-                  | Completado
-                v-chip.mt-2(small v-else color="green")
-                  | Abierto
+          v-icon(dark  color="secondary" :class="{'fa-flip-vertical':open}") fas fa-arrow-circle-down
+    v-expansion-panel-content.primary.darken-1    
+      .container.dark.white--text.my-5.primary.darken-1.white--text
+        .row.justify-space-around()
+          .overline.darken-4.mx-3
+            h4 {{ indicator.desc }} 
+          .overline.mx-3 
+            h4
+              strong Unidad:
+              | 
+              | {{ indicator.unidad }}
+          Inform(
+            :indicatorname="indicator.unidad"
+            :indicator="indicator.id")
+      .row.justify-space-between
+        GoalList(:indicator="indicator")
+           
 </template>
 <script>
+import Inform from './Informe'
+import { Goal, List as GoalList  } from './Goals'
 export default {
   name: 'indicatorCard',
-  props:['indicator']
+  components: { Inform, Goal, GoalList },
+  props:['indicator'],
+  data() {
+    return {
+      panel: true,
+      disabled: false
+    }
+  },
+  methods: {
+    setPanel(val){
+      this.$set(this, 'panel', !val)
+    }
+  }
 }
 </script>

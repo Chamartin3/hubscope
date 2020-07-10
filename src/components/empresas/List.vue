@@ -9,9 +9,9 @@ append content
           Card(v-if="item", :empresa="item")
 
 block header
-  .row.justify-space-around
+  .row.justify-space-around(v-if="!loading")
 
-    v-btn.ml-5(dark, color="secondary darken-2",
+    v-btn.ml-5(dark, color="secondary",
         fab
         :disabled="pagination.current_page==1"
         @click="params.page=params.page-1")
@@ -23,7 +23,7 @@ block header
         .col.text-center
           span.white--text
             | {{ totalsText }}
-    v-btn.mr-5(dark, color="secondary darken-2",
+    v-btn.mr-5(dark, color="secondary",
         fab
         :disabled="pagination.current_page>=totalPages || !totalPages"
         @click="params.page=params.page+1")
@@ -50,7 +50,7 @@ export default {
       itemPluralName: 'Empresas',
       nodata:'No hay empresas registradas',
       params:{
-        page_size:3,
+        per_page:3,
       }
     }
   },

@@ -17,7 +17,10 @@ export default {
     },
     process_filtername(name, value) { 
       let isarray = Array.isArray(value)
-      if(isarray) return  name + '__in'
+      if (isarray) return  name + '__in'
+      // TODO: Hay que hacer que este filtro detecte fechas
+      let isdate = name.includes('__gte') || name.includes('__lte')
+      if (isdate) return  name 
       return name + '__contains'
     },
     datatable_filters_changed(){

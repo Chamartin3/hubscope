@@ -49,6 +49,15 @@ export default [
     access:null,
     hide:true,
     component: () => import('@/views/Empresa.vue')
+  },   
+  {
+    parent: 'dashboard',
+    path: 'informe/empresa/:id',
+    name: 'resumen_empresa',
+    show_name: 'Resumen Metas',
+    access:null,
+    hide:true,
+    component: () => import('@/views/InformeEmpresa.vue')
   },  
   // {
   //   parent: 'dashboard',

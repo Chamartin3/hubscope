@@ -26,12 +26,20 @@ export default {
         this.add_datatable_filter(fil.db_name, fil.value)
       }
     },
-    setFilter (name, dbname, value) {
-      this.filters.push({
+    setFilter (name, db_name, value) {
+      let obj = {
         name: name,
-        db_name: dbname,
+        db_name: db_name,
         value: value
-      })
+      }
+      console.log(obj);
+      console.log(this.filters);
+      
+      // Verifica si el filtro existe por nombre y lo remplaza
+      let index = this.filters.indexOf(this.filters.find(f=>f.name==name))
+      console.log(index);
+      if ( index==-1 ) this.filters.push(obj) 
+      else this.filters.splice(index, 1, obj)
     },
     removeAllFilters () {
       this.$set(this, 'filters', [])

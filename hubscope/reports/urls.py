@@ -9,6 +9,7 @@ router.register(r'asignment', views.AsignmentViewSet)
 router.register(r'indicator', views.IndicatorViewSet)
 router.register(r'report', views.ReportViewSet)
 router.register(r'metric', views.MetricViewSet)
+router.register(r'goals', views.GoalViewSet)
 
 
 urlpatterns = router.urls

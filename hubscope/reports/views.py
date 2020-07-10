@@ -2,18 +2,24 @@ from rest_framework.viewsets import ModelViewSet
 from hubscope.mixins import DatatablesMixin
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from datetime import datetime
 from hubscope.accounts.models import User
 from django.contrib.auth.models import Group
 
+from django.db.models import Count, Sum
+
 from hubscope.reports.serializers import (
+    GoalSerializer, 
     CompanySerializer, 
     AsignmentSerializer, 
     IndicatorSerializer, 
     PositionSerializer,
+    InformeSerializer,
     MetricSerializer,
+    sumarySerializer,
     ReportSerializer)
 from hubscope.reports.models import (
+    Goal,
     Metric,
     Company, 
     Asignment, 
@@ -25,8 +31,11 @@ from hubscope.reports.models import (
 class CompanyViewSet(DatatablesMixin, ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    page_size = 3
 
 
+    # def list(self, request, *args, **kwargs):
+    #     import pdb; pdb.set_trace()
 
     @action(detail=False, methods=['get'])
     def all(self, request, *args, **kwargs):
@@ -40,6 +49,23 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
         qs = company.reports       
         serializer = ReportSerializer(qs, many=True)
         return Response(serializer.data,status=200)
+
+    @action(detail=True, methods=['get'], permission_classes=[])
+    def reportsByMetric(self, request, *args, **kwargs):
+        company = self.get_object().reports
+        
+        # metric = request.query_params('g')
+
+        sumary = company \
+            .values('metric__name').annotate(total=Count('metric__name'))
+            # .extra(select={
+            # 'metric__name':'metric__name',
+            # 'name':'metric__name'
+            # }) \
+        # import pdb; pdb.set_trace
+        serializer = sumarySerializer(sumary, many=True, namefield='metric__name')
+        return Response(serializer.data,status=200)        
+    
 
     @action(detail=False,  methods=['post'], permission_classes=[])
     def manyCompaniesPersonel(self, request, *args, **kwargs):
@@ -84,6 +110,8 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
         serializer = PositionSerializer(obj)
         return Response(serializer.data,status=200)
 
+    
+
 
     @action(detail=True, methods=['get'], permission_classes=[])
     def personel(self, request, *args, **kwargs):
@@ -95,7 +123,7 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
 
 
     @action(detail=True, methods=['get'], permission_classes=[])
-    def acomplishments(self, request, *args, **kwargs):
+    def activeGoals(self, request, *args, **kwargs):
         company = self.get_object()
         qs = company.reports
         
@@ -135,6 +163,39 @@ class IndicatorViewSet(DatatablesMixin, ModelViewSet):
     queryset = Indicator.objects.all()
     serializer_class = IndicatorSerializer
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        # import pdb; pdb.set_trace()
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+        
+    @action(detail=True, methods=['get'])
+    def openGoals(self, request, *args, **kwargs):
+        goals = self.get_object().active_goals
+        serializer = GoalSerializer(goals, many=True)
+        return Response(serializer.data)
+
+
+
+    @action(detail=True, methods=['get'])
+    def inform(self, request, *args, **kwargs):
+        '''docstring for inform'''
+        indicator = self.get_object()
+        begin = datetime.strptime(
+            request.query_params.get('begin'),
+            '%Y-%m-%d').date()
+        end =  datetime.strptime(
+            request.query_params.get('end'),
+            '%Y-%m-%d').date()
+        period = request.query_params.get('period_size')
+        informe = indicator.get_informe(begin, end, period)
+        serializer = InformeSerializer(informe)
+        return Response(serializer.data, status=200)
+
 class MetricViewSet(DatatablesMixin, ModelViewSet):
     queryset = Metric.objects.all()
     serializer_class = MetricSerializer
@@ -154,10 +215,30 @@ class MetricViewSet(DatatablesMixin, ModelViewSet):
             queryset = queryset.filter(asignment__company__id__contains=company)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
     
 
 class ReportViewSet(DatatablesMixin, ModelViewSet):
     queryset = Report.objects.order_by("-begin")
     serializer_class = ReportSerializer
-    search_fields = ['company__id']
+    search_fields = ['company__id']    
+
+class GoalViewSet(ModelViewSet):
+    queryset = Goal.objects.order_by("-begin")
+    serializer_class = GoalSerializer
+    # search_fields = ['company__id']
+
+    
+    @action(detail=True, methods=['patch'], permission_classes=[])
+    def toggleStatus(self, request, *args, **kwargs):
+        goal = self.get_object()
+        # import pdb; pdb.set_trace()
+        if goal.completed:
+            goal.complete()
+            txt = 'cerrado el periodo'
+        else:
+            goal.reopen()
+            txt = 'abierto el periodo'
+
+        return Response({'message':f'Se ha {txt} con exito'},status=200)
 
