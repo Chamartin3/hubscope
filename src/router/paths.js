@@ -49,7 +49,8 @@ export default [
     access:null,
     hide:true,
     component: () => import('@/views/Empresa.vue')
-  },   
+  },
+     
   {
     parent: 'dashboard',
     path: 'informe/empresa/:id',
