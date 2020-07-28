@@ -2,7 +2,6 @@
 .container
   LoadingComponent(v-if="loading || !instance")
   Goal(v-else :goal="instance")
-  hr.sline
 </template>
 <script>
 import Goal from '@/components/indicators/Goals/Goal.vue'

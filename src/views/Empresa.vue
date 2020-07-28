@@ -6,7 +6,7 @@
       hr.sline
       v-tabs(v-model="tab" 
       slider-color="secondary" 
-      fixed-tabs background-color='primary lighten-2' dark)
+      fixed-tabs)
         v-tab.typing--text( v-for="t in tabs" )
           | {{t.name}}
 

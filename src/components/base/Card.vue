@@ -6,4 +6,4 @@ v-card.primary.darken-1
       slot(name='title')
   .container(fluid)
     slot
-  
+</template>

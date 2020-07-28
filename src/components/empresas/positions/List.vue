@@ -5,11 +5,12 @@ append before_list
   .row.text-center.justify-space-around.py-2
     UserForm(
       ref="UserForm"
-      @created="addItem"
+      @created="listObjects()"
       :company="company_name")
     PositionForm(
       :instanceID="companyid"
       :editInstance="{id:companyid}"
+      :company_name="company_name"
       ref="PositionForm"
       @edited="listObjects"
     )

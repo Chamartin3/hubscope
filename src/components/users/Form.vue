@@ -80,10 +80,12 @@ export default {
     },
   },
   methods: {
-    preProcessForm(form){
-        if (this.company) form.company.push(this.company)
-        return form 
-      }
+    open () {
+      this.clearAll()
+      if (this.company) this.form.company= [ this.company ]
+      this.dialog = true
+      this.inErrors = {}
+    }
   },
   // mounted() {
   //   if (this.company) this.form.company.append(this.company)

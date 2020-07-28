@@ -6,13 +6,21 @@
       v-btn(
       color="primary" 
       @click="$refs.Form.open()") Nueva Asignación
+      
   hr.sline
   .row
     .col
-      AsignmentsList(:company="instance.id")
+      AsignmentsList(
+        ref="List"
+        @changed="$refs.MetList.listObjects()"
+        :company="instance.id")
     .col-md-4.col-sm-12
-      MetricasList(:company="instance.id")
-      AsignmentsForm(ref="Form" :company="instance.id")
+      MetricasList(
+        ref="MetList"
+        :company="instance.id")
+      AsignmentsForm(
+        @created="$refs.List.listObjects() ;  $refs.MetList.listObjects()"
+        ref="Form" :company="instance.id")
 
 </template>
 <script>

@@ -1,18 +1,17 @@
 [
-    {
-        "name":"Aves Huevos"
-    },    
-    {
-        "name":"Aves Pollo"
-    },
-    {
-        "name":"R3A"
-    },    
-    {
-        "name":"ABA"
-    },
-    {
-        "name":"Moys"
-    }
-
+    {"name":"AVES JHS"},
+    {"name":"ALIMENTOS JHS"},
+    {"name":"R3A"},
+    {"name":"INCUBACIÓN"},
+    {"name":"PORCINOS"},
+    {"name":"ANDIALIMENTOS"},
+    {"name":"DELICIAS ISA"},
+    {"name":"MOY´S"},
+    {"name":"JAUTEC"},
+    {"name":"Dirección de Operaciones Agroindustriales"},
+    {"name":"Dirección de Unidades Corporativas"},
+    {"name":"Dirección Jurídica"},
+    {"name":"Dirección de inversiones y proyectos"},
+    {"name":"Vicepresidencia"},
+    {"name":"Presidencia"}
 ]

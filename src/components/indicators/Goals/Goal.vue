@@ -1,47 +1,52 @@
 <template lang='pug'>
-.container.mb-5.fluid.fill-height.primary.darken-2
-  .row.justify-space-around
-    .overline.white--text {{ goal | period }}
-    .col-12.col-md-3.text-center
-      .row.justify-center
-        Completation(
-        :id="goal.id"
-        :completation="goal.completed"
-        )
-        Status.mx-3(
-        :indicatorname="goal.indicatorname"
-        :status="goal.status")
-  .row.white--text
+v-card.primary.darken-1
+  v-toolbar.text-center.primary(flat dark)
     .col
-      .overline
-        h3 Avance de meta
-  .row
-    .col.col-xs-12
-      v-progress-linear(
-        :value='(goal.acomplishment)*100' 
-        color='secondary' 
-        height='20')
-        template(v-slot='{ value }')
-          strong {{ Math.ceil(value) }}%
-  .row.white--text
-    .col
-      .overline
-        h3 Reportes Enviados
-  .row
-    .col.col-xs-12
-      v-progress-linear(
-        :value='goal.report_rate' 
-        color='secondary' 
-        height='20')
-        template(v-slot='{ value }')
-          strong {{ Math.ceil(value) }}%
-  .row
-    trendChart(
-    :results="goal.chart", 
-    :expected="goal.expected", 
-    :goal="goal.goal", 
-    :dataname="goal.indicatorname" 
-    )
+      .display-1 {{ goal.indicatorname }}
+      .overline.white--text {{ goal | period }}
+      
+  .container
+    .row.justify-space-around
+      .col-12.col-md-3.text-center
+        .row.justify-center
+          Completation(
+          :id="goal.id"
+          :completation="goal.completed"
+          )
+          Status.mx-3(
+          :indicatorname="goal.indicatorname"
+          :status="goal.status")
+    .row.white--text
+      .col
+        .overline
+          h3 Avance de meta
+    .row
+      .col
+        v-progress-linear(
+          :value='(goal.acomplishment)*100' 
+          color='secondary' 
+          height='20')
+          template(v-slot='{ value }')
+            strong {{ Math.ceil(value) }}%
+    .row.white--text
+      .col
+        .overline
+          h3 Reportes Enviados
+    .row
+      .col.col-xs-12
+        v-progress-linear(
+          :value='goal.report_rate' 
+          color='secondary' 
+          height='20')
+          template(v-slot='{ value }')
+            strong {{ Math.ceil(value) }}%
+    .row
+      trendChart(
+      :results="goal.chart", 
+      :expected="goal.expected", 
+      :goal="goal.goal", 
+      :dataname="goal.indicatorname" 
+      )
       
     //- .d-inline.mr-2.ma-2
 

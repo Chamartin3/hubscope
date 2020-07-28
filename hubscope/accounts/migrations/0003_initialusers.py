@@ -26,8 +26,10 @@ INITIAL_USERS=[
 
 def apply_migration(apps, schema_editor):
     # User = apps.get_model('accounts', 'User')
+    admin = Group.objects.get(name='Admin')
     for newu in INITIAL_USERS:
-        User.objects.create_user(**newu)
+        u = User.objects.create_user(**newu)
+        u.groups.set([admin])
 
 def revert_migration(apps, schema_editor):
     Group = apps.get_model('accounts', 'User')

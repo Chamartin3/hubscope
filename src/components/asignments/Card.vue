@@ -19,6 +19,9 @@ v-card.pointer(dark color='primary lighten-1')
       .col
         .overline
         strong {{ frecuencyText }}
+    .row.justify-end 
+      v-btn( text @click="$emit('borrar',asignment.id )" )  
+        v-icon fas fa-trash
 </template>
 <script>
 export default {
@@ -55,6 +58,9 @@ export default {
         if(days.length<1) return self.weekdays[last]
         return days.map(d => self.weekdays[d]).join(',')+' y '+ self.weekdays[last]
       }
+      else {
+        return 1
+      }
     },
     frecuencyText(){
       if(!this.selectedText) return null
@@ -68,7 +74,7 @@ export default {
         return `Cada ${this.selectedText} dias`
         
       }     
-      return 'solo una vez'
+      return 'Solo una vez'
     }
   }
 }

@@ -200,6 +200,7 @@ class AsignmentSerializer(ModelSerializer):
     class Meta:
         model = Asignment
         fields =  [
+            'id',
             'metric',
             'metric_info',
             'company',

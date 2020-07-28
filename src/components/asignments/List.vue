@@ -1,5 +1,9 @@
 <template lang='pug'>
 .container.mb-5.fluid.fill-height
+  DeleteConfirmation(
+      model="asignment"
+      ref="DeleteConf"
+      @success="listObjects();$emit('changed')")
   .row(v-if="items.length<1").justify-center
     .overline 
       h2 No hay asignaciones registradas 
@@ -9,7 +13,9 @@
           v-for='item in items', 
           :key='item.name', 
           cols='12', sm='12', md='6', lg='4')
-           AsignmentCard(v-if='item', :asignment='item')
+           AsignmentCard(
+             @borrar="$refs.DeleteConf.open($event,'Asignación')"
+             v-if='item', :asignment='item')
 block footer
 </template>
 <script>

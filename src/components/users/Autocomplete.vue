@@ -8,6 +8,7 @@ v-autocomplete(
   placeholder="Buscar usuario"
   prepend-icon="fas fa-users"
   item-text="fullname"
+  return-object
   )
   template(v-slot:no-data) 
     .container No hay usuarios que concuerden con la busqueda

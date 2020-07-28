@@ -7,8 +7,7 @@ append content
             UserAutocomplete(v-model="user" :rules="false")
     .row(v-if="notAvariable")
       .col.text-center.red.lighten-4.red--text
-        | Este usuario tiene el rol de {{notAvariable}} por lo tanto no puede ser asignado a ninguna empresa
-
+        | {{notAvariable}}
     .row.white--text(v-else)
       .col
           GroupSelect(ref="GroupSelect" v-model="form.group", :filtered="true")
@@ -26,6 +25,7 @@ import UserAutocomplete from '@/components/users/Autocomplete'
 import GroupSelect from '@/components/users/GroupSelect'
 import { formModal } from '@/mixins/Modal'
 export default {
+  props:['company_name'],
   mixins: [ formModal ],
   components: { 
     UserAutocomplete,
@@ -40,21 +40,26 @@ export default {
     user (val) {
       if (val) {
         let groups = val.groups.map(g => g.name)
-        
+        let roles = val.roles.map(g => g.company)
+
+        this.notAvariable = null
         if (groups.length < 1) {
           this.form.user = val.id
-          this.notAvariable = null
+
+        } else if (roles.includes(this.company_name)) {
+          this.notAvariable = `Este usuario ya forma parte de ${this.company_name} no puede ser agregado dos veces`
 
         } else if (groups.includes('Admin') || groups.includes('Ejecutivo')) {
-          this.notAvariable = groups[0]
+
+          this.notAvariable = ` Este usuario tiene el rol de ${ groups[0]} por lo tanto no puede ser asignado a ninguna empresa`
+         
           this.form.user = null
           this.$refs.GroupSelect.value = null
 
+        
         } else {
-          this.notAvariable = null
           this.form.user = val.id
           this.$refs.GroupSelect.value = val.groups[0]
-
         }
       }
     }

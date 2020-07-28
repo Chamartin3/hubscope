@@ -1,6 +1,6 @@
 <template lang='pug'>
-    .row.text-center.primary.darken-1
-      .col     
+    .row.text-center.primary.darken-1.white--text 
+      .col  
         DaySelect(
           desc="inicio"
           :max="end"

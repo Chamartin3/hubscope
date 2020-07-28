@@ -43,9 +43,9 @@ tbody>tr:hover {
 
 
 
-// .v-card__actions, .v-card__title, .v-menu {
-//   background-color: var(--v-primary-base);
-// }
+.v-card__actions, .v-card__title, .v-menu {
+  background-color: var(--v-primary-base);
+}
 
 // .v-data-table, .v-card, .theme--dark {
 //   background-color:var(--v-primary-lighten1);
