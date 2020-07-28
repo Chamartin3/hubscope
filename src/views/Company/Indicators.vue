@@ -1,5 +1,5 @@
 <template lang="pug">
-.container.mb-5.fluid.fill-height.primary.darken-2
+.container.mb-5.fluid.fill-height.primary.lighten-2
   .row.justify-center(v-if="!loading")
     .col
       v-expansion-panels(v-model="active" accordion multiple flat hover)

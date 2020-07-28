@@ -26,11 +26,12 @@ export default {
     };
   },
   watch: {
-    value(newVal) {
-      this.$emit("input", newVal);
+    value(val) {
+      if (val) this.$emit("input", val);
     }
   },
   methods: {
+    _clearForm () { value=[] },
     async getOptions() {
       this.options = await this.model[this.listMethod]();
     }

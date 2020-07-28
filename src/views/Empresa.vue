@@ -1,11 +1,14 @@
 <template lang="pug">
 .container.fill-height(v-if="instance")
-  .row.white--text.align-start
+  .row.typing--text.align-start
     .col
       .display-3 {{ instance.name }}
       hr.sline
-      v-tabs(v-model="tab" slider-color="secondary" fixed-tabs background-color='primary darken-2' dark)
-        v-tab( v-for="t in tabs" ) {{t.name}}
+      v-tabs(v-model="tab" 
+      slider-color="secondary" 
+      fixed-tabs background-color='primary lighten-2' dark)
+        v-tab.typing--text( v-for="t in tabs" )
+          | {{t.name}}
 
       v-tabs-items(v-model='tab')
         v-tab-item(key='Reportes')

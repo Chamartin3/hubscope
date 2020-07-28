@@ -34,7 +34,7 @@ export default {
       if (user && user.profile && user.profile.picture) {
         return this.user.profile.picture
       }
-      return require("@/assets/avatar.png")
+      return require("@/assets/img/avatar.png")
     }
   }
 }

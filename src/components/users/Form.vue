@@ -24,9 +24,13 @@ append content
 
     .row
       .col
-        GroupSelect(v-model="form.group", :filtered="company")
+        GroupSelect(v-model="form.group",
+          :errors="errors.group"
+         :filtered="company")
       .col(v-if="companySelector && !company")
-        CompanySelect(v-model="form.company")
+        CompanySelect(
+          :errors="errors.company"
+          v-model="form.company")
       .col.text-center(v-if="company")
         v-chip(v-for="c in form.company") {{ c }} 
     .row
@@ -75,6 +79,12 @@ export default {
       }
     },
   },
+  methods: {
+    preProcessForm(form){
+        if (this.company) form.company.push(this.company)
+        return form 
+      }
+  },
   // mounted() {
   //   if (this.company) this.form.company.append(this.company)
   // },
@@ -99,7 +109,7 @@ export default {
         password: '',
         passwordconf: '',
         group: '',
-        company:[this.company]
+        company:[]
       }
     }
   }

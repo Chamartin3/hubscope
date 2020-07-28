@@ -144,6 +144,12 @@ class AsignmentViewSet(DatatablesMixin, ModelViewSet):
     queryset = Asignment.objects.all()
     serializer_class = AsignmentSerializer
 
+    def list(self, request, *args, **kwargs):
+        param = request.query_params.get('company',None)
+        if param:
+            self.queryset = self.queryset.filter(company=param)
+        return super(AsignmentViewSet, self).list(self, request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         frecuency = request.data.get('frecuency')
         if not frecuency:

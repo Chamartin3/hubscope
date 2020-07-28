@@ -2,23 +2,23 @@
 extends ../../../layouts/templates/Lists/doubleLineList.pug
 
 append before_list
-  UserForm(
-    ref="UserForm"
-    @created="addItem"
-    :company="company_name")
-  PositionForm(
-    :instanceID="companyid"
-    :editInstance="{id:companyid}"
-    ref="PositionForm"
-    @edited="listObjects"
-  )
-  userDetail(
-      @successChange="listObjects"
-      ref="userDetail")
-  v-overlay(absolute :value='loadingInfo')
-    LoadingComponent
+  .row.text-center.justify-space-around.py-2
+    UserForm(
+      ref="UserForm"
+      @created="addItem"
+      :company="company_name")
+    PositionForm(
+      :instanceID="companyid"
+      :editInstance="{id:companyid}"
+      ref="PositionForm"
+      @edited="listObjects"
+    )
+    userDetail(
+        @successChange="listObjects"
+        ref="userDetail")
+    v-overlay(absolute :value='loadingInfo')
+      LoadingComponent
 
-  .row.text-center.justify-space-around.mt-1
     v-btn(
         small 
         @click="$refs.UserForm.open()" 

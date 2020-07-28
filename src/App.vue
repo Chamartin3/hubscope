@@ -11,20 +11,14 @@ export default {
 }
 </script>
 <style lang="scss">
-// #app {
-//   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-//   -webkit-font-smoothing: antialiased;
-//   -moz-osx-font-smoothing: grayscale;
-//   text-align: center;
-//   color: #2c3e50;
-// }
+
 .link {
   cursor: pointer;
 }
 
-#app .v-content__wrap, .v-sheet{
-  background-color:var(--v-primary-darken2);
-}
+// #app .v-content__wrap, .v-sheet{
+//   background-color:var(--v-primary-darken2);
+// }
 .v-card, tbody, .v-data-table-header, .v-picker__body, .v-picker__body, .v-data-footer {
   background-color: var(--v-primary-lighten1);
 }
@@ -32,12 +26,6 @@ export default {
 tr.v-data-table {
   background-color: var(--v-primary-base);
 }
-
-.theme--dark.v-picker__body {
-  background: var(--v-primary-darken1);
-
-}
-
 thead>tr {
   background-color: var(--v-primary-base);
 }
@@ -45,14 +33,19 @@ tbody>tr:hover {
   background-color: var(--v-primary-base) !important;
 }
 
+.theme--dark.v-picker__body {
+  background: var(--v-primary-darken1);
+}
 .sline{
   border-color: var(--v-secondary-base);
   border-width: 2px;
 }
 
-.v-card__actions, .v-card__title, .v-menu {
-  background-color: var(--v-primary-base);
-}
+
+
+// .v-card__actions, .v-card__title, .v-menu {
+//   background-color: var(--v-primary-base);
+// }
 
 // .v-data-table, .v-card, .theme--dark {
 //   background-color:var(--v-primary-lighten1);

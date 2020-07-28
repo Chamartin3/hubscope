@@ -7,6 +7,7 @@ import EditableElement from './EditableElement'
 import ModalEdit from './ModalEdit'
 import DaySelect from './DaySelect'
 import RangeSelect from './RangeSelect'
+import Card from './Card'
 
 
 
@@ -17,3 +18,4 @@ Vue.component('DynamicField', DynamicField)
 Vue.component('ModalEdit', ModalEdit)
 Vue.component('DaySelect', DaySelect)
 Vue.component('RangeSelect', RangeSelect)
+Vue.component('Card', Card)

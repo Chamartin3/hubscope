@@ -12,6 +12,7 @@ export default {
   methods:{
     authenticate(){
       this.loading = true
+      console.log('Loging In')
       let lg = this.$django
       .auth.login(this.form)
       .then(this.SuccessLogin,this.FailLogin)
@@ -31,7 +32,7 @@ export default {
         this.$alert('success','Exito', done.msj)
         let host = window.location.protocol + '//'+window.location.host
         console.log(host)
-        window.location = host+'/'+this.$django.autentication.on_login
+        window.location = host+'/'+this.$django.auth.on_login
         
       }
 

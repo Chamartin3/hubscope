@@ -55,11 +55,11 @@ class UserRegistration(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        # import pdb; pdb.set_trace()
         try:
             self.perform_create(serializer)
         except IntegrityError as e:
             cause=e.args[1]
-            # "Duplicate entry 'PGeren' for key 'username'"
             cause=cause.replace('Duplicate entry','Dato duplicado:') \
                 .replace('for key','en el campo') \
                 .replace('username','Nombre de Usuario')
@@ -161,15 +161,15 @@ class UserStatusPermisions(generics.UpdateAPIView):
         if user.is_active and user_groups:
             grupos=Group.objects.filter(name__in=user_groups)
             if grupos:
-                grupos=grupos.get()
+                grupos = grupos.get()
                 user.groups.add(*grupos)
                 if [g.name for g in grupos] in ADMIN_GROUPS:
                     user.is_staff=True
-                related_models=USER_RELATED_MODELS.get(g.name, None)
-                if related_models:
-                    for g_app in related_models:
-                        model = apps.get_model(g_app.get('app'), g_app.get('model'))
-                        model.objects.create(user=user)
+                # related_models = USER_RELATED_MODELS.get(g.name, None)
+                # if related_models:
+                #     for g_app in related_models:
+                #         model = apps.get_model(g_app.get('app'), g_app.get('model'))
+                #         model.objects.create(user=user)
 
 
             return Response({"message": "Permisos de usuario cambiados"}, status=200)
@@ -195,6 +195,6 @@ class Auth(APIView):
                 login(request, user)
                 return Response({'message':"Exito"}, status=202)
             else:
-                return Response({'message':"Este Usuario se ecneuntra inactivo o bloqueado, contacte a un adminitrador para mas información"}, status=401)
+                return Response({'message':"Este Usuario se encuentra inactivo o bloqueado, contacte a un adminitrador para mas información"}, status=401)
         else:
             return Response({'message':"Combinación de usuario y contraseña incorrecto"}, status=401)

@@ -35,6 +35,7 @@ export default {
     }
   },
   methods: {
+    _clearForm () {this.value = null },
     filterOptions(option){
       if(!this.filtered) return true
       return this.filteredOptions.includes(option.name)

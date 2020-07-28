@@ -1,10 +1,11 @@
 <template lang="pug">
-.container.mb-5.fluid.fill-height.primary.darken-2
+.container.mb-5.fluid.fill-height
   .row
     .col-12.col-md-8
       ReportsFilters(
         ref="filterManager"
         @filters_changed="$refs.Table.setDatableFilters($event)"
+        @filter_removed="handleFilterChange"
         :companyName="instance.name")
       ReportsTable(
         ref="Table"
@@ -15,13 +16,23 @@
         :companyid="instance.id", 
         :company_name="instance.name"
         )
-      DateRangeSelect(
-        @inputend="filterByRangeEnd"
-        @inputbegin="filterByRangeBegin"
-      )
-      MetricSelect(
-        :company="instance.id"
-        @input="filterByMetric")
+      card
+        template(slot="title")
+          v-icon.white--text.mx-2 far fa-calendar-alt
+          .headline Rango de Fechas
+        DateRangeSelect(
+          ref="DateRangeSelect"
+          @inputend="filterByRangeEnd"
+          @inputbegin="filterByRangeBegin"
+        )
+      card
+        template(slot="title")
+          v-icon.white--text.mx-2 fas fa-ruler
+          .headline Metricas
+        MetricSelect(
+          ref="MetricSelect"
+          :company="instance.id"
+          @input="filterByMetric")
 
 </template>
 <script>
@@ -41,6 +52,11 @@ export default {
     MetricSelect
   },
   methods: {
+    handleFilterChange(filter_name){
+      if (filter_name.includes('Metrica')) this.$refs.MetricSelect.reset()       
+      if (filter_name.includes('Reportes desde')) this.$refs.DateRangeSelect.resetBegin()       
+      if (filter_name.includes('Reportes hasta')) this.$refs.DateRangeSelect.resetEnd()       
+    },
     filterByRangeBegin(begin){
       
       this.$refs.filterManager.setFilter(

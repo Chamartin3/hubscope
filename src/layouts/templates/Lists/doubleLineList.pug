@@ -1,14 +1,13 @@
-v-card
-  v-toolbar.text-center(flat dark color="primary lighten-1")
+v-card.primary.darken-1
+  v-toolbar.text-center.primary(flat dark)
     .row.justify-center
       v-icon.white--text.mx-2 {{itemIcon}}
       h1.headline {{itemPluralName}}
   block before_list
-    hr
   .container(v-if="loading")
     LoadingComponent
   .container(v-else)
-    v-list(two-line, subheader)
+    v-list(two-line, subheader).primary.darken-1
       v-list-item(v-if="items.length===0")
         block no_items
           v-list-item-content
@@ -16,8 +15,9 @@ v-card
             v-list-item-subtitle
               a(@click="callRegistration") Register
       v-list-item(
+        dark
         v-for="(item,idx) in items",
-        :key="idx")
+        :key="idx").primary
         block item_content
             v-list-item-content
               v-list-item-title(v-if="title") 

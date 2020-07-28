@@ -9,7 +9,6 @@ import ast
 from rest_framework import  serializers
 
 
-
 class datatableFilters(filters.SearchFilter, filters.OrderingFilter):
     """
     Filter using all the variables sent through a datatable_filters options

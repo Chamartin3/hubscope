@@ -1,9 +1,9 @@
-<script>
-  import { VCard } from 'vuetify/lib'
 
-  export default {
-    name: 'BaseCard',
-
-    extends: VCard
-  }
-</script>
+<template lang='pug'>
+v-card.primary.darken-1
+  v-toolbar.text-center.primary(flat dark)
+    .row.justify-center
+      slot(name='title')
+  .container(fluid)
+    slot
+  

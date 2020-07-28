@@ -2,13 +2,13 @@
 .container.mb-5.fluid.fill-height
   .row.justify-center
     .col
-      List
+      CompaniesList
 
 </template>
 <script>
-import List from '@/components/empresas/List.vue'
+import CompaniesList from '@/components/empresas/List.vue'
 export default {
   name: "Empresas",
-  components:{ List },
+  components:{ CompaniesList },
 }
 </script>

@@ -5,11 +5,10 @@
     v-col(sm="auto" min-width="50%")
       v-img.mx-auto.my-n12.img-bright(
           style="z-index:2"
-          src='@/assets/logo.png', 
+          src='@/assets/img/logo.png',
           width="180", 
           contain)
       v-card.elevation-12.pa-5.mt-n5.pt-10( dark color="primary")
-        v-card-header.text-center
         v-card-text
           v-form
             v-text-field( v-model="form.username" label="Login"
@@ -28,7 +27,7 @@ export default {
   name:'LoginForm',
   mixins:[LoginForm],
   computed: {
-    ...mapState('app', ['logoh']),
+    ...mapState('app', ['logo']),
     projectName() {
       return this.$store.state.app.name
     }

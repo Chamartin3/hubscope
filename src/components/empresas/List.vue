@@ -11,19 +11,19 @@ append content
 block header
   .row.justify-space-around(v-if="!loading")
 
-    v-btn.ml-5(dark, color="secondary",
+    v-btn.ml-5(color="secondary",
         fab
         :disabled="pagination.current_page==1"
         @click="params.page=params.page-1")
         v-icon fa-angle-left
     .col.text-center
-      span.white--text
+      span.typing--text
         | {{ currentText }}
       .row.justify-center.mt-n3
         .col.text-center
-          span.white--text
+          span.typing--text
             | {{ totalsText }}
-    v-btn.mr-5(dark, color="secondary",
+    v-btn.mr-5(color="secondary",
         fab
         :disabled="pagination.current_page>=totalPages || !totalPages"
         @click="params.page=params.page+1")

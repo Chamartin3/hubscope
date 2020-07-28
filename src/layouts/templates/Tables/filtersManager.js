@@ -31,15 +31,19 @@ export default {
         name: name,
         db_name: db_name,
         value: value
-      }
-      console.log(obj);
-      console.log(this.filters);
-      
+      }  
       // Verifica si el filtro existe por nombre y lo remplaza
       let index = this.filters.indexOf(this.filters.find(f=>f.name==name))
-      console.log(index);
       if ( index==-1 ) this.filters.push(obj) 
       else this.filters.splice(index, 1, obj)
+    },
+    removeFilter(name){
+      let index = this.filters.indexOf(this.filters.find(f=>f.name==name))
+      if ( index==-1 ) return
+      let elobj = {...this.filters[index]}
+      this.remove_datatable_filter(elobj.db_name, elobj.value)
+      this.$emit('filter_removed',name)
+      this.filters.splice(index, 1)
     },
     removeAllFilters () {
       this.$set(this, 'filters', [])

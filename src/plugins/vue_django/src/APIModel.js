@@ -9,13 +9,11 @@ function checkSlashes (url) {
   if (finalSlash != '/') {
     url = url + '/'
   }
-
   // remove the double final slash
   let finalChars = url.substr(-2)
   if (finalChars.substr(1, 1) === finalChars.substr(0, 1)) {
     url = url.substr(0, url.length - 1)
   }
-
   return url
 }
 
@@ -37,24 +35,18 @@ class EndPoint {
       case 'GET':
         if (action.route.params.length > 0) this.genericName = 'detail'
         else this.genericName = 'list'
-        // this.name=this.genericName
         break
       case 'POST':
         this.genericName = 'create'
-        // this.name=this.genericName
         break
       case 'PATCH':
         this.genericName = 'partial_update'
-        // this.name=this.genericName
-
         break
       case 'PUT':
         this.genericName = 'update'
-        // this.name=this.genericName
         break
       case 'DELETE':
         this.genericName = 'destroy'
-        // this.name=this.genericName
         break
       default:
         this.genericName = action.name
@@ -66,8 +58,6 @@ class EndPoint {
   processURL (route) {
     let pieces = route.pieces
     this.url = this.basepath + pieces[0]
-
-    // Adds de final slash if needed
 
     this.url = checkSlashes(this.url)
 
@@ -135,7 +125,6 @@ class EndPoint {
     switch (this.method) {
       case 'GET':
         if (payload) {
-          // url = url.slice(0, -1)
           return this.service.get(url, { params: payload })
             .then(
               response => this.manageResponse(response, this.defaultMode),
@@ -178,10 +167,8 @@ class EndPoint {
 
 class APIModel {
   constructor (model_map, api_route, name = null, csrf = null) {
-    // service.interceptors.response.use(this.handleSuccess, this.handleError)
     this.name = name === null ? '' : name
     this.base_url = BASE_URL + '/' + api_route
-    // this.defaultMode = process.env.NODE_ENV === 'production' ? 'silent' : 'console'
     let actions = {}
     console.log(this.base_url)
     for (var i = 0; i < model_map.length; i++) {
@@ -191,11 +178,6 @@ class APIModel {
       let name = endpoint.name
       if (!endpoint.is_unique) name = endpoint.method.toLowerCase() + '_' + endpoint.name
       if (viewsetnames.includes(endpoint.name)) name = endpoint.genericName
-      // if(this.actions.hasOwnProperty(name)){
-      //   let prev=this.actions['name']
-      //   name=endpoint.method.toLowerCase()+'_'+endpoint.name
-      //
-      // }
       if (actions.hasOwnProperty(name)) {
         let n = 1
         while (actions.hasOwnProperty(name)) {

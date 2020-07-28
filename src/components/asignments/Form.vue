@@ -123,7 +123,7 @@ export default {
       // activator:this.button,
       datemenu:false,
       datemenu2:false,
-      dialog: true,
+      // dialog: true,
       period: null,
       buttomText: "Agregar",
       maxWidth: null,

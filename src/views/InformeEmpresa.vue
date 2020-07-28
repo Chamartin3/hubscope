@@ -2,11 +2,11 @@
 div
   LoadingComponent(v-if="loading || !instance")
   .container.fill-height(v-else)
-    .row.white--text.align-start
+    .row.typing--text.align-start
       .col
         .display-3 {{ instance.name }}
         hr.sline
-    .row.white--text.align-start
+    .row.typing--text.align-start
     .row.justify-space-between
       v-col
         v-card.py-5.px-3(dark color="secondary")

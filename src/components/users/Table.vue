@@ -1,15 +1,17 @@
 <template lang="pug">
 extends ../../layouts/templates/Tables/baseFullCrud.pug
 block header
-  v-toolbar.secondary--text(flat color="primary lighten-1 secondary--text")
-    DeleteConfirmation(
+  DeleteConfirmation(
       model="accounts"
       ref="DeleteConfirmation"
       @success="removeItem($event)")
-    userDetail(
+  userDetail(
       @successChange="changeItem($event)"
       ref="userDetail")
 
+  v-toolbar.secondary--text(
+      flat 
+      color="primary lighten-1 secondary--text")
     v-text-field(
       v-model="params.search",
       append-icon="fa-search",
@@ -23,9 +25,12 @@ block header
     |
     v-spacer
     |
-    Form(
-      :button="true"
-      @created="addItem")
+    v-btn(color="secondary" @click="$emit('new')" ) 
+      | Nuevo Usuario
+      
+    //- Form(
+    //-   :button="true"
+    //-   @created="addItem")
 
 block options
   template(v-slot:item.detail="{ item }")
@@ -86,14 +91,3 @@ export default {
   }
 }
 </script>
-<style>
-  /* .v-data-table-header{
-    background-color: rgb(87, 0, 0);
-  }
-  thead.text-start {
-  }
-  th {
-    color:white !important;
-    font-size: 17px !important;
-  } */
-</style>

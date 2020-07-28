@@ -1,33 +1,27 @@
 <template lang='pug'>
-.container.mt-n5.fluid.primary.darken-2
-  .row.justify-space-around 
-    v-col(cols=10)
-      v-card.py-5.px-3(dark color="secondary")
-        .headline {{ title }} 
-    .col
-
-  .row.justify-space-between(v-if="filters.length > 0")
-    .ml-2.overline
-      .row
-       h2.ml-3 Filtrado
-       v-tooltip(bottom)
-          template(v-slot:activator='{ on, attrs }')
-            v-icon.pointer.ml-4(
-            v-on="on"
-            @click="removeAllFilters" 
-            color="red" size='medium') fas fa-times
-          span Quitar filtros
-
-  .row(v-for="fil in filters")
-    .row(v-if="Array.isArray(fil.value)")
-      .col
-        strong {{fil.name}}
-      .col
-      v-chip(v-for="v in fil.value") v
-    .row(v-else)
-      .col.ml-3
-        strong.mr-3 {{fil.name}}
-        | {{fil.value}}
+      v-card.secondary.lighten-1
+        v-toolbar.text-left.secondary
+          .headline {{ title }} 
+        .row.text-left.justify-space-around.py-3(v-if="filters.length>0")
+          .overline.mt-2
+            h2 {{ filters.length }} filtros Aplicados
+          v-tooltip(bottom)
+            template(v-slot:activator='{ on, attrs }')
+              v-btn(text @click="removeAllFilters" v-on="on" ) Quitar
+                v-icon.pointer.ml-4(size='large') fas fa-times
+            span Quitar filtros
+        .row(v-for="fil in filters").justify-space-around
+          p(v-if="Array.isArray(fil.value)")
+            strong {{fil.name}}
+            v-chip(v-for="v in fil.value") v
+          p(v-else)
+            strong.mr-3 {{fil.name}}
+            | {{fil.value}}
+          v-tooltip(bottom)
+            template(v-slot:activator='{ on, attrs }')
+              v-btn(text @click="removeFilter(fil.name)" v-on="on" )
+                v-icon.pointer.ml-4(size='large') fas fa-times
+            span Quitar filtro de {{ fil.name }}
 </template>
 <script>
 

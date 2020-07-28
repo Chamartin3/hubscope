@@ -4,7 +4,7 @@ v-navigation-drawer#app-drawer(
   dark
   floating
   persistent
-  :src="drawer_img"
+  
   color="primary",
   mobile-break-point="991",
   v-model="inputValue",
@@ -16,8 +16,8 @@ v-navigation-drawer#app-drawer(
   .row.mb-3
     .col.display-2.text-center.secondary--text
       //- strong HubScope
-      v-img(
-        src='@/assets/logo.png', 
+      img(
+        src='@/assets/img/logo.png',
         height="180", 
         contain)
     //- router-link(:to="{ name: 'login', params: {} }")
@@ -51,10 +51,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['drawer', 'drawer_img', 'logo']),
-    col(){
-      return this.$vuetify
-    },
+    col() {return this.$vuetify },
     inputValue: {
       get () {
         return this.$store.state.app.drawer

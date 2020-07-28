@@ -1,12 +1,11 @@
 <template lang='pug'>
-.container(fluid).white--text.primary.darken-1
   v-select(
-    dark
-    label="Metricas Reportadas"
-    :items="items", 
-    item-text="name"
-    item-value="name"
-    v-model="value")
+      dark
+      label="Metricas Reportadas"
+      :items="items", 
+      item-text="name"
+      item-value="name"
+      v-model="value")
 </template>
 <script>
 
@@ -23,11 +22,14 @@ export default {
     async getItems(){
       let model = this.$django.models.company
       this.items = await model.reportsByMetric(this.company)
+    },
+    reset() {
+      this.value=null
     }
   },
   watch: {
     value(val){
-      this.$emit('input',val)
+      if(val) this.$emit('input',val)
     },   
   },
   mounted() {

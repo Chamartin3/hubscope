@@ -3,12 +3,16 @@
   .row.justify-center
     .col.display-2.text-center.secondary--text
       v-img.pulsate-bck(
-      src='@/assets/logo.png',
+      src='@/assets/img/logo.png',
       contain
       height="150")
-  .row.justify-center
-    .display-1.white--text Cargando
 </template>
+<script>
+import { mapState } from 'vuex'
+export default {
+  name:'LoadingComponent',
+}
+</script>
 
 <style>
 /* ----------------------------------------------

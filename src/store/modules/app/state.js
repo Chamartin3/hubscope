@@ -3,5 +3,6 @@ export default {
   description: 'Manejo y procesamiento de datos productivos',
   drawer: null,
   color: '#0C3173',
-  image: '/static/img/runners.jpg'
+  logo: '@/assets/img/logo.png'
+  
 }

@@ -11,7 +11,7 @@ v-data-iterator(
         v-toolbar.mb-1(dark, color="secondary darken-1")
           v-row.mt-2(align="center", justify="center")
             v-spacer
-            span.white--text {{ perPageText }}
+            span.typing--text {{ perPageText }}
             v-menu(offset-y)
               template(v-slot:activator="{ on }")
                 v-btn.ml-2(color="white", text v-on="on")
@@ -26,13 +26,13 @@ v-data-iterator(
         v-toolbar.mb-1.px-5( v-if="!loading" dark, dense color="secondary darken-1")
           v-row.mt-2(align="center", justify="center")
 
-            span.white--text
+            span.typing--text
               .overline
                 h3 {{ pagesText }}
               .overline
                 h3 {{ totalsText }}
             v-spacer
-            span.mr-4.white--text
+            span.mr-4.typing--text
               | {{ currentText }}
             |
             v-btn.mr-1(dark, small color="primary darken-3",

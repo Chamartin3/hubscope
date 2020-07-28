@@ -57,7 +57,7 @@ class UserRegistrationSerializer(Serializer):
     password = serializers.CharField(write_only=True)
     passwordconf = serializers.CharField(write_only=True)
     group = serializers.CharField(write_only=True)
-    company = serializers.ListField(child=serializers.CharField(), required=False, write_only=True)
+    company = serializers.ListField(child=serializers.CharField(required=False), required=False, write_only=True)
 
     def validate(self, data):
         # data['username'] = uuid.uuid4().hex[:30]
@@ -65,9 +65,7 @@ class UserRegistrationSerializer(Serializer):
 
     def  create(self, validated_data):
         group = validated_data.pop('group',None)
-        company = []
-        if group in ['Gerente', 'Registrador']:
-            company = validated_data.pop('company',[])
+        company = validated_data.pop('company',[])        
         
         validated_data.update({'username':validated_data['username'].lower()})
         user = User.objects.create_user(**validated_data)
