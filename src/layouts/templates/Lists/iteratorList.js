@@ -28,7 +28,7 @@ export default {
   computed:{
     totalPages(){
       let totalitems= this.pagination.total
-      let perpage= this.params.page_size
+      let perpage= this.pagination.per_page
       return Math.ceil(totalitems/perpage)
     },
     pagesText(){

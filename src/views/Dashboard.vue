@@ -25,6 +25,7 @@ export default {
       itemName: 'Empresas',
       itemPluralName: 'Empresas',
       nodata:'No hay empresas registradas',
+      listMethod:'all',
       params:{
         per_page:3,
       }

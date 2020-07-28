@@ -2,11 +2,13 @@
 extends ../../layouts/templates/Lists/iteratorList.pug
 
 append content
-  .row
+  .row(v-if="!loading")
     .col
       .row
         v-col(v-for="item in items", :key="item.name", cols="12", sm="12", md="6", lg="4")
           Card(v-if="item", :empresa="item")
+  .row(v-else)
+    LoadingComponent
 
 block header
   .row.justify-space-around(v-if="!loading")
@@ -28,7 +30,7 @@ block header
         :disabled="pagination.current_page>=totalPages || !totalPages"
         @click="params.page=params.page+1")
         v-icon fa-angle-right
-  hr.sline
+  hr.sline(v-if="!loading")
 block footer
   
 
