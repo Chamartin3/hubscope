@@ -37,9 +37,20 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
     # def list(self, request, *args, **kwargs):
     #     import pdb; pdb.set_trace()
 
+    def get_queryset(self):
+        """
+        """
+        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
+        qs = Company.objects.all()
+        if limited:
+            qs = qs.filter(members__person__in=[self.request.user])    
+        return qs
+
     @action(detail=False, methods=['get'])
     def all(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
+        qs = self.get_queryset()
+        # import pdb; pdb.set_trace()
+        serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'], permission_classes=[])
@@ -228,6 +239,15 @@ class ReportViewSet(DatatablesMixin, ModelViewSet):
     queryset = Report.objects.order_by("-begin")
     serializer_class = ReportSerializer
     search_fields = ['company__id']    
+    def get_queryset(self):
+        """
+        """
+        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
+        qs = Report.objects.order_by("-begin")
+        if limited:
+            qs = qs.filter(company__members__in=self.request.user.roles.all())    
+        return qs
+
 
 class GoalViewSet(ModelViewSet):
     queryset = Goal.objects.order_by("-begin")

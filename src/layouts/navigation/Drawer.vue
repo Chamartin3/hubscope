@@ -33,6 +33,7 @@ v-navigation-drawer#app-drawer(
 </template>
 <script>
 import paths from '@/router/paths'
+import {groupAccessFilter} from '@/router/guards'
 import { mapMutations, mapState } from 'vuex'
 
 function route (path) {
@@ -63,6 +64,7 @@ export default {
     links () { 
       return paths.filter(x => x.parent === 'dashboard')
         .filter(x => !x.hide)
+        .filter(groupAccessFilter)
         .map(path => route(path)) 
     }
   },

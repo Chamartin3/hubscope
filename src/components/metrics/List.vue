@@ -6,7 +6,7 @@ append before_list
     @click='addMetric'
     color='secondary') Crear
 block no_items
-  .row.text-center
+  .row.text-center.white--text
     .col
       .overline
         h2 {{noneData}}

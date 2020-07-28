@@ -33,7 +33,7 @@ block no_items
   .row.text-center
     .col
       .overline
-        h2 No hay personas registradas
+        h2.white--text No hay personas registradas
 
 block item_content
     v-list-item-content

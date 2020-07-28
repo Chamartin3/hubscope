@@ -20,16 +20,16 @@ export default [
     name: 'users',
     show_name: 'Usuarios',
     show_icon: 'fa-users',
-    access:null,
+    access:{ groups:[ 'Admin' , 'Gerente' ] },
     component: () => import('@/views/Users.vue')
   },
   {
     parent: 'dashboard',
     path: 'companies',
     name: 'companies',
-    show_name: 'Empresas',
+    show_name: 'Empresas/Oficinas',
     show_icon: 'fa-building',
-    access:null,
+    access:{ groups:[ 'Admin' , 'Gerente' ] },
     component: () => import('@/views/Companies.vue')
   },    
   {
@@ -38,7 +38,7 @@ export default [
     name: 'reports',
     show_name: 'Reportes',
     show_icon: 'fas fa-tasks',
-    access:null,
+    access:{ groups:[ 'Admin' , 'Gerente', 'Registrador' ] },
     component: () => import('@/views/Reports.vue')
   },  
   {

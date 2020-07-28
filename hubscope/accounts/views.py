@@ -84,6 +84,15 @@ class UserList(DatatablesMixin, generics.ListAPIView):
     serializer_class = UserSerializer
     search_fields = ['first_name', 'last_name', 'username']
     # permission_classes = [IsAdminUser, DjangoModelPermissions]
+    def get_queryset(self):
+        """
+        """
+        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
+        qs = User.objects.all()
+        if limited:
+            qs = qs.filter(roles__in=self.request.user.roles.all()).distinct()
+        return qs
+
 
 class UserSearch(generics.ListAPIView):
     queryset = User.objects.all()
