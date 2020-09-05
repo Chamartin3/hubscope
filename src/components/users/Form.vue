@@ -32,7 +32,7 @@ append content
           :errors="errors.company"
           v-model="form.company")
       .col.text-center(v-if="company")
-        v-chip(v-for="c in form.company") {{ c }} 
+        v-chip(v-for="c in form.company") {{ c }}
     .row
       .col
         v-text-field(label="Nueva contraseña",
@@ -43,7 +43,6 @@ append content
         v-text-field(label="Confirmar contraseña",
           type="password", v-model="form.passwordconf"
           :error-messages="errors.passwordconf", :rules="[valrules.required]")
-
 
 block title
   v-card-title(color="primary")
@@ -58,42 +57,20 @@ import { formModal } from '@/mixins/Modal'
 import GroupSelect from './GroupSelect'
 import CompanySelect from '@/components/empresas/Select'
 export default {
+  components: { GroupSelect, CompanySelect },
+  mixins: [ formModal ],
   props: {
     fullmode: { default: false },
     company: { default: null },
     button: { default: false }
-  },
-  components: { GroupSelect, CompanySelect },
-  mixins: [ formModal ],
-  computed: {
-    formTitle () {
-      return 'Add new'
-    }
-  },
-  watch: {
-    'form.group': function (newVal) {
-      if ( newVal === 'Gerente' || newVal === 'Registrador' ) {
-        this.companySelector = true
-      } else {
-        this.companySelector = false
-      }
-    },
-  },
-  methods: {
-    open () {
-      this.clearAll()
-      if (this.company) this.form.company= [ this.company ]
-      this.dialog = true
-      this.inErrors = {}
-    }
   },
   // mounted() {
   //   if (this.company) this.form.company.append(this.company)
   // },
   data () {
     return {
-      activator:this.button,
-      text:false,
+      activator: this.button,
+      text: false,
       companySelector: false,
       maxWidth: null,
       modalTitle: 'Nuevo Usuario',
@@ -111,8 +88,30 @@ export default {
         password: '',
         passwordconf: '',
         group: '',
-        company:[]
+        company: []
       }
+    }
+  },
+  computed: {
+    formTitle () {
+      return 'Add new'
+    }
+  },
+  watch: {
+    'form.group': function (newVal) {
+      if (newVal === 'Gerente' || newVal === 'Registrador') {
+        this.companySelector = true
+      } else {
+        this.companySelector = false
+      }
+    }
+  },
+  methods: {
+    open () {
+      this.clearAll()
+      if (this.company) this.form.company = [ this.company ]
+      this.dialog = true
+      this.inErrors = {}
     }
   }
 }

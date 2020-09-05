@@ -1,57 +1,55 @@
   <template lang="pug">
-div
+.container
   LoadingComponent(v-if="loading || !instance")
-  .container.fill-height(v-else)
+  div(v-else)
+    header.secondary.text-center.white--text.pa-5
+      .display-3 {{ instance.name }}
     .row.typing--text.align-start
       .col
-        .display-3 {{ instance.name }}
-        hr.sline
-    .row.typing--text.align-start
-    .row.justify-space-between
-      v-col
-        v-card.py-5.px-3(dark color="secondary")
-          .headline Metas activas
-    .row.justify-space-between(v-for="g in instance.open_goals")
-      .col
-        Detail(:id="g.id")
- 
-    v-btn.mb-7(color='secondary'
-    @click="$router.push({name:'dashboard'})"
-    dark large absolute bottom right fab)
-      v-icon fas fa-arrow-left
+        //- hr.sline
+    .container
+      //- .row.typing--text.align-start
+      //-   .row.justify-space-between
+      //-     v-col
+      //-       v-card.py-5.px-3(dark color="secondary")
+      //-         .headline Metas activas
+      .row.justify-space-between(v-for="g in instance.open_goals")
+        .col
+          Detail(:id="g.id")
+  BackButton(to="dashboard" mensaje="Volver al home")
 </template>
 <script>
 import Detail from '@/components/informe/Detail.vue'
 
 export default {
   name: 'Empresa',
-  components:{
+  components: {
     Detail
   },
-  data() {
+  data () {
     return {
-      instance:null,
+      instance: null,
       model: 'company',
       action: 'detail',
       text: '',
       loading: false
     }
   },
-  computed:{
-    id() {
+  computed: {
+    id () {
       return this.$route.params.id
     }
   },
+  mounted () {
+    this.getInstance()
+  },
   methods: {
-    async getInstance(){
-      this.loadind=true
+    async getInstance () {
+      this.loadind = true
       let model = this.$django.models[this.model]
       this.instance = await model[this.action](this.id)
-      this.loadind=false
-    },
-  },
-  mounted(){
-    this.getInstance()
+      this.loadind = false
+    }
   }
 
 }

@@ -14,9 +14,14 @@ class datatableFilters(filters.SearchFilter, filters.OrderingFilter):
     Filter using all the variables sent through a datatable_filters options
     """
     def filter_queryset(self, request, queryset, view):
-        ''' Filters the by an specific field using as reference an specific field name'''
+        ''' 
+            Filters the by an specific field using as reference an specific field name
+        '''
+
         queryset = super(datatableFilters, self).filter_queryset(request, queryset, view)
 
+
+        # import pdb; pdb.set_trace()
         datatable_filters = request.query_params.get('datatable_filters', None)
         if datatable_filters is None:
             return queryset
@@ -82,7 +87,7 @@ class CustomPagination(pagination.PageNumberPagination):
 
 
 class DatatablesMixin(object):
-    filter_backends = [datatableFilters]
+    filter_backends = [ datatableFilters ]
     ordering_fields = '__all__'
     pagination_class = CustomPagination
 

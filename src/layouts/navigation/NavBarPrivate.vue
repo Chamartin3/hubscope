@@ -1,10 +1,8 @@
 <template lang="pug">
-v-app-bar#core-app-bar(
-color="primary"
-dark
-app
+v-app-bar#core-app-bar.gray.lighten-1(
+  app
 absolute
-flat height='92')
+flat height='60')
   v-btn(v-if="responsive" icon @click.stop='onClick')
     //- v-icon menu
     v-icon fa-bars

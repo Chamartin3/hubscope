@@ -11,18 +11,19 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        primary: '#2A4885',
+        primary: '#182c54',
+        // primary: '#2A4885',
         secondary: '#F27023',
         terciary: '#25AAE1',
         typing: '#262626',
         error: '#F71212',
         info: '#2196F3',
         success: '#4CAF50',
-        warning: '#d19e04',
-        
-        ////////////////////////
+        warning: '#d19e04'
+
+        /// /////////////////////
       }
     }
   },
-  icons: {iconfont: 'fa'}
+  icons: { iconfont: 'fa' }
 })

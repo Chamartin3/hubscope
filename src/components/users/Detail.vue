@@ -17,29 +17,29 @@ import Info from './Info'
 import LogInfo from './LogInfo'
 import { instanceModal } from '@/mixins/Modal'
 export default {
-  name: "UserDetail",
-  mixins:[instanceModal],
-  components:{
+  name: 'UserDetail',
+  components: {
     Info,
     LogInfo
   },
-  data(){
-    return{
-      customFormTitle:'',
-      modalColor:'primary',
-      contentColor:'secondary',
-      modalDark:true,
-      model_name: 'Usuario',
+  mixins: [instanceModal],
+  data () {
+    return {
+      customFormTitle: '',
+      modalColor: 'primary',
+      contentColor: 'secondary',
+      modalDark: true,
+      model_name: 'Usuario'
     }
   },
-  watch:{
-    instance:{
-      deep:true,
-      handler(val){
-        if(val){
+  watch: {
+    instance: {
+      deep: true,
+      handler (val) {
+        if (val) {
           this.customFormTitle = `${val.username}`
           this.customFormTitle = `${val.username}`
-        }else{
+        } else {
           this.customFormTitle = null
         }
       }

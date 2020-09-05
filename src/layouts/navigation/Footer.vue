@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-footer#core-footer(app color='primary' absolute)
+  v-footer#core-footer(app color='primary' fixed)
     v-layout(row wrap align-center)
       v-flex(xs12='')
         .white--text.ml-4

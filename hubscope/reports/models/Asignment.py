@@ -74,7 +74,7 @@ class Asignment(models.Model):
 
         if self.frecuency == 'WEEK':
             actual_weekday = begining.weekday()
-            weekdays = [int(c) for c in meta]
+            weekdays = [ int(c) for c in meta ]
             weekdays.sort()
             # import pdb; pdb.set_trace()
             next_weekday = next((wd for wd in weekdays if wd >= actual_weekday), min(weekdays)) 

@@ -4,8 +4,8 @@
     .col
       .display-3 {{ instance.name }}
       hr.sline
-      v-tabs(v-model="tab" 
-      slider-color="secondary" 
+      v-tabs(v-model="tab"
+      slider-color="secondary"
       fixed-tabs)
         v-tab.typing--text( v-for="t in tabs" )
           | {{t.name}}
@@ -14,14 +14,11 @@
         v-tab-item(key='Reportes')
           ReportsPage(:instance="instance")
         v-tab-item(key='Asignments')
-          AsignmentPage(:instance="instance")        
+          AsignmentPage(:instance="instance")
         v-tab-item(key='Indicadores')
           IndicatorsPage(:instance="instance")
-    
-  v-btn.mb-7(color='secondary'
-    @click="$router.push({name:'companies'})"
-    dark large absolute bottom right fab)
-    v-icon fas fa-arrow-left
+
+  BackButton(to="companies" mensaje="Volver a lista de empresas")
 </template>
 <script>
 import ReportsPage from '@/views/Company/Reports.vue'
@@ -30,39 +27,39 @@ import IndicatorsPage from '@/views/Company/Indicators.vue'
 
 export default {
   name: 'Empresa',
-  components:{
+  components: {
     ReportsPage,
     AsignmentPage,
     IndicatorsPage
 
   },
-  data() {
+  data () {
     return {
-      instance:null,
+      instance: null,
       model: 'company',
       action: 'detail',
-      tab:null,
+      tab: null,
       tabs: [
-        {name: 'Reportes', val:'rep'},
-        {name: 'Asignaciones', val:'asignaciones'},
-        {name: 'Indicadores', val:'indicators'}
+        { name: 'Reportes', val: 'rep' },
+        { name: 'Asignaciones', val: 'asignaciones' },
+        { name: 'Indicadores', val: 'indicators' }
       ],
       text: ''
     }
   },
-  computed:{
-    id() {
+  computed: {
+    id () {
       return this.$route.params.id
     }
   },
+  mounted () {
+    this.getInstance()
+  },
   methods: {
-    async getInstance(){
+    async getInstance () {
       let model = this.$django.models[this.model]
       this.instance = await model[this.action](this.id)
-    },
-  },
-  mounted(){
-    this.getInstance()
+    }
   }
 
 }

@@ -10,7 +10,7 @@ v-tooltip(bottom)
             v-icon.my-5(size="50") fa-exclamation-triangle
           v-card-text.text-center
             p.headline ¿Desea {{action}} este periodo?
-            p {{confirmation}}    
+            p {{confirmation}}
           v-card-actions.justify-space-around
             v-btn(
               color="error",
@@ -24,47 +24,45 @@ v-tooltip(bottom)
 </template>
 <script>
 export default {
+
   name: 'GoalCompletation',
-  props: ['id','completation'],
-  data() {
+  props: ['id', 'completation'],
+  data () {
     return {
       dialog: false,
       loading: false
     }
   },
-  methods:{
-    async send(){
+  computed: {
+    text () {
+      if (this.completation) return 'Completado'
+      return 'abierto'
+    },
+    color () {
+      if (this.completation) return 'gray'
+      return 'green'
+    },
+    message () {
+      if (this.completation) return 'El periodo esta cerrado, no puede recibir modificaciones'
+      return 'El periodo esta abierto, para enviar reportes y modificaciones'
+    },
+    action () {
+      if (this.completation) return 'Abrir'
+      return 'Cerrar'
+    },
+    confirmation () {
+      if (this.completation) return 'Al abrir este periodo se podran modificar los reportes, y se hará visible en lapagina principal'
+      return 'Al cerrar este periodo, no se podra modificar los reportes asociados, y dejara de ser visible en la pagina principal'
+    }
+  },
+  methods: {
+    async send () {
       this.loading = true
       let res = await this.$django.models.goal.toggleStatus(this.id)
       this.loading = false
       this.dialog = false
       this.$emit('changed')
       this.$alert('success', 'success', res.message)
-    }
-  },
-  computed:{
-    text(){
-      if (this.completation) return "Completado"
-      return "abierto"
-    },    
-    color(){
-      if (this.completation) return "gray"
-      return "green"
-    },
-    message(){
-      if (this.completation) return "El periodo esta cerrado, no puede recibir modificaciones"
-      return "El periodo esta abierto, para enviar reportes y modificaciones"
-
-    },       
-    action(){
-      if (this.completation) return "Abrir"
-      return "Cerrar"
-
-    },   
-    confirmation(){
-      if (this.completation) return "Al abrir este periodo se podran modificar los reportes, y se hará visible en lapagina principal"
-      return "Al cerrar este periodo, no se podra modificar los reportes asociados, y dejara de ser visible en la pagina principal"
-
     }
   }
 }

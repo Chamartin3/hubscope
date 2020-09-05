@@ -10,7 +10,7 @@ v-autocomplete(
   item-text="fullname"
   return-object
   )
-  template(v-slot:no-data) 
+  template(v-slot:no-data)
     .container No hay usuarios que concuerden con la busqueda
 
   template(v-slot:selection='{item}')
@@ -24,36 +24,36 @@ v-autocomplete(
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       isLoading: false,
       search: null,
       value: null,
       options: [],
       model: this.$django.models.accounts,
-      listMethod: "search",
-      textField: "name",
-      valueField: "name"
-    };
+      listMethod: 'search',
+      textField: 'name',
+      valueField: 'name'
+    }
   },
   watch: {
-    search (val) { 
+    search (val) {
       if (!val && this.value) return
-      this.getOptions(val) 
+      this.getOptions(val)
     },
-    value(newVal) {
-      this.$emit("input", newVal);
+    value (newVal) {
+      this.$emit('input', newVal)
     }
   },
   methods: {
-    filterOptions(option){
-      if(!this.filtered) return true
+    filterOptions (option) {
+      if (!this.filtered) return true
       return this.filteredOptions.includes(option.name)
     },
-    async getOptions(search) {
+    async getOptions (search) {
       this.isLoading = true
       if (!search || search === '') {
-        this.options=[]
+        this.options = []
         return
       }
       let params = { search: search }
@@ -61,5 +61,5 @@ export default {
       this.isLoading = false
     }
   }
-};
+}
 </script>

@@ -12,11 +12,10 @@ v-autocomplete(
   return-object
   :error-messages="errors.name"
   )
-  template(v-slot:no-data) 
-    .container 
+  template(v-slot:no-data)
+    .container
       | No hay metricas que concuerden con la busqueda
       //- v-btn Crear
-        
 
   //- template(v-slot:selection='{item}')
   //-   .headline {{ item.first_name }} {{ item.last_name }}
@@ -28,45 +27,45 @@ v-autocomplete(
 
 </template>
 <script>
-import { baseSubForm } from '#/Forms' 
+import { baseSubForm } from '#/Forms'
 
 export default {
-  mixins:[baseSubForm],
-  data() {
+  mixins: [baseSubForm],
+  data () {
     return {
       isLoading: false,
       search: null,
-      form:{
-        name:null,
+      form: {
+        name: null
       },
       options: [],
       model: this.$django.models.metric,
-      listMethod: "all",
-      textField: "name",
-      valueField: "name"
-    };
+      listMethod: 'all',
+      textField: 'name',
+      valueField: 'name'
+    }
   },
   watch: {
-    search (val) { 
+    search (val) {
       if (!val && this.value) return
-      this.getOptions(val) 
-    },
+      this.getOptions(val)
+    }
     // value(newVal) {
     //   this.$emit("input", newVal);
     // }
   },
   methods: {
-    filterOptions(option){
-      if(!this.filtered) return true
+    filterOptions (option) {
+      if (!this.filtered) return true
       return this.filteredOptions.includes(option.name)
     },
-    onInput(){
+    onInput () {
       this.cleanInErrors()
     },
-    async getOptions(search) {
+    async getOptions (search) {
       this.isLoading = true
       if (!search || search === '') {
-        this.options=[]
+        this.options = []
         return
       }
       let params = { search: search }
@@ -74,5 +73,5 @@ export default {
       this.isLoading = false
     }
   }
-};
+}
 </script>

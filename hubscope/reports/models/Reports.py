@@ -6,6 +6,9 @@ from hubscope.accounts.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import int_list_validator
 from functools import reduce
+from django.db.models import Q
+
+
 from .Metric import Metric
 from .Company import Company
 
@@ -32,6 +35,31 @@ class ReportsManager(models.Manager):
                 query[k] = v
 
         return self.filter(**query)
+
+    def by_status(self, param):
+
+        if param == 'cerrada':
+            return self.filter( editable=False )
+        
+        qs = self.filter(editable=True)
+        if param == 'entregada':
+            return qs.filter(~Q(num_value=None))
+        
+        qs = qs.filter(num_value=None)
+        if param == 'esperando':
+            return qs.filter(end__gte=localdate() )
+            
+        qs = qs.filter(end__lt=localdate())
+        if param == 'abierta':
+            return qs.filter(deadline__gt=localdate() )
+        
+        if param == 'atrasada':
+            return qs.filter(deadline__lt=localdate() )
+
+        
+        print( f'{param} is not a recogniced status for Reports' )  
+        import pdb; pdb.set_trace()
+        raise 
 
 class Report(models.Model):
     """Es el Registro de información cruda """
@@ -70,7 +98,7 @@ class Report(models.Model):
         verbose_name = 'Report'
         verbose_name_plural = 'Reports'
 
-    objects=ReportsManager()
+    objects = ReportsManager()
 
     
     def clean(self):
@@ -81,7 +109,7 @@ class Report(models.Model):
         self.full_clean()
         fist_time = self.created_at is None
         if self.value is not None and fist_time:
-            self.created_at = localtime()
+            self.created_at = localdate()
         return super().save(*args, **kwargs)
 
     @property

@@ -4,27 +4,27 @@
   Goal(v-else :goal="instance")
 </template>
 <script>
-import Goal from '@/components/indicators/Goals/Goal.vue'
+import Goal from '@/components/goals/Goal.vue'
 export default {
   name: 'Detail',
-  props:['id'],
-  components:{
+  props: ['id'],
+  components: {
     Goal
   },
-  data() {
+  data () {
     return {
       loading: false,
-      instance:null
+      instance: null
     }
   },
-  methods:{
-    async getDetail() {
-      let loading=true
+  methods: {
+    async getDetail () {
+      let loading = true
       this.instance = await this.$django.models.goal.detail(this.id)
-      this.loading=false
+      this.loading = false
     }
   },
-  mounted() {
+  mounted () {
     this.getDetail()
   }
 }

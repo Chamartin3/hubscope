@@ -2,8 +2,8 @@
 
 export default {
   alert: {
-      tit: '',
-      msg: '',
-      type:'success'
-    },
+    tit: '',
+    msg: '',
+    type: 'success'
+  }
 }

@@ -10,8 +10,8 @@ v-card.pointer(dark color='primary lighten-1')
         .overline Proximo vencimiento
     .row.text-center.mx-2
       .col
-        .overline    
-        strong {{ asignment.deadline_date }}  
+        .overline
+        strong {{ asignment.deadline_date }}
     .row.text-center.mx-2
       .col
         .overline Frecuencia
@@ -19,61 +19,58 @@ v-card.pointer(dark color='primary lighten-1')
       .col
         .overline
         strong {{ frecuencyText }}
-    .row.justify-end 
-      v-btn( text @click="$emit('borrar',asignment.id )" )  
+    .row.justify-end
+      v-btn( text @click="$emit('borrar',asignment.id )" )
         v-icon fas fa-trash
 </template>
 <script>
 export default {
-  name: 'asignmentCard',
-  props:['asignment'],
-  data() {
+  name: 'AsignmentCard',
+  props: ['asignment'],
+  data () {
     return {
       weekdays: [
         'Lunes',
-        'Martes', 
+        'Martes',
         'Miercoles',
         'Jueves',
         'Viernes',
         'Sabbados',
         'Domingos'
-      ],
+      ]
     }
   },
-  computed:{
-    name(){
+  computed: {
+    name () {
       return this.asignment.metric_info.name
     },
-    selectedText(){
-
-      if(this.asignment.frecuency==='DAY') return this.asignment.metafreq
-      let days =  this.asignment.metafreq.split(',')
+    selectedText () {
+      if (this.asignment.frecuency === 'DAY') return this.asignment.metafreq
+      let days = this.asignment.metafreq.split(',')
       let last = days.pop()
       const self = this
-      if(this.asignment.frecuency==='MONT') {
-        if(days.length<1) return last
-        return days.join(',')+' y '+last
+      if (this.asignment.frecuency === 'MONT') {
+        if (days.length < 1) return last
+        return days.join(',') + ' y ' + last
       }
-      if(this.asignment.frecuency==='WEEK') {
-        if(days.length<1) return self.weekdays[last]
-        return days.map(d => self.weekdays[d]).join(',')+' y '+ self.weekdays[last]
-      }
-      else {
+      if (this.asignment.frecuency === 'WEEK') {
+        if (days.length < 1) return self.weekdays[last]
+        return days.map(d => self.weekdays[d]).join(',') + ' y ' + self.weekdays[last]
+      } else {
         return 1
       }
     },
-    frecuencyText(){
-      if(!this.selectedText) return null
-      if(this.asignment.frecuency === 'MONT') {
+    frecuencyText () {
+      if (!this.selectedText) return null
+      if (this.asignment.frecuency === 'MONT') {
         return `Los ${this.selectedText} de cada mes`
       }
-      if(this.asignment.frecuency === 'WEEK') {
+      if (this.asignment.frecuency === 'WEEK') {
         return `Semanalmente los ${this.selectedText}`
       }
-      if(this.asignment.frecuency === 'DAY') {
+      if (this.asignment.frecuency === 'DAY') {
         return `Cada ${this.selectedText} dias`
-        
-      }     
+      }
       return 'Solo una vez'
     }
   }

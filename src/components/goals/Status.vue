@@ -8,28 +8,28 @@ span
 </template>
 <script>
 const goalStatuses = {
-  'good':{
-    color:"success"
+  'good': {
+    color: 'success'
   },
-  'medium':{
-    color:"warning"
+  'medium': {
+    color: 'warning'
   },
-  'bad':{
-    color:"red"
-  },
+  'bad': {
+    color: 'red'
+  }
 }
 export default {
   name: 'GoalStatus',
-  props:['status', 'indicatorname'],
-  computed:{
-    color(){
+  props: ['status', 'indicatorname'],
+  computed: {
+    color () {
       return goalStatuses[this.status].color
     },
-    message(){
+    message () {
       let msj
-      if(this.status == 'bad') msj = "esta lejos de cumplirse"
-      if(this.status == 'medium')  msj = "requiere ajustes"
-      if(this.status == 'good') msj = "va bien"
+      if (this.status == 'bad') msj = 'esta lejos de cumplirse'
+      if (this.status == 'medium') msj = 'requiere ajustes'
+      if (this.status == 'good') msj = 'va bien'
       return `El indicador ${this.indicatorname} ${msj} `
     }
   }

@@ -16,6 +16,14 @@
         :companyid="instance.id", 
         :company_name="instance.name"
         )
+
+      card
+        template(slot="title")
+          .headline Status
+        StatusSelect(
+          @input="$refs.Table.setPropertyFilters({status:$event})"
+          ref="StatusSelect")
+
       card
         template(slot="title")
           v-icon.white--text.mx-2 far fa-calendar-alt
@@ -33,14 +41,18 @@
           ref="MetricSelect"
           :company="instance.id"
           @input="filterByMetric")
+      
 
 </template>
 <script>
 import PersonelList from '@/components/empresas/positions/List'
 import ReportsFilters from '@/components/reports/Filters.vue'
 import ReportsTable from '@/components/reports/Table'
+
+import StatusSelect from '@/components/reports/selects/Status'
 import DateRangeSelect from '@/components/reports/selects/Dates'
 import MetricSelect from '@/components/reports/selects/Metrics'
+
 export default {
   name: 'ReportesRealizados',
   props:['instance'],
@@ -49,7 +61,8 @@ export default {
     ReportsTable,
     ReportsFilters,
     DateRangeSelect,
-    MetricSelect
+    MetricSelect,
+    StatusSelect
   },
   methods: {
     handleFilterChange(filter_name){

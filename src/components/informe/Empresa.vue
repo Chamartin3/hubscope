@@ -16,11 +16,11 @@ v-card.pointer(dark color="primary lighten-1")
         .overline La empresa no tiene metas abiertas
 </template>
 <script>
-import GoalStatus from '@/components/indicators/Goals/Status'
+import GoalStatus from '@/components/goals/Status'
 export default {
-  name:"EmpresaCard",
+  name: 'EmpresaCard',
   props: ['empresa'],
-  components: {GoalStatus}
-  
+  components: { GoalStatus }
+
 }
 </script>

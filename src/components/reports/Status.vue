@@ -9,20 +9,20 @@ v-tooltip(bottom)
 import { Statuses } from './utils'
 export default {
   props: ['status'],
-  computed:{
-    desc(){ 
-      return this[this.status].desc
-    },
-    name(){ 
-      return this[this.status].name 
-    },
-    color(){ 
-      return this[this.status].color 
-    },
-  },
-  data() {
+  data () {
     return {
       ...Statuses
+    }
+  },
+  computed: {
+    desc () {
+      return this[this.status].desc
+    },
+    name () {
+      return this[this.status].name
+    },
+    color () {
+      return this[this.status].color
     }
   }
 }

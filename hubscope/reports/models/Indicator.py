@@ -443,8 +443,7 @@ class Indicator(models.Model):
     #     periods = self.generate_periods(size,dayrange )
     #     dailymetrics = self.days_by_metric(qs,dayrange)
     #     return self.agregate_in_periods(periods , dailymetrics)
-
-            
+        
 
 class Goal(models.Model):
     indicator = models.ForeignKey(
@@ -460,11 +459,8 @@ class Goal(models.Model):
     goal  = models.IntegerField()
     fail  = models.CharField(
         max_length=50,
-        validators=[int_list_validator],
         null=True, 
         blank=True)
-    
-
 
     # Resultados calculados
     result = models.IntegerField(null=True)

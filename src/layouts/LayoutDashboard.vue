@@ -2,7 +2,7 @@
   v-app(light)
     AppBar
     CoreView
-    CoreFooter
+    //- CoreFooter
     CoreDrawer
 </template>
 <script>

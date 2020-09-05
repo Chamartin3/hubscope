@@ -2,6 +2,7 @@
 .container(fluid).white--text.primary.darken-1
   v-select(
     dark
+    clearable
     label="Status de reporte"
     :items="items", 
     v-model="value")

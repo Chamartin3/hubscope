@@ -2,7 +2,7 @@
 v-content()
     Alert(ref="Alert")
     Loading.mt-5(v-if="is_loading", :msg="msg")
-    v-container.px-0(fluid fill-height v-show="!is_loading")
+    v-container.px-0.blue-grey.lighten-4(fluid fill-height v-show="!is_loading")
       v-fade-transition(mode="out-in")
         router-view(
           class="align-start"
@@ -21,12 +21,6 @@ export default {
       msg: null
     }
   },
-  methods: {
-    setLoading (msg) {
-      this.msg = msg
-      this.is_loading = true
-    }
-  },
   computed: {
     alert () { return this.$store.state.alert },
     featuredSection () { return this.$route.params.scroll }
@@ -38,6 +32,12 @@ export default {
   },
   created () {
     this.is_loading = false
+  },
+  methods: {
+    setLoading (msg) {
+      this.msg = msg
+      this.is_loading = true
+    }
   }
 }
 </script>

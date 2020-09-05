@@ -7,6 +7,7 @@ from hubscope.accounts.models import User
 from django.contrib.auth.models import Group
 
 from django.db.models import Count, Sum
+from hubscope.reports.filters import reportFilters
 
 from hubscope.reports.serializers import (
     GoalSerializer, 
@@ -28,6 +29,7 @@ from hubscope.reports.models import (
     Report)
 
 
+
 class CompanyViewSet(DatatablesMixin, ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
@@ -36,7 +38,6 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
 
     # def list(self, request, *args, **kwargs):
     #     import pdb; pdb.set_trace()
-
     def get_queryset(self):
         """
         """
@@ -45,13 +46,17 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
         if limited:
             qs = qs.filter(members__person__in=[self.request.user])    
         return qs
-
     @action(detail=False, methods=['get'])
+
+    
     def all(self, request, *args, **kwargs):
         qs = self.get_queryset()
         # import pdb; pdb.set_trace()
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+
+
+
 
     @action(detail=True, methods=['get'], permission_classes=[])
     def reports(self, request, *args, **kwargs):
@@ -64,16 +69,10 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
     @action(detail=True, methods=['get'], permission_classes=[])
     def reportsByMetric(self, request, *args, **kwargs):
         company = self.get_object().reports
-        
-        # metric = request.query_params('g')
-
         sumary = company \
-            .values('metric__name').annotate(total=Count('metric__name'))
-            # .extra(select={
-            # 'metric__name':'metric__name',
-            # 'name':'metric__name'
-            # }) \
-        # import pdb; pdb.set_trace
+            .values('metric__name') \
+            .annotate(total=Count('metric__name'))
+
         serializer = sumarySerializer(sumary, many=True, namefield='metric__name')
         return Response(serializer.data,status=200)        
     
@@ -180,6 +179,14 @@ class IndicatorViewSet(DatatablesMixin, ModelViewSet):
     queryset = Indicator.objects.all()
     serializer_class = IndicatorSerializer
 
+
+    @action(detail=False, methods=['get'])
+    def all(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
@@ -238,7 +245,10 @@ class MetricViewSet(DatatablesMixin, ModelViewSet):
 class ReportViewSet(DatatablesMixin, ModelViewSet):
     queryset = Report.objects.order_by("-begin")
     serializer_class = ReportSerializer
-    search_fields = ['company__id']    
+    search_fields = ['company__id']
+    filter_backends = [ reportFilters ]
+
+
     def get_queryset(self):
         """
         """

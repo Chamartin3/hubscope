@@ -65,6 +65,12 @@ export default {
     setDatableFilters(newfilters){
       this.$set(this.params, 'datatable_filters', newfilters)
       if (Object.keys(newfilters).length===0) this.listObjects(this.params)
+    },
+    setPropertyFilters(properties){
+      console.log('property filters');
+      console.log(properties);
+      this.$set(this.params, 'property_filters', properties)
+      if (Object.keys(properties).length===0) this.listObjects(this.params)
     }
   },
   filters:{

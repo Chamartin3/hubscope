@@ -2,15 +2,15 @@
 
 export default {
 
-  updateUser(state, userInfo){
+  updateUser (state, userInfo) {
     state.user = userInfo
   },
-  updateProfile(state, profileInfo){
+  updateProfile (state, profileInfo) {
     state.profile = profileInfo
     console.log(state)
   },
-  updateSocio(state, socioInfo){
+  updateSocio (state, socioInfo) {
     state.socio = socioInfo
-  },
+  }
 
 }

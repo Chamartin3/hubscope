@@ -4,24 +4,23 @@ v-navigation-drawer#app-drawer(
   dark
   floating
   persistent
-  
+
   color="primary",
   mobile-break-point="991",
   v-model="inputValue",
-  width="260")
-  //- template(v-slot:img="attrs")
-  //-   v-img(v-bind="attrs", :gradient="'to top, rgba(0, 0, 0, .8),'+ $vuetify.theme.themes.light.primary")
+  width="210")
+  template(v-slot:img="attrs")
+    v-img(v-bind="attrs", :gradient="'to top, rgba(0, 0, 0, .8),'+ $vuetify.theme.themes.light.primary")
 
-  v-list-item
-  .row.mb-3
+  .row.mb-1
     .col.display-2.text-center.secondary--text
       //- strong HubScope
       img(
         src='@/assets/img/logo.png',
-        height="180", 
+        height="100",
         contain)
     //- router-link(:to="{ name: 'login', params: {} }")
-  v-divider.mx-3.mb-3
+  v-divider.mx-1.mb-1
   v-list(nav)
     div
       v-list-item(v-for="(link, i) in links", :key="i", :to="{name:link.to}", active-class="primary secondary--text")
@@ -33,7 +32,7 @@ v-navigation-drawer#app-drawer(
 </template>
 <script>
 import paths from '@/router/paths'
-import {groupAccessFilter} from '@/router/guards'
+import { accessFilters } from '@/router/guards'
 import { mapMutations, mapState } from 'vuex'
 
 function route (path) {
@@ -52,7 +51,7 @@ export default {
     }
   },
   computed: {
-    col() {return this.$vuetify },
+    col () { return this.$vuetify },
     inputValue: {
       get () {
         return this.$store.state.app.drawer
@@ -61,11 +60,11 @@ export default {
         this.setDrawer(val)
       }
     },
-    links () { 
+    links () {
       return paths.filter(x => x.parent === 'dashboard')
         .filter(x => !x.hide)
-        .filter(groupAccessFilter)
-        .map(path => route(path)) 
+        .filter(accessFilters)
+        .map(path => route(path))
     }
   },
   methods: { ...mapMutations('app', ['setDrawer', 'toggleDrawer']) }

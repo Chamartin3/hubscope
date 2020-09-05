@@ -2,14 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import paths from '@/router/paths'
-import { beforeEach, groupAccessFilter, mainPageFilter } from '@/router/guards'
+import { beforeEach, accessFilters } from '@/router/guards'
+import Gates from '@/router/gates'
 import basePaths from '@/router/basePaths'
-const DJANGO = Vue.$django ? Vue.$django : DJANGO_CONTEXT ? DJANGO_CONTEXT : null
-Vue.use(Router)
 
-let NavPaths
-NavPaths = Vue.$django ? Vue.$django.navigation_paths : ''
+const DJANGO = Vue.$django ? Vue.$django : DJANGO_CONTEXT || null
 
+// Rutas padre e hijas
 function route (path) {
   return {
     name: path.name,
@@ -19,21 +18,11 @@ function route (path) {
   }
 }
 
-function accessFilter(path){
-  if (!path.access) return true
-  let ugroups= DJANGO.user ? DJANGO.user.groups.map(x=>x.name) : []
-  if(ugroups.includes('admin')) return true
-  for (var i = 0; i < ugroups.length; i++) {
-    if(path.access.groups.includes(ugroups[i])) return true
-  }
-  return false
-}
-
-
 let routes = basePaths.map(function (parent) {
-  // console.log(paths);
-  let children = paths.filter(x => x.parent === parent.name).filter(groupAccessFilter)
-  // console.log(children);
+  let children = paths
+    .filter(x => x.parent === parent.name)
+    .filter(accessFilters)
+    .map(Gates)
   return {
     ...parent,
     component: parent.component,
@@ -41,9 +30,15 @@ let routes = basePaths.map(function (parent) {
   }
 })
 
+console.log(routes)
+// NavPaths
+let NavPaths
+NavPaths = Vue.$django ? Vue.$django.navigation_paths : ''
 let FinalRoutes = NavPaths ? routes.concat(NavPaths) : routes
 
-const ROUTER =  new Router({
+console.log(FinalRoutes)
+// Router
+const ROUTER = new Router({
   mode: 'history',
   routes: FinalRoutes,
   scrollBehavior (to, from, savedPosition) {
@@ -57,6 +52,8 @@ const ROUTER =  new Router({
   }
 })
 
+// Navigation Guards
 ROUTER.beforeEach(beforeEach)
+Vue.use(Router)
 
 export default ROUTER

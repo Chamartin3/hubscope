@@ -1,7 +1,6 @@
 <template lang="pug">
 v-select(
-    placeholder="Empresa"
-    multiple
+    placeholder="Indicador"
     :items="options"
     :item-text="textField",
     :item-value="valueField",
@@ -13,18 +12,18 @@ v-select(
 <script>
 import { baseSubForm } from '#/Forms'
 export default {
+  props: ['preset'],
   data () {
     return {
       options: [],
       value: [],
-      model: this.$django.models.company,
+      model: this.$django.models.indicator,
       listMethod: 'all',
       textField: 'name',
       valueField: 'name',
-      nodata: 'No se ha encontrado empresas'
+      nodata: 'No se ha encontrado Indicadores'
     }
   },
-  props: ['preset'],
   watch: {
     value (val) {
       if (val) this.$emit('input', val)
