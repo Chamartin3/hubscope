@@ -7,7 +7,7 @@ v-dialog(v-model="dialog", :max-width="!maxWidth ? '500px':maxWidth")
     block title
       v-card-title
         span.headline(v-if="customFormTitle") {{ customFormTitle }}
-        span.headline(v-else="v-else") {{ formTitle }} {{ model_name }}
+        span.headline(v-else) {{ formTitle }} {{ model_name }}
       
     v-container.pa-5
       v-form(ref="_formWrapper", v-model="valid", :lazy-validation="true")

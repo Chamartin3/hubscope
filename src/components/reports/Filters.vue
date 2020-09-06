@@ -1,7 +1,5 @@
 <template lang='pug'>
-      v-card.secondary.lighten-1
-        v-toolbar.text-left.secondary
-          .headline {{ title }} 
+      v-card
         .row.text-left.justify-space-around.py-3(v-if="filters.length>0")
           .overline.mt-2
             h2 {{ filters.length }} filtros Aplicados
@@ -13,7 +11,7 @@
         .row(v-for="fil in filters").justify-space-around
           p(v-if="Array.isArray(fil.value)")
             strong {{fil.name}}
-            v-chip(v-for="v in fil.value") v
+            v-chip(v-for="v in fil.value") {{v}}
           p(v-else)
             strong.mr-3 {{fil.name}}
             | {{fil.value}}
@@ -28,14 +26,14 @@
 import filtersManager from '@/layouts/templates/Tables/filtersManager'
 export default {
   name: 'CompanyReportFilters',
-  mixins:[ filtersManager ],
-  props:['companyName'],
-  data() {
+  mixins: [ filtersManager ],
+  props: ['companyName'],
+  data () {
     return {
     }
   },
   computed: {
-    title() {
+    title () {
       return `Reportes recientes de ${this.companyName}`
     }
   }

@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from hubscope.mixins import DatatablesMixin
+from hubscope.mixins import DatatablesMixin, datatableFilters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from datetime import datetime
@@ -18,6 +18,8 @@ from hubscope.reports.serializers import (
     InformeSerializer,
     MetricSerializer,
     sumarySerializer,
+    ReportDeliverySerializer,
+    Goal,
     ReportSerializer)
 from hubscope.reports.models import (
     Goal,
@@ -27,8 +29,6 @@ from hubscope.reports.models import (
     Indicator, 
     Position,
     Report)
-
-
 
 class CompanyViewSet(DatatablesMixin, ModelViewSet):
     queryset = Company.objects.all()
@@ -46,9 +46,10 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
         if limited:
             qs = qs.filter(members__person__in=[self.request.user])    
         return qs
-    @action(detail=False, methods=['get'])
 
-    
+
+        
+    @action(detail=False, methods=['get'])
     def all(self, request, *args, **kwargs):
         qs = self.get_queryset()
         # import pdb; pdb.set_trace()
@@ -147,134 +148,3 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
             serializer.data, 
             status=201, 
             headers=headers)       
-
-
-
-class AsignmentViewSet(DatatablesMixin, ModelViewSet):
-    queryset = Asignment.objects.all()
-    serializer_class = AsignmentSerializer
-
-    def list(self, request, *args, **kwargs):
-        param = request.query_params.get('company',None)
-        if param:
-            self.queryset = self.queryset.filter(company=param)
-        return super(AsignmentViewSet, self).list(self, request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        frecuency = request.data.get('frecuency')
-        if not frecuency:
-            request.data['frecuency'] = 'OT'
-        return super(AsignmentViewSet, self) \
-            .create(request, *args, **kwargs)
-        # serializer = self.get_serializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # self.perform_create(serializer)
-        # headers = self.get_success_headers(serializer.data)
-        # return Response(serializer.data, status=201, headers=headers)
-        
-
-
-
-class IndicatorViewSet(DatatablesMixin, ModelViewSet):
-    queryset = Indicator.objects.all()
-    serializer_class = IndicatorSerializer
-
-
-    @action(detail=False, methods=['get'])
-    def all(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        # import pdb; pdb.set_trace()
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-        
-    @action(detail=True, methods=['get'])
-    def openGoals(self, request, *args, **kwargs):
-        goals = self.get_object().active_goals
-        serializer = GoalSerializer(goals, many=True)
-        return Response(serializer.data)
-
-
-
-    @action(detail=True, methods=['get'])
-    def inform(self, request, *args, **kwargs):
-        '''docstring for inform'''
-        indicator = self.get_object()
-        begin = datetime.strptime(
-            request.query_params.get('begin'),
-            '%Y-%m-%d').date()
-        end =  datetime.strptime(
-            request.query_params.get('end'),
-            '%Y-%m-%d').date()
-        period = request.query_params.get('period_size')
-        informe = indicator.get_informe(begin, end, period)
-        serializer = InformeSerializer(informe)
-        return Response(serializer.data, status=200)
-
-class MetricViewSet(DatatablesMixin, ModelViewSet):
-    queryset = Metric.objects.all()
-    serializer_class = MetricSerializer
-    search_fields = ['name', 'desc']
-
-    def list(self, request, *args, **kwargs):
-        # import pdb; pdb.set_trace() 
-        company = request.query_params.get('company',None)
-        self.queryset = self.queryset.filter(asignment__company__id__contains=company)
-        return super(MetricViewSet, self).list(request, *args, **kwargs)
-    
-    @action(detail=False, methods=['get'], permission_classes=[])
-    def all(self, request, *args, **kwargs):
-        company = request.query_params.get('company',None)
-        queryset = self.filter_queryset(self.get_queryset())
-        if company is not None:
-            queryset = queryset.filter(asignment__company__id__contains=company)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    
-
-class ReportViewSet(DatatablesMixin, ModelViewSet):
-    queryset = Report.objects.order_by("-begin")
-    serializer_class = ReportSerializer
-    search_fields = ['company__id']
-    filter_backends = [ reportFilters ]
-
-
-    def get_queryset(self):
-        """
-        """
-        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
-        qs = Report.objects.order_by("-begin")
-        if limited:
-            qs = qs.filter(company__members__in=self.request.user.roles.all())    
-        return qs
-
-
-class GoalViewSet(ModelViewSet):
-    queryset = Goal.objects.order_by("-begin")
-    serializer_class = GoalSerializer
-    # search_fields = ['company__id']
-
-    
-    @action(detail=True, methods=['patch'], permission_classes=[])
-    def toggleStatus(self, request, *args, **kwargs):
-        goal = self.get_object()
-        # import pdb; pdb.set_trace()
-        if goal.completed:
-            goal.complete()
-            txt = 'cerrado el periodo'
-        else:
-            goal.reopen()
-            txt = 'abierto el periodo'
-
-        return Response({'message':f'Se ha {txt} con exito'},status=200)
-

@@ -43,21 +43,21 @@ export default [
   },
   {
     parent: 'dashboard',
-    path: 'reports',
-    name: 'reports',
+    path: 'asignaciones',
+    name: 'asignaciones',
     show_name: 'Asignaciones',
     show_icon: 'fas fa-tasks',
     access: { groups: [ 'Admin', 'Gerente', 'Registrador' ] },
-    component: () => import('@/views/Reports.vue')
+    component: () => import('@/views/Asignaciones.vue')
   },
   {
     parent: 'dashboard',
-    path: 'reports',
-    name: 'reports',
+    path: 'indicators',
+    name: 'indicadores',
     show_name: 'Indicadores',
     show_icon: 'fas fa-chart-pie',
     access: { groups: [ 'Admin', 'Gerente', 'Registrador' ] },
-    component: () => import('@/views/Reports.vue')
+    component: () => import('@/views/Indicators.vue')
   },
   {
     parent: 'dashboard',
@@ -75,7 +75,44 @@ export default [
     show_name: 'Empresa',
     access: null,
     hide: true,
-    component: () => import('@/views/Empresa.vue')
+    component: () => import('@/views/Empresa.vue'),
+    redirect: 'empresa/:id/reports',
+    children: [
+      {
+        path: 'reports',
+        name: 'reporte-empresa',
+        meta: {
+          show_name: 'Reportes de Organización'
+        },
+        access: null,
+        hide: true,
+        component: () => import('@/views/Company/Reports.vue')
+      },
+      {
+        parent: 'dashboard',
+        path: 'asigments',
+        name: 'tareas-empresa',
+        meta: {
+          show_name: 'Tareas de Organización'
+        },
+        access: null,
+        hide: true,
+        component: () => import('@/views/Company/Asignments.vue')
+      },
+      {
+        parent: 'dashboard',
+        path: 'indicators',
+        name: 'indicators-empresa',
+        meta: {
+          show_name: 'Metricas de Organización'
+        },
+        access: null,
+        hide: true,
+        component: () => import('@/views/Company/Indicators.vue')
+      }
+
+    ]
+
   },
 
   {
@@ -86,17 +123,10 @@ export default [
     access: null,
     hide: true,
     component: () => import('@/views/InformeEmpresa.vue')
+
   }
 
   // {
-  //   parent: 'dashboard',
-  //   path: 'empresa/:id/reports',
-  //   name: 'empresa',
-  //   show_name: 'Empresa',
-  //   access:null,
-  //   hide:true,
-  //   component: () => import('@/views/Company/Reports.vue')
-  // },
   // {
   //   parent: 'dashboard',
   //   path: 'empresa/:id/asigments',

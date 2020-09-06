@@ -2,7 +2,7 @@
 v-content()
     Alert(ref="Alert")
     Loading.mt-5(v-if="is_loading", :msg="msg")
-    v-container.px-0.blue-grey.lighten-4(fluid fill-height v-show="!is_loading")
+    v-container.px-0.blue-grey.lighten-3(fluid fill-height v-show="!is_loading")
       v-fade-transition(mode="out-in")
         router-view(
           class="align-start"

@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField
 from rest_framework import serializers
 from hubscope.reports.models import (
     Position, 
@@ -10,6 +10,12 @@ from hubscope.reports.models import (
     Report)
 from hubscope.accounts.models import User
 
+from .Indicator import  (
+    GoalSerializer,
+    IndicatorSerializer,
+    GoalStatusSerializer
+)
+
 
 class sumarySerializer(Serializer):
     total = serializers.IntegerField()
@@ -17,73 +23,10 @@ class sumarySerializer(Serializer):
         namefield=kwargs.pop('namefield', None)
         if namefield is not None:
             self.fields['name'] =  serializers.CharField(source=namefield)
-        return super(sumarySerializer,self).__init__(*args, **kwargs)
-
-
-class GoalStatusSerializer(ModelSerializer):
-    indicatorname = serializers.SerializerMethodField()
-    def get_indicatorname(self, goal):
-        # import pdb; pdb.set_trace()
-        return goal.indicator.name
-    class Meta:
-        model = Goal
-        fields = [
-            'id',
-            'period',
-            'indicatorname',
-            'status',
-        ]
+        super(sumarySerializer,self).__init__(*args, **kwargs)
 
 
 
-class GoalSerializer(ModelSerializer):
-    indicatorname = serializers.SerializerMethodField()
-    result = serializers.SerializerMethodField()
-
-    def get_indicatorname(self, goal):
-        return goal.indicator.name
-
-    def get_result(self, goal):
-        if goal.completed:
-            return goal.result
-        else:
-            return goal.computed_result
-
-    class Meta:
-        model = Goal
-        fields = [
-            'id',
-            'group',
-            'begin',
-            'end',
-            'fail',
-            'goal',
-            'indicator',
-
-            'indicatorname',
-            'report_rate',
-            'completed',
-            'duration',
-            'period',
-            'chart',
-            'acomplishment',
-            'status',
-            'expected',
-            'result',
-            ]
-        read_only_fields = [
-            'id',
-            'indicatorname',
-            'report_rate',
-            'completed',
-            'duration',
-            'period',
-            'chart',
-            'acomplishment',
-            'status',
-            'expected',
-            'result'
-            ]
 
 
 class UserInfoSerializer(ModelSerializer):
@@ -117,25 +60,13 @@ class PositionSerializer(ModelSerializer):
 
 
 
-class IndicatorSerializer(ModelSerializer):
-    recent_goals = GoalSerializer(many=True)
-    # periods = GoalSerializer(many=True)
-    # active_periods = GoalSerializer(many=True)
-    class Meta:
-        model = Indicator
-        fields = [
-            'id',
-            'name',
-            'unidad',
-            'desc',
-            'tipo',
-            'active',
-            'metrics',
-            'company',
-            'recent_goals'       
-        ]
-
         
+class ReportDeliverySerializer(ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ['num_value']
+            
+
 class ReportSerializer(ModelSerializer):
     name = serializers.SerializerMethodField()
     unidad = serializers.SerializerMethodField()
@@ -150,6 +81,7 @@ class ReportSerializer(ModelSerializer):
             'metric',
             'name',
             'value',
+            'num_value',
             'begin',
             'end',
             'days',
@@ -175,6 +107,21 @@ class ReportSerializer(ModelSerializer):
     # def val(self, report):
     #     return report['value']
 
+
+class CompanySerializer(ModelSerializer):
+    # expected_reports = AsignmentSerializer(many=True)
+    reports = ReportSerializer(many=True)
+    open_goals = GoalStatusSerializer(many=True)
+    # indicators = IndicatorSerializer(many=True) 
+    class Meta:
+        model = Company
+        fields = [
+            'id',
+            'name', 
+            'open_goals'
+            # 'indicators', 
+            # 'expected_reports'
+            ]
 
 class CompanySerializer(ModelSerializer):
     # expected_reports = AsignmentSerializer(many=True)

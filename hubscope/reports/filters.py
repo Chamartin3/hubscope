@@ -34,7 +34,7 @@ from hubscope.reports.models import Report
 #     'atrasada': lambda qs : qs.filter( deadline__gt=localdate() )
 # }
 
-class reportFilters(filters.BaseFilterBackend):
+class reportFilters(datatableFilters):
     # def filter_by_status(self, status):
     
     #     if status == 'cerrada':
@@ -71,9 +71,16 @@ class reportFilters(filters.BaseFilterBackend):
             return queryset
 
         property_filters = ast.literal_eval(property_filters)
+        cprint('propiredad','green')
         
         if status := property_filters.get('status', None):
-            queryset = queryset & Report.objects.by_status(status)
+            try:
+                queryset = queryset & Report.objects.by_status(status)
+            except Exception as e:
+                cprint(e,'red')
+                import pdb; pdb.set_trace()
             # queryset = self.filter_by_status(status)
+
+        queryset = super(reportFilters, self).filter_queryset(request, queryset, view)
 
         return queryset

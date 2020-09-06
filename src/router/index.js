@@ -14,6 +14,8 @@ function route (path) {
     name: path.name,
     path: path.path,
     component: path.component,
+    children: path.children,
+    redirect: path.redirect,
     meta: { ...path }
   }
 }

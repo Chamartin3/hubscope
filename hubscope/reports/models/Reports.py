@@ -129,7 +129,8 @@ class Report(models.Model):
             return 0
         delivered = self.created_at
         if delivered is not None:
-            return (delivered - self.deadline).days -1
+            # import pdb; pdb.set_trace()
+            return (delivered.date() - self.deadline).days -1
         return (localdate() - self.deadline).days -1
     
     @property

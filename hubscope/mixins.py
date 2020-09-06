@@ -7,7 +7,7 @@ from rest_framework.response import Response
 import math
 import ast
 from rest_framework import  serializers
-
+from termcolor import cprint
 
 class datatableFilters(filters.SearchFilter, filters.OrderingFilter):
     """
@@ -19,6 +19,8 @@ class datatableFilters(filters.SearchFilter, filters.OrderingFilter):
         '''
 
         queryset = super(datatableFilters, self).filter_queryset(request, queryset, view)
+        cprint('filtering DB', 'green')
+
 
 
         # import pdb; pdb.set_trace()
@@ -60,18 +62,15 @@ class CustomPagination(pagination.PageNumberPagination):
         # import pdb; pdb.set_trace()
         return response
 
-    def get_paginated_response(self, data):
-
-        # import pdb; pdb.set_trace()
-
+    def get_paginated_data(self, data, **kwargs):
         last=math.ceil(self.page.paginator.count/self.page_size)
-
-        return Response({
-            'links': {
+        response = {}
+            
+        response['links'] = {
                 'next': self.get_next_link(),
                 'previous': self.get_previous_link()
-            },
-            'pagination':{
+            }
+        response['pagination'] = {
                 'total': self.page.paginator.count,
                 'per_page': self.page_size,
                 'current_page': self.page.number,
@@ -81,9 +80,18 @@ class CustomPagination(pagination.PageNumberPagination):
                 'prev_page_url': self.get_previous_link(),
                 'from':self.page.start_index(),
                 'to':self.page.end_index()
-            },
-            'results': data
-        })
+            }
+        response['results'] = data
+        for name, value in kwargs.items():
+            response[name] = value
+
+        return response
+
+    def get_paginated_response(self, data, **kwargs):
+
+        # import pdb; pdb.set_trace()
+
+        return Response(self.get_paginated_data(data, **kwargs))
 
 
 class DatatablesMixin(object):

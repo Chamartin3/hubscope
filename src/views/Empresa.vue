@@ -1,22 +1,38 @@
 <template lang="pug">
 .container.fill-height(v-if="instance")
-  .row.typing--text.align-start
-    .col
-      .display-3 {{ instance.name }}
-      hr.sline
-      v-tabs(v-model="tab"
-      slider-color="secondary"
-      fixed-tabs)
-        v-tab.typing--text( v-for="t in tabs" )
-          | {{t.name}}
+  .row.typing--text.align-start(style="max-height ")
+    .col.text-center
+      .display-2 {{ instance.name }}
+      br
+  .row.justify-space-around
+    v-btn(
+      color="secondary"
+      @click="$router.push({name:'reporte-empresa'})" ) reportes
+    v-btn(
+      color="secondary"
+       @click="$router.push({name:'tareas-empresa'})" ) asignaciones
+    v-btn(
+      color="secondary"
+       @click="$router.push({name:'indicators-empresa'})" ) indicadores
+  .row
+    v-fade-transition(mode="out-in")
+      router-view(
+        :instance="instance"
+        class="align-center")
 
-      v-tabs-items(v-model='tab')
-        v-tab-item(key='Reportes')
-          ReportsPage(:instance="instance")
-        v-tab-item(key='Asignments')
-          AsignmentPage(:instance="instance")
-        v-tab-item(key='Indicadores')
-          IndicatorsPage(:instance="instance")
+      //- v-tabs(v-model="tab"
+      //- slider-color="secondary"
+      //- fixed-tabs)
+      //-   v-tab.typing--text( v-for="t in tabs" )
+      //-     | {{t.name}}
+
+      //- v-tabs-items(v-model='tab')
+      //-   v-tab-item(key='Reportes')
+      //-     ReportsPage(:instance="instance")
+      //-   v-tab-item(key='Asignments')
+      //-     AsignmentPage(:instance="instance")
+      //-   v-tab-item(key='Indicadores')
+      //-     IndicatorsPage(:instance="instance")
 
   BackButton(to="companies" mensaje="Volver a lista de empresas")
 </template>

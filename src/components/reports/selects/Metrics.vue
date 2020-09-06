@@ -1,8 +1,8 @@
 <template lang='pug'>
   v-select(
-      dark
+      :dark="dark"
       label="Metricas Reportadas"
-      :items="items", 
+      :items="items",
       item-text="name"
       item-value="name"
       v-model="value")
@@ -10,30 +10,30 @@
 <script>
 
 export default {
-  name: 'resportedMetricSelect',
-  props: ['company'],
-  data() {
+  name: 'ResportedMetricSelect',
+  props: ['company', 'dark'],
+  data () {
     return {
       value: null,
       items: []
     }
   },
-  methods: {
-    async getItems(){
-      let model = this.$django.models.company
-      this.items = await model.reportsByMetric(this.company)
-    },
-    reset() {
-      this.value=null
+  watch: {
+    value (val) {
+      if (val) this.$emit('input', val)
     }
   },
-  watch: {
-    value(val){
-      if(val) this.$emit('input',val)
-    },   
-  },
-  mounted() {
+  mounted () {
     this.getItems()
+  },
+  methods: {
+    async getItems () {
+      if (!this.company) this.items = await this.$django.models.metric.all()
+      else this.items = await this.$django.models.company.reportsByMetric(this.company)
+    },
+    reset () {
+      this.value = null
+    }
   }
 }
 </script>

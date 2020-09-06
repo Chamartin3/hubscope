@@ -10,7 +10,7 @@
         | {{ report | period }}
       .overline
         | ({{ report | days }} )
-      
+
     .col(v-else)
       .display-1
         | Pendiente
@@ -41,62 +41,29 @@
           | Modificar
       .text-center
         v-btn.ma-1(
-          color="secondary darken-2" 
+          color="secondary darken-2"
           @click="$emit('deleteReport',report.id)" small)
           v-icon.mr-2(x-small) far fa-trash-alt
           | Eliminar
-          
+
   //- td(:colspan='headers.length')
   //-     .container
   //-       .row
-  //-         .col Periodo  {{ item | period }}        
+  //-         .col Periodo  {{ item | period }}
   //-       .row
   //-         .col Registrado el {{item.created_at | datetime}}
   //-       .row
-          //- .col Registrado Por {{item.registered_by}}      
+          //- .col Registrado Por {{item.registered_by}}
 
 </template>
 <script>
 import moment from 'moment'
 import reportStatus from './Status'
+import { Filters } from './utils'
 export default {
-  name: 'reportCard',
-  props:['report'],
+  name: 'ReportCard',
   components: { reportStatus },
-  filters:{
-    nulluser(user){
-      if (user) return user.fullname
-      return 'Sistema Automatizado'
-
-    },
-    period(item){
-      let begin = moment(item.begin).format('DD MMM-YYYY')
-      let end = moment(item.end).format('DD MMM-YYYY')
-      return `${begin} - ${end}`
-    },    
-    days(item){
-      if(item.days===1) return `${1} dia` 
-      return `${item.dias} dias`
-    },
-    date(time){
-      return moment(time).format('dddd, DD MMMM YYYY')
-    },    
-    days_until(time){
-      let dias = moment(time).diff(moment(),'days')
-      if(dias===0) return `Hoy` 
-      let text
-      if(dias<0){
-        dias = -dias
-        text = `Hace ${dias} `
-      }else{
-        text = `Dentro de ${dias} `
-      }
-      if (dias==1) return text+'dia'
-      return text+'dias'
-    },
-    number(num){
-      return parseInt(num).toLocaleString()
-    }
-  }
+  mixins: [ Filters ],
+  props: ['report']
 }
 </script>

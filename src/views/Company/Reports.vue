@@ -1,21 +1,23 @@
 <template lang="pug">
 .container.mb-5.fluid.fill-height
-  .row
+  .row(v-if="instance")
     .col-12.col-md-8
-      ReportsFilters(
-        ref="filterManager"
-        @filters_changed="$refs.Table.setDatableFilters($event)"
-        @filter_removed="handleFilterChange"
-        :companyName="instance.name")
-      ReportsTable(
-        ref="Table"
-        :company="instance.id")
+      LightCard(:title="'Reportes de '+instance.name")
+        ReportsFilters(
+          ref="filterManager"
+          @filters_changed="$refs.Table.setDatableFilters($event)"
+          @filter_removed="handleFilterChange"
+          :companyName="instance.name")
+
+        ReportsTable(
+          ref="Table"
+          :company="instance.id")
     .col-12.col-md-4
       PersonelList(
-        @person="filterByPerson($event)"
-        :companyid="instance.id", 
-        :company_name="instance.name"
-        )
+          @person="filterByPerson($event)"
+          :companyid="instance.id",
+          :company_name="instance.name"
+          )
 
       card
         template(slot="title")
@@ -41,7 +43,6 @@
           ref="MetricSelect"
           :company="instance.id"
           @input="filterByMetric")
-      
 
 </template>
 <script>
@@ -55,8 +56,7 @@ import MetricSelect from '@/components/reports/selects/Metrics'
 
 export default {
   name: 'ReportesRealizados',
-  props:['instance'],
-  components:{
+  components: {
     PersonelList,
     ReportsTable,
     ReportsFilters,
@@ -64,41 +64,41 @@ export default {
     MetricSelect,
     StatusSelect
   },
+  props: ['instance'],
   methods: {
-    handleFilterChange(filter_name){
-      if (filter_name.includes('Metrica')) this.$refs.MetricSelect.reset()       
-      if (filter_name.includes('Reportes desde')) this.$refs.DateRangeSelect.resetBegin()       
-      if (filter_name.includes('Reportes hasta')) this.$refs.DateRangeSelect.resetEnd()       
+    handleFilterChange (filter_name) {
+      if (filter_name.includes('Metrica')) this.$refs.MetricSelect.reset()
+      if (filter_name.includes('Reportes desde')) this.$refs.DateRangeSelect.resetBegin()
+      if (filter_name.includes('Reportes hasta')) this.$refs.DateRangeSelect.resetEnd()
     },
-    filterByRangeBegin(begin){
-      
+    filterByRangeBegin (begin) {
       this.$refs.filterManager.setFilter(
         'Reportes desde',
         'begin__gte',
         begin
       )
-    },      
-    filterByRangeEnd(end){
+    },
+    filterByRangeEnd (end) {
       this.$refs.filterManager.setFilter(
         'Reportes hasta',
         'end__lte',
         end
       )
     },
-    filterByPerson(person){
+    filterByPerson (person) {
       this.$refs.filterManager.setFilter(
         'Reportes realizados por:',
         'registered_by__username',
         person.username
       )
-    },    
-    filterByMetric(metric){
+    },
+    filterByMetric (metric) {
       this.$refs.filterManager.setFilter(
         'Metrica:',
         'metric__name',
         metric
       )
-    },
+    }
   }
 }
 </script>
