@@ -74,8 +74,8 @@ class reportFilters(datatableFilters):
         if property_filters is None:
             return queryset
         property_filters = ast.literal_eval(property_filters)
-        
-        if status := property_filters.get('status', None):
+        status = property_filters.get('status', None)
+        if status:
             try:
                 queryset = Report.objects.by_status(status).intersection(queryset)
             except Exception as e:
