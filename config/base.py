@@ -33,7 +33,7 @@ SECRET_KEY = ',_8S,6#JNfOfn==uBz(w!_T[(>TS1iOs}0P{uG/eNX};Ab1t=O'
 SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', False)
 DEBUG = os.environ.get('DEBUG', True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
