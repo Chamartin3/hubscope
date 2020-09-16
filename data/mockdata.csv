@@ -1,4 +1,4 @@
-"company_id","metric__name","begin","end","num_value"
+"company_id","metric__name","begin","end","value"
 1,"Consumo ABA",2020-03-01,2020-03-01,3
 1,"Consumo ABA",2020-03-02,2020-03-02,4
 1,"Consumo ABA",2020-03-03,2020-03-03,2

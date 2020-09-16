@@ -3,7 +3,6 @@
   .row
     .col
       GoalList
-    .col-md-4.col-sm-12
 </template>
 <script>
 import GoalList from '@/components/goals/List'

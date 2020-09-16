@@ -1,4 +1,6 @@
 import moment from 'moment'
+import { simpleRange } from '@/components/utils'
+
 const Statuses = {
   cerrada: {
     'color': 'grey',
@@ -24,6 +26,11 @@ const Statuses = {
     'color': 'red',
     'name': 'Atrasado',
     'desc': 'El reporte no se ha entregado a tiempo'
+  },
+  activa: {
+    'color': 'green darken-2',
+    'name': 'Activo',
+    'desc': 'El reporte se esta usando como punto de referencia'
   }
 }
 const Filters = {
@@ -36,6 +43,9 @@ const Filters = {
     date (time) {
       return moment(time).format('dddd, DD MMMM YYYY')
     },
+    minidate (time) {
+      return moment(time).format('dddd, DD MMM-YY')
+    },
     nulluser (user) {
       if (user) return user.fullname
       return 'Sistema Automatizado'
@@ -46,26 +56,11 @@ const Filters = {
       return `${begin} - ${end}`
     },
     simpleperiod: item => {
-      let begin = moment(item.begin)
-      let end = moment(item.end)
-      const sameYear = begin.year() === end.year()
-      const sameMonth = begin.month() === end.month()
-      const sameDay = begin.day() === end.day()
-      let format
-      let complement
-      if (sameYear && sameMonth && sameDay) return begin.format('DD, MMMM YYYY')
-      if (sameYear && sameMonth) {
-        format = 'DD'
-        complement = ` de ${begin.format('MMMM-YYYY')}`
-      } else if (sameYear) {
-        format = 'DD MMMM'
-        complement = ` de ${begin.format('YYYY')}`
-      }
-      return `Desde ${begin.format(format)} hasta ${end.format(format)} ${complement}`
+      return simpleRange(item.begin, item.end)
     },
     days (item) {
       if (item.days === 1) return `${1} dia`
-      return `${item.dias} dias`
+      return `${item.days} dias`
     },
     days_until (time) {
       let dias = moment(time).diff(moment(), 'days')

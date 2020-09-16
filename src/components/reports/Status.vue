@@ -16,12 +16,15 @@ export default {
   },
   computed: {
     desc () {
+      if (this.status === 'constant') return ''
       return this[this.status].desc
     },
     name () {
+      if (this.status === 'constant') return ''
       return this[this.status].name
     },
     color () {
+      if (this.status === 'constant') return ''
       return this[this.status].color
     }
   }

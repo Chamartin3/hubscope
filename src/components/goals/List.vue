@@ -1,59 +1,46 @@
 <template lang='pug'>
-extends ../../layouts/templates/Lists/iteratorList.pug
-block content
-  .row(v-for='(goal, idx) in items' :key='idx')
-    .col
-      Goal(:goal="goal")
+.container
+  GoalDetail(ref="GoalDetail")
+  GoalForm(
+    @created="listObjects"
+    @edited="listObjects"
+    ref="GoalForm" )
+  .row.justify-space-around
+    GeneralPagination(
+      color="secondary"
+      v-model="params.page",
+      :names="{singular:'meta', plural:'metas'}"
+      :pagination="pagination")
+      v-btn(c-dajngo-groups="'Admin'" color="secondary" text x-small
+        @click="$refs.GoalForm.open()" ) crear
 
-//- block instance
-//- block nodata
-   strong {{nodata}}
-block header
-  .container(v-if="items")
-    .row.justify-space-between
-        GoalForm(ref="GoalForm")
-    .row.justify-space-between
-      v-col(cols=8)
-        v-card.py-5.px-3(dark color="secondary")
-          .headline Metas activas
-      .col.text-right
-        v-btn(color="secondary"
-        @click="$refs.GoalForm.open()"
-        ) Agregar Meta
-block footer
+  .row.justify-space-around(v-if="!loading")
+      GoalCard(v-for="goal in items"
+      @detail="$refs.GoalDetail.view(goal.id)"
+      :key="goal.id" :goal="goal")
+  .row(v-else)
+    LoadingComponent
 
 </template>
 <script>
 import iteratorList from '@/layouts/templates/Lists/iteratorList.js'
 import GoalForm from './Form'
 import Goal from './Goal'
+import GoalDetail from './Detail'
+import Status from './Status'
+import GoalCard from './MiniCard'
 export default {
   name: 'GoalList',
-  components: { Goal, GoalForm },
+  components: { GoalForm, GoalCard, GoalDetail },
   mixins: [ iteratorList ],
-  props: ['indicator'],
+  // props: ['indicator'],
   data () {
     return {
       active: [],
       itemKey: 'id',
       itemName: 'Meta',
-      modelName: 'goal',
+      modelName: 'goal'
       // listMethod: 'openGoals',
-      itemPluralName: 'Metas',
-      nodata: 'No hay metas activas',
-      params: {
-        page: 1,
-        page_size: 5,
-        ordering: '',
-        search: ''
-      }
-    }
-  },
-  watch: {
-    'pagination.per_page': function (val) {
-      for (let i = 0; i < val + 1; i++) {
-        this.active.push(i)
-      }
     }
   },
   methods: {

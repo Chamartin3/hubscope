@@ -4,16 +4,21 @@
     .col.text-center
       .display-2 {{ instance.name }}
       br
-  .row.justify-space-around
+  .row.justify-space-around.mt-n6
     v-btn(
+      text
       color="secondary"
       @click="$router.push({name:'reporte-empresa'})" ) reportes
     v-btn(
+      text
       color="secondary"
        @click="$router.push({name:'tareas-empresa'})" ) asignaciones
     v-btn(
+      text
       color="secondary"
        @click="$router.push({name:'indicators-empresa'})" ) indicadores
+  .row.secondary
+    hr.sline
   .row
     v-fade-transition(mode="out-in")
       router-view(

@@ -1,7 +1,7 @@
 <template lang="pug">
-v-card.blue-grey.lighten-5
+v-card(:width="width" ).blue-grey.lighten-5
   header.text-center.blue-grey.lighten-4.py-2
-    strong {{ title }}
+    strong.ma-2 {{ title }}
 
   .text-center.primary.py-1(v-if="sub")
     .overline.white--text {{ sub }}
@@ -9,9 +9,20 @@ v-card.blue-grey.lighten-5
 </template>
 <script>
 export default {
-  props: [
-    'title',
-    'sub'
-  ]
+  props: {
+    title: {
+      type: String,
+      default: null
+    },
+    sub: {
+      type: String,
+      default: null
+    },
+    width: {
+      type: String,
+      default: null
+    }
+
+  }
 }
 </script>

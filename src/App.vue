@@ -6,6 +6,7 @@
 <script>
 export default {
   mounted () {
+    console.log(this.$django)
     console.log(this.$django.models)
   }
 }

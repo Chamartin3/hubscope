@@ -12,6 +12,7 @@ class Company(models.Model):
         Cada una de las empresas, Unidad basica de organización dde informes y reportes
     '''
     name = models.CharField(blank=True, max_length=100)
+    metrics = models.ManyToManyField('Metric')
     class Meta:
         verbose_name = "Company"
         verbose_name_plural = "Companys"

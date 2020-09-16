@@ -41,6 +41,7 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
     def get_queryset(self):
         """
         """
+        # import pdb; pdb.set_trace()
         limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
         qs = Company.objects.all()
         if limited:
@@ -100,6 +101,7 @@ class CompanyViewSet(DatatablesMixin, ModelViewSet):
         
 
         
+    @action(detail=True,  methods=['post'], permission_classes=[])
     def addPersonel(self, request, *args, **kwargs):
         '''reports'''
         company = self.get_object()

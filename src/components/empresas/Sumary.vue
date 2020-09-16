@@ -4,9 +4,10 @@ v-card.blue-grey.lighten-5
     strong Metas Evaluadas
 
   .container
-    v-simple-table(height="500")
-      tbody(v-for='empresa in empresas'
-        :key='empresa.name')
+    .text-center(v-if="empresas.lenght===0")
+      .overline No hay empresas asignadas
+    v-simple-table(v-else height="500")
+      tbody(v-for='empresa in empresas' :key='empresa.name')
         tr.primary.white--text
           td(colspan="2")
             .row.justify-space-around

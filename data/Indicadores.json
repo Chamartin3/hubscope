@@ -18,7 +18,7 @@
             {
                 "name":"Cajas Producidas",
                 "desc":"Numero de cajas producidas",
-                "tipo":"C",
+                "tipo":"A",
                 "unidad":"Caja"
             }
         ]
@@ -41,7 +41,7 @@
             {
                 "name":"Mortalidad",
                 "desc":"Porcentaje de aves muertas en en un periodo",
-                "tipo":"C",
+                "tipo":"A",
                 "unidad":"Porcentaje"
             }
         ]
@@ -64,7 +64,7 @@
             {
                 "name":"Consumo ABA",
                 "desc":"Consumo de ABA",
-                "tipo":"C",
+                "tipo":"A",
                 "unidad":"Gramos"
             }
         ]
@@ -87,7 +87,7 @@
             {
                 "name":"Kilogramos de Pollo",
                 "desc":"Kilogramos de pollo que salieron de la fabrica",
-                "tipo":"C",
+                "tipo":"A",
                 "unidad":"Kilogramo"
             }
         ]
@@ -110,7 +110,7 @@
             {
                 "name":"Pollitos",
                 "desc":"Pollitos Ingresados",
-                "tipo":"C",
+                "tipo":"A",
                 "unidad":"Animal"
             }
         ]

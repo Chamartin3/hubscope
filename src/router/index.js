@@ -16,6 +16,7 @@ function route (path) {
     component: path.component,
     children: path.children,
     redirect: path.redirect,
+    props: path.props,
     meta: { ...path }
   }
 }

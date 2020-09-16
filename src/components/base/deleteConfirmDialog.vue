@@ -5,7 +5,8 @@
         v-icon.my-5(size="50") fa-exclamation-triangle
       |
       v-card-text.text-center
-        p.headline Desea eliminar este {{type!='' ? type: 'elemento'}}
+        p.headlin(v-if="customMessage" ) {{ customMessage }}
+        p.headline(v-else) Desea eliminar este {{type!='' ? type: 'elemento'}}
       |
       v-card-actions.justify-space-around
         v-btn(
@@ -19,50 +20,56 @@
 </template>
 <script>
 export default {
-  props:{
-    model:{
+  props: {
+    model: {
+      type: String,
       required: true
     },
-    method:{
-      default:'destroy',
+    method: {
+      type: String,
+      default: 'destroy',
+      required: false
+    },
+    customMessage: {
+      type: String,
+      default: null,
       required: false
     }
   },
   data () {
     return {
-      loading:false,
-      dialog:false,
-      type:"",
-      service:null,
-      id:null
+      loading: false,
+      dialog: false,
+      type: '',
+      service: null,
+      id: null
     }
   },
-  computed:{
-    deleteMethod(){
-      return  this.$django.models[this.model][this.method]
+  computed: {
+    deleteMethod () {
+      return this.$django.models[this.model][this.method]
     }
   },
-  methods:{
-    open (id,type="") {
-      this.dialog=true
+  methods: {
+    open (id, type = '') {
+      this.dialog = true
       this.type = type
       this.id = id
-
     },
     close () {
-      this.service=null
-      this.id=null
-      this.type=""
+      this.service = null
+      this.id = null
+      this.type = ''
       this.dialog = false
     },
-    async send(){
-      this.loading=true
+    async send () {
+      this.loading = true
       let res = await this.deleteMethod(this.id)
-      this.$emit('success',this.id)
+      this.$emit('success', this.id)
       this.close()
-      this.loading=false
-    },
-  },
+      this.loading = false
+    }
+  }
 }
 </script>
 <style>

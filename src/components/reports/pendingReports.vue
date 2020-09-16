@@ -1,38 +1,45 @@
 <template lang="pug">
 LightCard(
   title="Reportes por entregar"
-  :sub="sumary.total + ' reportes por entregar'"
   )
 
-  reportForm(ref="reportForm")
+  reportForm(ref="reportForm" @edited="listObjects")
   .row.justify-space-around(v-if="sumary.total>0")
     .col.text-center
       v-progress-circular.white-text(
-        :size="80"
+        :size="90"
         :width="10"
-        :value="sumary.atrasada/sumary.total*100"
+        :value="perc(sumary,'atrasada')"
         color="red"
-        ) {{ sumary.atrasada/sumary.total*100 }} %
+        ) {{ perc(sumary,'atrasada') }} %
       p.text-uppercase.font-weight-light.caption.px-3
         | Reportes Atrasados
     .col.text-center
       v-progress-circular.white-text(
-        :size="80"
+        :size="90"
         :width="10"
-        :value="sumary.esperando/sumary.total*100"
-        color="orange"
-        ) {{ sumary.esperando/sumary.total*100 }} %
+        :value="perc(sumary,'abierta')"
+        color="green darken-2"
+        ) {{ perc(sumary,'abierta') }} %
       p.text-uppercase.font-weight-light.caption.px-3
         | Reportes por entregar
     .col.text-center
       v-progress-circular.white-text(
-        :size="80"
+        :size="90"
         :width="10"
-        :value="sumary.abierta/sumary.total*100"
-        color="yellow darken-2"
-        ) {{ sumary.abierta/sumary.total*100 }} %
+        :value="perc(sumary,'esperando')"
+        color="orange"
+        ) {{perc(sumary,'esperando') }} %
       p.text-uppercase.font-weight-light.caption.px-3
         | Reportes en espera
+
+  .row.justify-space-around(v-if="sumary.total>0")
+    GeneralPagination(
+      circle
+      color="secondary"
+      v-model="params.page",
+      :names="{singular:'reporte por entregar', plural:'reportes por entregar'}"
+      :pagination="pagination")
   .container(v-if="sumary.total>0")
     .row(v-for="report in items")
       .col
@@ -63,32 +70,41 @@ LightCard(
 import reportStatus from './Status'
 import reportForm from './Form'
 import { base, serverSide } from '#/Lists'
+import iteratorList from '@/layouts/templates/Lists/iteratorList.js'
 import { Filters } from './utils'
-
 export default {
   name: 'PendingReports',
   components: { reportStatus, reportForm },
-  mixins: [ base, serverSide, Filters ],
+  mixins: [ iteratorList, Filters ],
   data () {
     return {
       modelName: 'report',
       listMethod: 'allPending',
       sumary: {},
-      pagination: {},
       params: {
-        per_page: 30
+        per_page: 3
       }
     }
   },
   mounted () {
-    this.resultActions.push(this.extractSumary)
+    // this.resultActions.push(this.extractSumary)
   },
   methods: {
-    extractSumary (response) {
-      this.items = response.results
-      this.sumary = response.sumary
-      this.pagination = response.pagination
-      return response.results
+    setPagination (response) {
+      if (response && response.pagination) {
+        this.pagination = response.pagination
+        this.sumary = response.sumary
+        return response.results
+      }
+      return response
+    },
+    perc (sumary, attr) {
+      let num = sumary[attr] / sumary.total
+      return (num * 100).toFixed(2)
+    },
+    reported () {
+      console.log('reportes')
+      this.listObjects()
     }
   }
 

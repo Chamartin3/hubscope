@@ -1,34 +1,44 @@
 <template lang='pug'>
-v-card.pointer(dark color='primary lighten-1')
+LightCard.ma-2(
+  width="250"
+  :title="name"
+  :sub="frecuencyText")
   .container
-    .row.text-center
+    .row.justify-center
+      .col.text-center
+        strong {{ asignment.total_genetated_reports }} reportes generados
+    .row.justify-center
+      .col.text-center
+        strong Desde: {{ asignment.first_report_date | readableDate}}
+    .row.justify-center(v-for="(val, status) in asignment.reports_by_status")
       .col
-        .display-1 {{ name }}
-    hr
-    .row.text-center.mx-2
-      .col
-        .overline Proximo vencimiento
-    .row.text-center.mx-2
-      .col
-        .overline
-        strong {{ asignment.deadline_date }}
-    .row.text-center.mx-2
-      .col
-        .overline Frecuencia
-    .row.text-center.mx-2
-      .col
-        .overline
-        strong {{ frecuencyText }}
-    .row.justify-end
-      v-btn( text @click="$emit('borrar',asignment.id )" )
-        v-icon fas fa-trash
+        .overline.text-center
+          .caption {{ ReportStatus[status].name }}
+        v-progress-linear(
+          rounded
+          :value="val/asignment.total_genetated_reports *100"
+          :color='ReportStatus[status].color'
+          height='15')
+          template(v-slot='{ value }')
+            .caption {{val}} ({{ Math.ceil(value) }}%)
+
+      //- v-progress-linear(v-model='val' color='blue-grey' height='25')
+  .row.justify-end(v-django-groups="'Admin'")
+    v-btn(text @click="$emit('borrar',asignment.id )" )
+      v-icon(x-small) fas fa-trash
 </template>
 <script>
+import { Statuses } from '@/components/reports/utils.js'
+import { readableDate } from '@/components/utils.js'
 export default {
   name: 'AsignmentCard',
+  filters: {
+    readableDate: readableDate
+  },
   props: ['asignment'],
   data () {
     return {
+      ReportStatus: Statuses,
       weekdays: [
         'Lunes',
         'Martes',

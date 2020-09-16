@@ -3,10 +3,17 @@
   .row(v-if="loading")
     LoadingComponent
   .row(v-else)
-    reportForm(ref="reportForm")
+    reportForm(
+      ref="reportForm"
+      @edited="editedReport"
+    )
     .col-md-8
-      pendingReports(@editReport="editReport($event)")
-      OpenReports(@editReport="editReport($event)")
+      pendingReports(
+        ref="pendingReports"
+        @editReport="editReport($event)")
+      OpenReports(
+        ref="OpenReports"
+        @editReport="editReport($event)")
     .col-md-4
       Sumary(:empresas="items")
 
@@ -43,16 +50,13 @@ export default {
       }
     }
   },
-  mounted () {
-    console.log(this.model)
-  },
   methods: {
     editReport (report) {
-      console.log('Evento')
-      console.log(report)
-      console.log(this.$refs)
-      console.log(this.$refs.reportForm)
       this.$refs.reportForm.edit(report.id, report)
+    },
+    editedReport () {
+      this.$refs.pendingReports.listObjects()
+      this.$refs.OpenReports.listObjects()
     },
     addItem (item) {
       item = this.preprocessElements(item)

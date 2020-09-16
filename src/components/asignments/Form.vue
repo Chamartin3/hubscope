@@ -8,14 +8,8 @@ append content
         MetricasSelect(
           :outErrors="errors.metric"
           v-modelMod:id.attr="form.metric")
-    .row.justify-space-around 
-        v-text-field(
-          style="max-width:190px"
-          label="Tiempo para entregar"
-          suffix="dias" 
-          type="number" 
-          :error-messages="errors.delivery_time"
-          v-model="form.delivery_time")
+
+    .row.justify-space-around
         v-checkbox(
           color="secondary"
           label="Periodica"
@@ -35,14 +29,14 @@ append content
         min-width='290px')
         template(v-slot:activator='{ on }')
           v-text-field(
-            v-model='form.last'
+            v-model='form.last_begin'
             label='Fecha Inicial'
             prepend-icon='fas fa-calendar-alt'
-            :error-messages="errors.last"
+            :error-messages="errors.last_begin"
             readonly
             v-on='on')
-        v-date-picker(v-model='form.last' no-title scrollable)
-          .row.justify-space-around 
+        v-date-picker(v-model='form.last_begin' no-title scrollable)
+          .row.justify-space-around
             v-btn(color='red' @click='datemenu2 = false') Cancelar
             v-btn(color='green' @click='$refs.datemenu2.save(form)') OK
 
@@ -56,18 +50,26 @@ append content
         min-width='290px')
         template(v-slot:activator='{ on }')
           v-text-field(
-            v-model='form.next_ocurrence'
+            v-model='form.last_end'
             label='Fecha Final'
             prepend-icon='fas fa-calendar-alt'
             readonly
             v-on='on')
         v-date-picker(
             :min="form.last"
-            :error-messages="errors.next_ocurrence"
-            v-model='form.next_ocurrence' no-title scrollable)
-          .row.justify-space-around 
+            :error-messages="errors.last_end"
+            v-model='form.last_end' no-title scrollable)
+          .row.justify-space-around
             v-btn(color='red' @click='datemenu = false') Cancelar
             v-btn(color='green' @click='$refs.datemenu.save(form)') OK
+    .row.justify-space-around
+        v-text-field(
+          style="max-width:190px"
+          label="Tiempo para entregar"
+          suffix="dias"
+          type="number"
+          :error-messages="errors.days_to_deliver"
+          v-model="form.days_to_deliver")
     .row.justify-center()
       | {{ periodText }}
 block title
@@ -79,32 +81,63 @@ block title
 
 </template>
 <script>
-import { formModal } from "@/mixins/Modal";
-import MetricasSelect from "@/components/metrics/Autocomplete";
-import Periodicity from "./periodicityForm";
+import { formModal } from '@/mixins/Modal'
+import { simpleRange } from '@/components/utils'
+import MetricasSelect from '@/components/metrics/Autocomplete'
+import Periodicity from './periodicityForm'
 import moment from 'moment'
 export default {
-  props: {
-    fullmode: { default: false },
-    company: { default: null },
-    button: { default: false }
-  },
   components: {
     MetricasSelect,
     Periodicity
   },
   mixins: [formModal],
+  props: {
+    fullmode: { default: false },
+    company: { default: null },
+    button: { default: false }
+  },
+  // watch: {
+  //   completed(val){
+  //     if(!val) this.valid=false
+  //   }
+  // },
+  data () {
+    return {
+      // activator:this.button,
+      datemenu: false,
+      datemenu2: false,
+      // dialog: true,
+      period: null,
+      buttomText: 'Agregar',
+      maxWidth: null,
+      modalTitle: 'Nueva Asinación',
+      modalColor: 'primary',
+      modalDark: true,
+      model_name: 'Asignación',
+      model: this.$django.models.asignment,
+      form: {
+        metric: null,
+        company: this.company,
+        periodic: false,
+        days_to_deliver: 3,
+        frecuency: null,
+        metafreq: '',
+        last_begin: moment().format('YYYY-MM-DD')
+      }
+    }
+  },
   computed: {
-    formTitle() {
-      return "Add new";
+    formTitle () {
+      return 'Add new'
     },
-    periodText(){
-      if (!this.form.periodic && this.form.next_ocurrence){
-        return `Desde ${this.form.last} hasta ${this.form.next_ocurrence}`
-      }else{
+    periodText () {
+      if (!this.form.periodic && this.form.last_end) {
+        return simpleRange(this.form.last_begin, this.form.last_end)
+      } else {
         return null
       }
-    },
+    }
     // completed() {
     //   // return Object.values(this.form)
     //   return Object.values(this.form).reduce(function(prev, cur) {
@@ -112,36 +145,6 @@ export default {
     //     return test && prev;
     //   }, true);
     // }
-  },
-  // watch: {
-  //   completed(val){
-  //     if(!val) this.valid=false
-  //   }
-  // },
-  data() {
-    return {
-      // activator:this.button,
-      datemenu:false,
-      datemenu2:false,
-      // dialog: true,
-      period: null,
-      buttomText: "Agregar",
-      maxWidth: null,
-      modalTitle: "Nueva Asinación",
-      modalColor: "primary",
-      modalDark: true,
-      model_name: "Asignación",
-      model: this.$django.models.asignment,
-      form: {
-        metric: null,
-        company: this.company,
-        periodic: false,
-        delivery_time: 3,
-        frecuency: null,
-        metafreq: "",
-        last: moment().format("YYYY-MM-DD")
-      }
-    };
   }
-};
+}
 </script>

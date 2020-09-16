@@ -32,14 +32,11 @@ export default {
     async listObjects (params = {}) {
       let list = await this.getItems(params)
       let processedList = this._processResults(list)
-      console.log(list)
-      console.log(processedList)
       this.items = processedList.map(x => this.preprocessElements(x))
       this.loading = false
     },
     _processResults (results) {
       for (var i = 0; i < this.resultActions.length; i++) {
-        console.log(this.resultActions[i])
         results = this.resultActions[i](results)
       }
       return results

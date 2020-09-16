@@ -84,6 +84,7 @@ export default {
       this.$refs.filterManager.setFilter(
         'Reportes hasta',
         'end__lte',
+
         end
       )
     },

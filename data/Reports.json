@@ -4,34 +4,34 @@
         "metric__name":"Cajas Producidas",
         "begin":"2020-02-01",
         "end":"2020-02-29",
-        "num_value":"12011"
+        "value":"12011"
     }, 
     {
         "company_id":1,
         "metric__name":"Mortalidad",
         "begin":"2020-02-01",
         "end":"2020-02-29",
-        "num_value":"87"
+        "value":"87"
     },    
     {
         "company_id":1,
         "metric__name":"Consumo ABA",
         "begin":"2020-02-01",
         "end":"2020-02-29",
-        "num_value":"107"
+        "value":"107"
     },    
     {
         "company_id":2,
         "metric__name":"Kilogramos de Pollo",
         "begin":"2020-02-01",
         "end":"2020-02-29",
-        "num_value":"216570"
+        "value":"216570"
     },      
     {
         "company_id":2,
         "metric__name":"Pollitos",
         "begin":"2020-02-01",
         "end":"2020-02-29",
-        "num_value":"120952"
+        "value":"120952"
     }
 ]

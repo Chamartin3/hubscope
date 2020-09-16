@@ -1,30 +1,30 @@
-import { baseMainForm  } from '#/Forms'
+import { baseMainForm, errorsMixin } from '#/Forms'
 import formAlertMixin from '#/Forms/formAlertMixin'
 export default {
-  mixins:[baseMainForm, formAlertMixin],
-  data(){
+  mixins: [baseMainForm, formAlertMixin, errorsMixin ],
+  data () {
     return {
-      customFormTitle:'',
-      instance:null,
+      customFormTitle: '',
+      instance: null
     }
   },
-  methods:{
-    beforeSend() {
+  methods: {
+    beforeSend () {
       this._validateForm()
-      this.loading=true
+      this.loading = true
     },
-    stopLoading(){
-      this.loading=false
+    stopLoading () {
+      this.loading = false
     },
     open () {
       this.clearAll()
       this.dialog = true
       this.inErrors = {}
     },
-    success(item){
-      if (this.mode=="creation") {
+    success (item) {
+      if (this.mode == 'creation') {
         this.$emit('created', item)
-      }else{
+      } else {
         this.$emit('edited', item)
       }
       this.close()
@@ -34,22 +34,21 @@ export default {
       this._resetValidation()
       this.dialog = false
       this.instance = null
-      this.mode="creation"
+      this.mode = 'creation'
     },
-    edit(id, instance=null){
-      this.mode="edition"
-      if (instance){
+    edit (id, instance = null) {
+      this.mode = 'edition'
+      if (instance) {
         this.instance = instance
         this._setFields(instance)
-      }
-      else this._fetchInst(id)
+      } else this._fetchInst(id)
       this.dialog = true
     }
   },
-  computed:{
-    formTitle(){
-      if(this.customFormTitle) return this.customFormTitle
-      if(this.mode==='creation') return 'Crear'
+  computed: {
+    formTitle () {
+      if (this.customFormTitle) return this.customFormTitle
+      if (this.mode === 'creation') return 'Crear'
       return 'Editar'
     }
   },

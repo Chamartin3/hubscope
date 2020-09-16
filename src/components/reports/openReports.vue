@@ -14,14 +14,21 @@ LightCard(title="Reportes enviados")
     color="blue-grey lighten-2"
     )
 
-    template(v-slot:item.metric__name="{ item }") {{ item.metric.name }}
+    template(v-slot:item.metric__name="{ item }")
+      .mt-2 {{ item.metric.name }}
+      p ({{ item.company_name }})
     template(v-slot:item.edit="{ item }")
       v-btn.primary.dark(
       :disabled="item.status === 'esperando'"
       small @click="$emit('editReport', item)" ) Modificar
 
+    template(v-slot:item.value="{ item }")
+      | {{ item.value }}
+      .caption
+        .overline {{ item.unidad }}
+
     template(v-slot:item.begin="{ item }")
-      | {{ item.begin | simpleperiod }}
+      | {{ item | simpleperiod }}
 
 </template>
 <script>
@@ -45,6 +52,7 @@ export default {
       table_headers: [
         { text: 'Metrica', value: 'metric__name' },
         { text: 'Periodo', value: 'begin' },
+        { text: 'Valor', value: 'value' },
         { text: 'editar', value: 'edit' }
       ],
       params: {

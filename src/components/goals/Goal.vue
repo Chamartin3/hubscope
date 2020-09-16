@@ -10,6 +10,8 @@ v-card.primary.darken-1
       .col-12.col-md-3.text-center
         .row.justify-center
           Completation(
+          @completed="goal.completed=true"
+          @reopened="goal.reopened=false"
           :id="goal.id"
           :completation="goal.completed"
           )
@@ -44,13 +46,14 @@ v-card.primary.darken-1
               .overline Dias reportados
               .overline en este periodo
     .row
-      trendChart(
-        :results="goal.chart",
-        :expected="goal.expected",
-        :goal="goal.goal",
-        :intermediate="goal.fail.split(',')[0]"
-        :dataname="goal.indicatorname"
-      )
+      .col
+        trendChart(
+          :results="goal.chart",
+          :expected="goal.expected",
+          :goal="goal.goal",
+          :intermediate="goal.fail.split(',')[0]"
+          :dataname="goal.indicatorname"
+        )
 
     //- .d-inline.mr-2.ma-2
 
@@ -66,7 +69,12 @@ export default {
   name: 'Goal',
   components: { Status, trendChart, Completation, LevelBar },
   filters: { period },
-  props: ['goal']
+  props: ['xgoal'],
+  data () {
+    return {
+      goal: { ...this.xgoal }
+    }
+  }
 
 }
 </script>

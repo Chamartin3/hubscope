@@ -2,11 +2,20 @@
 extends ../../layouts/templates/Modal/ModalForm
 append content
   .container.pa-5.theme--dark
+    .row
+      .col.text-center.justify-center
+        v-text-field.align-center(
+          v-model="form.name"
+          label="Nombre de la meta"
+          placeholder="Nombre"
+        )
     .row.justify-center
       .overline
         h3 Indicador
     .row.justify-center(v-if="indicator")
-      .headline Indicador {{ indicator.name }}
+      .col.text-center
+        .headline Indicador {{ indicator.name }}
+        .overline en {{ indicator.company_name }}
     .row.justify-center(v-else)
       IndicatorSelect
     .row.justify-center
@@ -79,7 +88,8 @@ export default {
         begin: null,
         end: null,
         goal: 1,
-        fail: null
+        fail: null,
+        indicator: this.indicator ? this.indicator.id : null
       }
     }
   },

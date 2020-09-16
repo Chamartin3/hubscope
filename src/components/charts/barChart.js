@@ -4,12 +4,15 @@ const { reactiveProp } = mixins
 export default {
   extends: Bar,
   props: {
-    chartData :{ 
+    chartData: {
       default: null
+    },
+    text_color: {
+      default: 'white'
     }
   },
   watch: {
-    chartData:{
+    chartData: {
       deep: true,
       handler: 'render'
     }
@@ -20,37 +23,36 @@ export default {
         scales: {
           xAxes: [{
             gridLines: {
-              color: "gray"
+              color: 'gray'
             },
             ticks: {
-              fontColor: "white",
+              fontColor: this.text_color
             }
           }],
           yAxes: [{
             gridLines: {
               // display: false,
-              color: "gray",
-            },            
+              color: 'gray'
+            },
             ticks: {
-              fontColor: "white",
+              fontColor: this.text_color
             }
           }]
         },
         legend: {
           labels: {
-            fontColor: 'white'
+            fontColor: this.text_color
           }
         }
-      } 
+      }
     }
   },
   methods: {
     render () {
-
       this.renderChart(this.chartData, this.options)
     }
   },
-  mounted() { 
-    if (this.chartData) this.render()  
+  mounted () {
+    if (this.chartData) this.render()
   }
 }

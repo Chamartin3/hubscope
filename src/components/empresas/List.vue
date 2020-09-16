@@ -1,7 +1,26 @@
 <template lang="pug">
-extends ../../layouts/templates/Lists/iteratorList.pug
+.container
+  CompanyForm(
+    @created="listObjects"
+    ref="CompanyForm")
+  .row.justify-space-around
+    GeneralPagination(
+      color="secondary"
+      v-model="params.page",
+      :names="{singular:'unidad', plural:'unidades'}"
+      :pagination="pagination")
+      v-btn(c-dajngo-groups="'Admin'" color="secondary" text x-small
+        @click="$refs.CompanyForm.open()" ) crear
+    //- v-pagination(
+    //-   v-model="params.page"
+    //-   v-if="pagination.total > pagination.per_page"
+    //-   color="secondary"
+    //-   class="my-4",
+    //-   :length="pagination.last_page")
+    //- .col.text-center( v-if="!loading")
+    //-   .overline(v-if="pagination.total > pagination.per_page")  mostrando de {{ pagination.from }} hasta {{ pagination.to }}
+    //-   .overline {{ pagination.total }} unidades en total
 
-append content
   .row(v-if="!loading")
     .col
       .row
@@ -10,61 +29,38 @@ append content
   .row(v-else)
     LoadingComponent
 
-block header
-  .row.justify-space-around(v-if="!loading")
-
-    v-btn.ml-5(color="secondary",
-        fab
-        :disabled="pagination.current_page==1"
-        @click="params.page=params.page-1")
-        v-icon fa-angle-left
-    .col.text-center
-      span.typing--text
-        | {{ currentText }}
-      .row.justify-center.mt-n3
-        .col.text-center
-          span.typing--text
-            | {{ totalsText }}
-    v-btn.mr-5(color="secondary",
-        fab
-        :disabled="pagination.current_page>=totalPages || !totalPages"
-        @click="params.page=params.page+1")
-        v-icon fa-angle-right
-  hr.sline(v-if="!loading")
-block footer
-  
-
 </template>
 <script>
 // import moment from 'moment'
 import iteratorList from '@/layouts/templates/Lists/iteratorList.js'
 import Card from './Card'
+import CompanyForm from './Form'
 import moment from 'moment'
 export default {
   name: 'EmpresasList',
+  components: { Card, CompanyForm },
   //   components:{Card},
   mixins: [iteratorList],
-  components: { Card },
   data () {
     return {
-      modelName:'company',
+      modelName: 'company',
       itemName: 'Empresas',
       itemPluralName: 'Empresas',
-      nodata:'No hay empresas registradas',
-      params:{
-        per_page:3,
+      nodata: 'No hay empresas registradas',
+      params: {
+        per_page: 3
       }
     }
   },
-  methods: {
-    addItem(item){
-      item=this.preprocessElements(item)
-      this.$set(this, 'items', [item, ...this.items])
-      this.setPagination(this.items)
-    },
-  },
   mounted () {
     console.log(this.model)
+  },
+  methods: {
+    addItem (item) {
+      item = this.preprocessElements(item)
+      this.$set(this, 'items', [item, ...this.items])
+      this.setPagination(this.items)
+    }
   }
 }
 </script>

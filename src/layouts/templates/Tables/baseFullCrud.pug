@@ -7,8 +7,6 @@ v-data-table.elevation-1(
   :items-per-page="params.per_page"
   @update:options="changeParams($event)"
   :no-data-text="`No se ha encontrado ${modelNamePlural}`"
-  dark
-  color="primary lighten-2"
   )
   template(v-slot:header)
     .h1.display-1

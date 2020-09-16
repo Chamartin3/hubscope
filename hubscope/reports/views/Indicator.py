@@ -19,8 +19,8 @@ from hubscope.reports.serializers import (
     InformeSerializer,
     MetricSerializer,
     sumarySerializer,
+    MiniGoalSerializer,
     ReportDeliverySerializer,
-    Goal,
     ReportSerializer)
 from hubscope.reports.models import (
     Goal,
@@ -58,7 +58,7 @@ class IndicatorViewSet(DatatablesMixin, ModelViewSet):
     @action(detail=True, methods=['get'])
     def openGoals(self, request, *args, **kwargs):
         goals = self.get_object().active_goals
-        serializer = GoalSerializer(goals, many=True)
+        serializer = MiniGoalSerializer(goals, many=True)
         return Response(serializer.data)
 
 
@@ -75,6 +75,7 @@ class IndicatorViewSet(DatatablesMixin, ModelViewSet):
             '%Y-%m-%d').date()
         period = request.query_params.get('period_size')
         informe = indicator.get_informe(begin, end, period)
+        # import pdb; pdb.set_trace()
         serializer = InformeSerializer(informe)
         return Response(serializer.data, status=200)
 
@@ -86,7 +87,8 @@ class MetricViewSet(DatatablesMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         # import pdb; pdb.set_trace() 
         company = request.query_params.get('company',None)
-        self.queryset = self.queryset.filter(asignment__company__id__contains=company)
+        if company is not None:
+            self.queryset = self.queryset.filter(asignment__company__id__contains=company)
         return super(MetricViewSet, self).list(request, *args, **kwargs)
     
     @action(detail=False, methods=['get'], permission_classes=[])
@@ -101,21 +103,20 @@ class MetricViewSet(DatatablesMixin, ModelViewSet):
     
 
 
-class GoalViewSet(ModelViewSet):
+class GoalViewSet(DatatablesMixin, ModelViewSet):
     queryset = Goal.objects.order_by("-begin")
     serializer_class = GoalSerializer
     # search_fields = ['company__id']
 
     
     @action(detail=True, methods=['patch'], permission_classes=[])
-    def toggleStatus(self, request, *args, **kwargs):
+    def complete(self, request, *args, **kwargs):
         goal = self.get_object()
-        # import pdb; pdb.set_trace()
-        if goal.completed:
-            goal.complete()
-            txt = 'cerrado el periodo'
-        else:
-            goal.reopen()
-            txt = 'abierto el periodo'
+        goal.complete()
+        return Response({'message':f'Se ha cerrado con exito'},status=200)
 
-        return Response({'message':f'Se ha {txt} con exito'},status=200)
+    @action(detail=True, methods=['patch'], permission_classes=[])
+    def reopen(self, request, *args, **kwargs):
+        goal = self.get_object()
+        goal.reopen()
+        return Response({'message':f'Se ha abrierto el periodo con exito'},status=200)

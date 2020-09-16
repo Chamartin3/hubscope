@@ -1,28 +1,32 @@
 <template lang="pug">
 .container
-  .justify-space-around
-    IndicatorCard(v-for="item in items" :indicator="item")
-  .col-md-4
-    MetricList
+  .row.text-center.justify-center
+    InficatorForm(
+      @created="$refs.IndicatorList.listObjects()"
+      ref="IndicatorForm")
+  .row
+    .col-md-8.text-center
+      v-btn( text small color="secondary" @click="$refs.IndicatorForm.open()" ) Crear Indicador
+      IndicatorList(ref="IndicatorList")
+    .col-md-4
+      MetricTable
 
 </template>
 <script>
 import iteratorList from '@/layouts/templates/Lists/iteratorList.js'
 import IndicatorCard from '@/components/indicators/MiniCard.vue'
-import MetricList from '@/components/metrics/List.vue'
+import IndicatorList from '@/components/indicators/List.vue'
+import MetricTable from '@/components/metrics/Table.vue'
+import InficatorForm from '@/components/indicators/Form.vue'
 
 export default {
   name: 'Indicadores',
   components: {
     IndicatorCard,
-    MetricList
-  },
-  mixins: [iteratorList],
-  data () {
-    return {
-      modelName: 'indicator',
-      listMethod: 'list'
-    }
+    MetricTable,
+    IndicatorList,
+    InficatorForm
   }
 }
+
 </script>

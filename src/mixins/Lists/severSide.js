@@ -1,10 +1,10 @@
 export default {
   data () {
     return {
-      serverSide:true,
-      listMethod:'list',
-      paginated:true,
-      pagination:{},
+      serverSide: true,
+      listMethod: 'list',
+      paginated: true,
+      pagination: {},
       pendingRequest: false
     }
   },
@@ -16,15 +16,20 @@ export default {
       }
     }
   },
-  computed:{
-    model(){
+  computed: {
+    model () {
       // modelName Requires prop or data
       if (this.modelName) return this.$django.models[this.modelName]
     }
   },
-  methods:{
-    async getItems(params={}){
-      if (this.loading){
+  methods: {
+    async getItems (params = {}) {
+      if (!this.model[this.listMethod]) {
+        console.log('no se ha encontrado ', this.listMethod)
+        console.log(this.model)
+      }
+
+      if (this.loading) {
         this.pendingRequest = true
         return []
       }
@@ -33,14 +38,14 @@ export default {
       let results
       if (this.params) {
         results = await this.model[this.listMethod](this.params)
-      }else{
+      } else {
         results = await this.model[this.listMethod]()
-        if (params && params.search!='') params.page = 1
+        if (params && params.search != '') params.page = 1
       }
       return results
     }
   },
-  mounted(){
-    if(!this.modelName) console.error('model required')
+  mounted () {
+    if (!this.modelName) console.error('model required')
   }
 }

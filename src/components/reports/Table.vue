@@ -1,41 +1,59 @@
 <template lang="pug">
-v-data-table.elevation-1(
-  :server-items-length="totalItems"
-  :loading="loading"
-  :headers="headers"
-  :items="items"
+div
+  reportForm(ref="reportForm" @edited="listObjects")
+  DeleteConfirmation(
+    customMessage="¿Desea eliminar este reporte?"
+    @success="listObjects"
+    ref="deleteConfirm",
+    model="report")
+  DeleteConfirmation(
+    ref="closeCofirm"
+    model="report",
+    method="close",
+    @success="listObjects"
+    customMessage="¿Desea cerrar este reporte? no se le podran hacer modificiones a los valores" )
+  v-data-table.elevation-1(
+    :server-items-length="totalItems"
+    :loading="loading"
+    :headers="headers"
+    :items="items"
 
-  :expanded.sync="expanded"
-  show-expand
-  :single-expand="true"
-  :multi-sort="true"
-  item-key="id"
-  :items-per-page="params.per_page"
-  @update:options="changeParams($event)"
-  :no-data-text="`No se ha encontrado ${modelNamePlural}`"
-  color="blue-grey"
-  )
+    :expanded.sync="expanded"
+    show-expand
+    :single-expand="true"
+    :multi-sort="true"
+    item-key="id"
+    :items-per-page="params.per_page"
+    @update:options="changeParams($event)"
+    :no-data-text="`No se ha encontrado ${modelNamePlural}`"
+    color="blue-grey"
+    )
 
-  template(v-slot:item.metric__name="{ item }") {{ item.metric.name }}
-  template(v-slot:item.end="{ item }")
-    | {{ item.end | date }}
-  template(v-slot:item.begin="{ item }")
-    | {{ item.begin | date }}
+    template(v-slot:item.metric__name="{ item }") {{ item.metric.name }}
+    template(v-slot:item.begin="{ item }")
+      div(v-if="item.status==='activa'")
+        | Desde {{ item.begin | minidate }} hasta hoy
+        | ({{ item | days }})
 
-  template(v-slot:item.status="{ item }")
-    reportStatus(:status="item.status")
+      div(v-else)
+        | {{ item | simpleperiod }}
+        | ({{ item | days }})
 
-  template(v-slot:item.delete="{ item }")
-    v-icon.mr-2(small, @click="$refs.DeleteConfirmation.open(item.id, 'Usuario')")
-      | fa-trash-alt
+    template(v-slot:item.status="{ item }")
+      reportStatus(:status="item.status")
 
-  template(v-slot:expanded-item='{ headers, item }')
-    td(:colspan='headers.length')
-      reportCard(
-        @user=""
-        @editReport=""
-        @deleteReport=""
-        :report="item")
+    template(v-slot:item.delete="{ item }")
+      v-icon.mr-2(small, @click="$refs.DeleteConfirmation.open(item.id, 'Usuario')")
+        | fa-trash-alt
+
+    template(v-slot:expanded-item='{ headers, item }')
+      td(:colspan='headers.length')
+        reportCard(
+          @user=""
+          @editReport="editReport($event)"
+          @deleteReport="$refs.deleteConfirm.open(item.id)"
+          @closeReport="$refs.closeCofirm.open(item.id)"
+          :report="item")
 
 </template>
 <script>
@@ -44,10 +62,12 @@ import TableTemplate from '@/layouts/templates/Tables/djangoTable'
 import operationsMixin from '#/Lists/operations/clientSideCrud'
 import reportCard from './Card'
 import reportStatus from './Status'
+import reportForm from '@/components/reports/Form'
+import { Filters } from './utils'
 import moment from 'moment'
 export default {
   name: '',
-  components: { reportCard, reportStatus },
+  components: { reportCard, reportStatus, reportForm },
   filters: {
     period (item) {
       let begin = moment(item.begin).format('DD MMM-YYYY')
@@ -63,6 +83,7 @@ export default {
 
   },
   mixins: [
+    Filters,
     operationsMixin,
     TableTemplate
   ],
@@ -80,13 +101,14 @@ export default {
       searchField: true,
       table_headers: [
         { text: 'Detalle', sortable: false, value: 'data-table-expand' },
-        { text: 'Metrica', value: 'metric__name' },
+        { text: 'Metrica', sortable: false, value: 'metric__name' },
         { text: 'Status', sortable: false, value: 'status' },
-        { text: 'Inicio', value: 'begin' },
-        { text: 'final', value: 'end' }
+        { text: 'Periodo', value: 'begin' }
+        // { text: 'final', value: 'end' }
       ],
       params: {
-        search: this.company
+        search: this.company,
+        ordering: '-updated_at'
       }
       //
       // service: this.$django.models.,
@@ -101,6 +123,9 @@ export default {
     setDatableFilters (newfilters) {
       this.$set(this.params, 'datatable_filters', newfilters)
       if (Object.keys(newfilters).length === 0) this.listObjects(this.params)
+    },
+    editReport (report) {
+      this.$refs.reportForm.edit(report.id, report)
     },
     setPropertyFilters (properties) {
       console.log('property filters')

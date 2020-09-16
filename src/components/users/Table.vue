@@ -10,24 +10,22 @@ block header
       ref="userDetail")
 
   v-toolbar.secondary--text(
-      flat 
-      color="primary lighten-1 secondary--text")
+      flat)
     v-text-field(
       v-model="params.search",
       append-icon="fa-search",
       label="Buscar Socios",
       placeholder="Buscar Usuario"
       single-line,
-      dark
       hide-details)
     |
     v-divider.mx-4(inset, vertical)
     |
     v-spacer
     |
-    v-btn(color="secondary" @click="$emit('new')" ) 
+    v-btn(color="secondary" @click="$emit('new')" )
       | Nuevo Usuario
-      
+
     //- Form(
     //-   :button="true"
     //-   @created="addItem")
@@ -53,41 +51,41 @@ import TableTemplate from '@/layouts/templates/Tables/djangoTable'
 import operationsMixin from '#/Lists/operations/clientSideCrud'
 
 export default {
-  name: "",
-  components:{
+  name: '',
+  components: {
     userDetail,
     Form
   },
-  mixins:[
+  mixins: [
     operationsMixin,
     TableTemplate
   ],
-  computed:{
-    headers(){
-      return addHeaders(this.table_headers, false)
-    }
-  },
   data () {
     return {
-      selected_period:"",
+      selected_period: '',
       modelName: 'accounts',
       modelNamePlural: 'Usuarios',
-      downloading:false,
-      filterFields: "Buscar documento",
+      downloading: false,
+      filterFields: 'Buscar documento',
       // dt_endpoint_name: 'list',
       // filtering: true,
-      searchField:true,
-      table_headers:[
-        {text: 'Nombre de Usuario',value: 'username'},
-        {text: 'Nombre',  value: 'first_name'},
-        {text: 'Apellidos',value: 'last_name' },
-        {text: 'Rol',value: 'groups' },
-        {text: 'Detalle', sortable: false, value:'detail'},
-        {text: 'Eliminar', sortable: false, value:'delete'}
+      searchField: true,
+      table_headers: [
+        { text: 'Nombre de Usuario', value: 'username' },
+        { text: 'Nombre', value: 'first_name' },
+        { text: 'Apellidos', value: 'last_name' },
+        { text: 'Rol', value: 'groups' },
+        { text: 'Detalle', sortable: false, value: 'detail' },
+        { text: 'Eliminar', sortable: false, value: 'delete' }
       ]
       //
       // service: this.$django.models.,
-      }
+    }
+  },
+  computed: {
+    headers () {
+      return addHeaders(this.table_headers, false)
+    }
   }
 }
 </script>

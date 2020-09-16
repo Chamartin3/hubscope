@@ -1,85 +1,70 @@
-from rest_framework.viewsets import ModelViewSet
-from hubscope.mixins import DatatablesMixin, datatableFilters
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from datetime import datetime
+from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField, BooleanField
+
 from hubscope.accounts.models import User
-from django.contrib.auth.models import Group
+from hubscope.reports.models import  Report
 
-from django.db.models import Count, Sum
-from hubscope.reports.filters import reportFilters
+from .Indicator import  MetricSerializer
 
-class ReportViewSet(DatatablesMixin, ModelViewSet):
-    queryset = Report.objects.order_by("-begin")
-    serializer_class = ReportSerializer
-    search_fields = ['company__id']
-    filter_backends = [ reportFilters ]
+class ReportDeliverySerializer(ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ['value']
+            
 
 
-    def get_queryset(self):
-        """
-        """
-        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
-        qs = Report.objects.order_by("-begin")
-        if limited:
-            qs = qs.filter(company__members__in=self.request.user.roles.all())    
-        return qs
+class UserInfoSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','username','fullname','last_login']    
+
+
+
+
     
+class ReportSerializer(ModelSerializer):
+    name = SerializerMethodField()
+    unidad = SerializerMethodField()
+    company_name = SerializerMethodField()
+    # end = SerializerMethodField()
+    metric = MetricSerializer()
+    registered_by = UserInfoSerializer(read_only=True)
+    modified_by = UserInfoSerializer(read_only=True)
+    editable = BooleanField(required=False)
+    class Meta:
+        model = Report
+        fields = [
+            'id',
+            'metric',
+            'name',
+            'value',
+            'begin',
+            'end',
+            'days',
+            'status',
+            'delay',
+            'delayed',
+            'company_name',
+            'deadline',
+            'editable',
+            'unidad',
+            'created_at',
+            'registered_by',
+            'updated_at',
+            'modified_by']
 
-    @action(detail=True, methods=['patch'])
-    def fill(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = ReportDeliverySerializer(
-            instance, 
-            data=request.data, 
-            partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
-
-    @action(detail=False, methods=['get'])
-    def allOpen(self, request, *args, **kwargs):
-        qs = Report.objects.by_status('entregada')
-        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
-        if limited:
-            qs = qs.filter(company__members__in=self.request.user.roles.all()) 
-        queryset = self.filter_queryset(qs)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-
-
-        return Response(response)
-
-    @action(detail=False, methods=['get'])
-    def allPending(self, request, *args, **kwargs):
-        esperando = Report.objects.by_status('esperando')
-        abierta = Report.objects.by_status('abierta')
-        atrasada = Report.objects.by_status('atrasada')
-        sumary = { 
-            "atrasada":len(atrasada),
-            "esperando":len(esperando),
-            "abierta":len(abierta)
-            }
-        qs = atrasada | esperando | abierta
-        sumary['total']=len(qs)
-        
-        limited = self.request.user.groups.filter(name__in=["Gerente","Registrador"]).count() > 0
-        if limited:
-            qs = qs.filter(company__members__in=self.request.user.roles.all()) 
+    def get_valor(self, report):
+        return report.value        
     
-        queryset = self.filter_queryset(qs)
-        page = self.paginate_queryset(queryset)
-        # import pdb; pdb.set_trace()
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.paginator.get_paginated_response(
-                serializer.data, sumary=sumary)
-        serializer = self.get_serializer(queryset, many=True)
+    # def get_end(self, report):
+    #     return report.dayrange.end    
 
+    def get_name(self, report):
+        return report.metric.name
 
-        return Response(response)
-        
+    def get_unidad(self, report):
+        return report.metric.unidad
+
+    def get_company_name(self, report):
+        if not report.company:
+            return ''
+        return report.company.name

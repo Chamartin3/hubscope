@@ -45,6 +45,7 @@ export default [
     parent: 'dashboard',
     path: 'asignaciones',
     name: 'asignaciones',
+    hide: true,
     show_name: 'Asignaciones',
     show_icon: 'fas fa-tasks',
     access: { groups: [ 'Admin', 'Gerente', 'Registrador' ] },
@@ -67,6 +68,16 @@ export default [
     show_icon: 'fas fa-bullseye',
     access: { groups: [ 'Admin', 'Gerente' ] },
     component: () => import('@/views/Goals.vue')
+  },
+  {
+    parent: 'dashboard',
+    path: 'indicator/:id',
+    name: 'single_indicator',
+    show_name: 'Indicador',
+    hide: true,
+    props: true,
+    access: { groups: [ 'Admin', 'Gerente' ] },
+    component: () => import('@/views/indicatorPage.vue')
   },
   {
     parent: 'dashboard',

@@ -65,22 +65,31 @@ class reportFilters(datatableFilters):
         '''
         Filters the by an specific field using as reference an specific field name
         '''
+        cprint('filtering', 'cyan')
         self.base_queryset = queryset
+        
+        queryset = Report.objects.filter(end=None, metric__tipo='E').union(queryset)
+        
         property_filters = request.query_params.get('property_filters', None)
         if property_filters is None:
             return queryset
-
         property_filters = ast.literal_eval(property_filters)
-        cprint('propiredad','green')
         
         if status := property_filters.get('status', None):
             try:
-                queryset = queryset & Report.objects.by_status(status)
+                queryset = Report.objects.by_status(status).intersection(queryset)
             except Exception as e:
                 cprint(e,'red')
                 import pdb; pdb.set_trace()
             # queryset = self.filter_by_status(status)
 
+        # import pdb; pdb.set_trace()
+
         queryset = super(reportFilters, self).filter_queryset(request, queryset, view)
 
-        return queryset
+        return queryset.order_by('-begin')
+
+
+class reportFiltersMixin(DatatablesMixin):
+    filter_backends = [ datatableFilters, reportFilters ]
+    """docstring for DatatablesMixin"""

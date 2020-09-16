@@ -10,13 +10,13 @@ append content
   .row.text-center(v-if="instance")
     .col
       .overline
-        strong desde {{ instance.end | date }}
+        strong desde {{ instance | simpleperiod }}
       .overline
-        strong hasta {{ instance.end | date }}
+        strong ({{ instance | days }})
   .row(v-if="instance")
     .col
       v-text-field(
-        v-model="form.num_value"
+        v-model="form.value"
         :label="instance.unidad"
         type="number"
         :min="1"
@@ -37,7 +37,7 @@ export default {
       editAction: 'fill',
       model: this.$django.models.report,
       form: {
-        num_value: 0
+        value: 0
       }
     }
   }

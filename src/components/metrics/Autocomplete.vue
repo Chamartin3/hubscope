@@ -69,7 +69,8 @@ export default {
         return
       }
       let params = { search: search }
-      this.options = await this.model[this.listMethod](params)
+      let options = await this.model[this.listMethod](params)
+      this.options = options.filter(o => o.tipo !== 'C')
       this.isLoading = false
     }
   }
