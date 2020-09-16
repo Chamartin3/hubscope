@@ -21,7 +21,7 @@ div
             color='secondary')
     v-slide-item(v-slot:default='{ active, toggle }')
       v-card.ma-4( width='100')
-        GoalDetail(ref="GoalDetail")
+        GoalDetail(ref="GoalDetail" @deletedGoal="listObjects")
 
         GoalForm(
           @created="listObjects"

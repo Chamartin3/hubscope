@@ -5,7 +5,7 @@ block title
     .headline {{ instance.indicatorname }}
 append content
   div.white.black--text(v-if="instance && !waiting")
-    Goal(:xgoal="instance")
+    Goal(:xgoal="instance" @deletedGoal="$emit('deletedGoal'); dialog=false")
   div.white.black--text(v-else)
     LoadingComponent
 

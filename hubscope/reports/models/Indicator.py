@@ -472,11 +472,7 @@ class Goal(models.Model):
 
     @property
     def acomplishment(self):
-        return Decimal(self.computed_result/self.goal).quantize(Decimal('.01'),rounding=ROUND_UP)
-
-    
-
-    
+        return Decimal(self.computed_result/self.goal).quantize(Decimal('.01'),rounding=ROUND_UP)    
 
     def complete(self):
         '''

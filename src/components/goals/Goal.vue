@@ -54,8 +54,15 @@ v-card.primary.darken-1
           :intermediate="goal.fail.split(',')[0]"
           :dataname="goal.indicatorname"
         )
-
-    //- .d-inline.mr-2.ma-2
+    .row.justify-center.text-center
+      DeleteConfirmation(
+      model="goal"
+      ref="DeleteConf"
+      customMessage="¿Desea eliminar esta meta?"
+      @success="$emit('deletedGoal')")
+      v-btn( v-django-groups="'Admin'" large color="red" text @click="$refs.DeleteConf.open(goal.id)" )
+        | Eliminar Meta
+      //- .d-inline.mr-2.ma-2
 
     //- .col-md-4.col-sm-12
 </template>

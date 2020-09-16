@@ -1,6 +1,31 @@
 from termcolor import cprint
 from statistics import mean
+from termcolor import cprint
 
+
+def day_report_of(metric_name, reportsqs, day):
+    reports = reportsqs.filter(metric__name=metric_name)
+    for report in reports:
+        if report.dayrange.includes(day):
+            return report.daily_value
+    return 0
+
+def metric_callbacks(name):
+
+
+    def default_callback(*args, **kwargs):
+        cprint(f'{name} not found', 'white', 'on_red')
+        return ('Formula no encontrada', 0)
+
+    def consumo_esperado(day, reports):
+        aves = day_report_of('Aves Alojadas', reports, day)
+        return aves*0.11
+
+    callbacks = locals()
+    found_callback = callbacks.get(name, None)
+    if found_callback:
+        return found_callback
+    return default_callback
 
 def procesing(key):
     """retona un callback de proceamisnto con base un nombre

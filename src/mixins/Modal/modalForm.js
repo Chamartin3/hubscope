@@ -9,6 +9,9 @@ export default {
     }
   },
   methods: {
+    onClose () {
+
+    },
     beforeSend () {
       this._validateForm()
       this.loading = true
@@ -28,8 +31,10 @@ export default {
         this.$emit('edited', item)
       }
       this.close()
+      this.onClose()
     },
     close () {
+      this.onClose()
       this.clearAll()
       this._resetValidation()
       this.dialog = false

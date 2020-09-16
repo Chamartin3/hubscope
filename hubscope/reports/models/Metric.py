@@ -7,6 +7,10 @@ from django.utils.timezone import localdate
 from functools import reduce
 from termcolor import cprint
 from django.core.exceptions import ValidationError
+# from .Reports import Report
+from .ProcesingCallbacks import metric_callbacks
+from functools import reduce
+
 class Metric(models.Model):
     '''
         Indicador Reportado   
@@ -22,6 +26,7 @@ class Metric(models.Model):
     unidad = models.CharField(max_length=50, blank=True)
     desc = models.TextField()
     dependencies = models.ManyToManyField('self')
+    formula_name =  models.CharField(max_length=50, blank=True, null=True, default=None)
 
     class Meta:
         verbose_name = "Metric"
@@ -39,7 +44,7 @@ class Metric(models.Model):
     
     def save(self, *args, **kwargs):
         if self.tipo == 'C' and self.constant_value is None:
-            raise ValidationError('Toda Constnte requiere un valor')
+            raise ValidationError('Toda constante requiere un valor')
         super(Metric, self).save(*args, **kwargs)
         if self.tipo == 'C':
             if self.responses.count()==0:
@@ -61,6 +66,15 @@ class Metric(models.Model):
 
 
         # import pdb; pdb.set_trace()
+        if self.tipo == 'COMP':
+            # responses = Report.filter(metric=[m for m in self.dependencies.all()])
+            reports = []
+            for metric in self.dependencies.all():
+                reports.append(metric.reports())
+            if not reports:
+                return []
+            return reduce(lambda x,y:x|y, reports )
+
         if self.tipo in ['C','E']:
             self.responses.update_state(self)
             full_cover = self.responses.filter(begin__lte=begin, end__gte=end)
@@ -109,7 +123,14 @@ class Metric(models.Model):
             query['company'] = company
         return  self.reports(**query)
             
+    def get_callback(self, day, reports):
+        return metric_callbacks(self.formula_name)(day, reports)
+
+
     def __get_value_from(self, day, reports):
+        if self.tipo == 'COMP':
+            return self.get_callback(day, reports)
+
         for report in reports:
             if report.dayrange.includes(day):
                 return report.daily_value

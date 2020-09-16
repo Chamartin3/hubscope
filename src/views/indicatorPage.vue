@@ -2,18 +2,33 @@
 .container
   LoadingComponent(v-if="loading" )
   div(v-else-if="indicator")
+    DeleteConfirmation(
+      model="indicator"
+      ref="DeleteConf"
+      customMessage="¿Desea eliminar este indicador?"
+      @success="$router.go(-1)")
+    ModalEdit(
+      ref="ModalEdit",
+      @successChange="getInstance"
+      :editInstance="indicator"
+      :action="$django.models.indicator.partial_update",
+      :service="$django.models.indicator.partial_update",
+      )
     v-card.primary.darken-1.white--text
       .text-center
-        h1 {{ indicator.name}}
+        div(v-editable @edit="$refs.ModalEdit.openDialog('name','text','nombre de indicador')")
+          h1 {{ indicator.name}}
       .container
         .row.justify-space-around()
           .overline.darken-4.mx-3
-            h4 {{ indicator.desc }}
+            div(v-editable @edit="$refs.ModalEdit.openDialog('desc','text','descripción de indicador')")
+              h4 {{ indicator.desc }}
           .overline.mx-3
-            h4
-              strong Unidad:
-              |
-              | {{ indicator.unidad }}
+            div(v-editable @edit="$refs.ModalEdit.openDialog('unidad','text','unidad de medida')")
+              h4
+                strong Unidad:
+                |
+                | {{ indicator.unidad }}
     OpenGoals(:indicator="indicator")
     Inform(
       @period="setTable($event)"
@@ -26,8 +41,11 @@
         .overline Reportes asociados
       ReportsTable(ref="Table")
 
-  BackButton(mensaje="Volver")
+  .row.justify-center.text-center
+    v-btn( v-django-groups="'Admin'" large color="red" text @click="$refs.DeleteConf.open(indicator.id)" )
+      | Eliminar Indicador
 
+  BackButton(mensaje="Volver")
           //- GoalList(:indicator="indicator")
 
 </template>

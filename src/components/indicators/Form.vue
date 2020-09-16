@@ -15,8 +15,10 @@ append content
         :errors="errors.unidad"
         )
   .row
+
     .col
       EmpresaSelect(
+        ref="selectEmpresa"
         single, takeID
         v-model="form.company"
         :outErrors="errors.company")
@@ -81,6 +83,11 @@ export default {
       if (!this.form.tipo || this.form.tipo == '') return
       let tipo = this.tipos.filter(t => t.value === this.form.tipo)[0]
       return tipo.desc
+    }
+  },
+  methods: {
+    onClose () {
+      this.$refs.selectEmpresa._clearForm()
     }
   }
 }

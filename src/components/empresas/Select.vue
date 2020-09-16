@@ -48,7 +48,7 @@ export default {
     if (this.preset) this.value = this.preset
   },
   methods: {
-    _clearForm () { value = [] },
+    _clearForm () { this.value = [] },
     async getOptions () {
       this.options = await this.model[this.listMethod]()
     }

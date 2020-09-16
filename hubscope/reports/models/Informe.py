@@ -140,6 +140,8 @@ class Informe:
         return self._period_size
     @period_size.setter
     def period_size(self, value=None):
+        if int(value) < 1:
+            value = 1
         if value is None or value == '':
             self._period_size =(self.end - self.begin).days +1
         else:
